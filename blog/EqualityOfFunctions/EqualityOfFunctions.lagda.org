@@ -1,0 +1,441 @@
+#+Title: Equality of functions in Agda
+#+Author: Mark Armstrong
+#+Date: January 21st, 2020
+#+Description: Answering a question; when can we say two functions
+#+Description: are equal in Agda?
+#+Startup: noindent
+#+Setupfile: ./../../theme-readtheorg.setup
+#+Property: header-args:agda2 :tangle src/EqualityOfFunctions.agda
+
+* Introduction
+  :PROPERTIES:
+  :CUSTOM_ID: Introduction
+  :END:
+
+A student fairly new to Agda recently asked me:
+#+begin_quote
+We've discussed that addition is defined by two properties;
+- ~zero + n = n~, and
+- ~(suc n) + m = suc (n + m)~.
+
+In Agda, can we prove a function is equal to addition
+if it satisfies these properties?
+
+More generally, without knowledge of such properties,
+can we prove one function is equal to another?
+#+end_quote
+
+Let's explore this topic a little bit.
+For simplicity, we'll restrict our attention to unary functions between
+natural numbers.
+
+An important first step is deciding: what do we mean by
+“equal” when we say that
+“one function is equal to another”?
+
+** Extensional or intensional
+   :PROPERTIES:
+   :CUSTOM_ID: Extensional-or-intensional
+   :END:
+
+For a better discussion of intensional versus extensional equality
+than I can pen, we can turn to Paul Taylor's
+“[[https://www.paultaylor.eu/~pt/prafm/][Practical foundations of mathematics]]”.
+.
+#+begin_quote
+For Leonhard Euler (1748) and most mathematicians up to the end of
+the nineteenth century, a function was an expression formed using the
+arithmetical operations and transcendental operations such as ~log~. The
+modern /infor/-matician would take a similar view, but would be more
+precise about the method of formation (algorithm). Two such functions
+are equal if this can be shown from the laws they are known to obey.
+
+However, during the twentieth century mathematics students have been
+taught that a function is a set of input-output pairs. The only condition
+is that for each input value there /exists/, somehow, an output value, which
+is /unique/. This is the *graph* of the function: plotting output values in the
+/y/-direction against arguments along the /x/-axis, forgetting the algorithm.
+Now two functions are equal if they have the same output value for each
+input. (This definition was proposed by Peter Lejeune Dirichlet in 1829,
+but until 1870 it was thought to be far to general to be useful).
+
+These definitions capture the /intension/ and the effect (/extension/) of a
+function.
+#+end_quote
+
+So we must be careful /which/ notion of equality we are using during
+our discussion below.
+
+* Agda header                                   :noexport:
+  :PROPERTIES:
+  :CUSTOM_ID: Agda-header
+  :END:
+
+#+begin_src agda2
+module EqualityOfFunctions where
+#+end_src
+
+* Equality in Agda
+  :PROPERTIES:
+  :CUSTOM_ID: Equality-in-Agda
+  :END:
+
+We will use the Agda standard library definitions of the natural numbers,
+addition, and /propositional equality/ in this discussion,
+along with equational reasoning for proofs.
+#+begin_src agda2
+open import Data.Nat using (ℕ ; zero ; suc ; _+_)
+
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_ ; refl)
+open Eq.≡-Reasoning using (begin_ ; _≡⟨⟩_ ; _≡⟨_⟩_ ; _∎)
+#+end_src
+
+Propositional equality is an intensional equality, as noted in the comment
+at the top of ~Relation.Binary.PropositionalEquality~:
+#+begin_example agda2
+------------------------------------------------------------------------
+-- The Agda standard library
+--
+-- Propositional (intensional) equality
+------------------------------------------------------------------------
+#+end_example
+
+** Mechanics of propositional equality
+   :PROPERTIES:
+   :CUSTOM_ID: Mechanics-of-propositional-equality
+   :END:
+
+Propositional equality is defined by just one constructor (rule), ~refl~.
+~refl~ tells us that any entity is equal to itself.
+So, for instance, ~zero ≡ zero~ and ~suc (suc zero) ≡ suc (suc zero)~.
+
+Given this definition, it might be a bit surprising that,
+for instance, ~zero + zero ≡ zero~.
+Such equalities hold because Agda /normalises/ terms during typechecking.
+By the definition of addition, ~zero + zero~ normalises to ~zero~,
+and so ~zero + zero ≡ zero~ normalises to ~zero ≡ zero~, which is inhabited
+by ~refl~.
+
+** Intensional equality
+   :PROPERTIES:
+   :CUSTOM_ID: Intensional-equality
+   :END:
+
+Propositional equality is an intensional equality, as noted in the comment
+at the top of ~Relation.Binary.PropositionalEquality~:
+#+begin_example agda2
+------------------------------------------------------------------------
+-- The Agda standard library
+--
+-- Propositional (intensional) equality
+------------------------------------------------------------------------
+#+end_example
+
+Indeed, propositional equality is intentional; two entities are only
+propositionally equal if their normal forms are defined the same way
+(from the constructors of their type).
+
+Hence, we will say that say that
+two (Agda) functions ~f~ and ~g~ are /intensionally/ equal
+if we can prove that ~f ≡ g~.
+
+** Extensional equality
+   :PROPERTIES:
+   :CUSTOM_ID: Extensional-equality
+   :END:
+
+We will use propositional (intensional) equality in order to define
+extensional equality in Agda.
+
+We will call two Agda functions ~f~ and ~g~ of type ~A → B~ extensionally equal
+if we can prove ~(x : A) → f x ≡ g x~ (note we could write a ~∀~ explicitly,
+as in ~∀ (x : A) → f x ≡ g x~, but it is not necessary and we will omit it.
+
+Since we are dealing with binary (curried) functions on the naturals,
+extensional equality below will specifically mean ~(m n : ℕ) → f m n ≡ g m n~.
+
+* Setup
+  :PROPERTIES:
+  :CUSTOM_ID: Setup
+  :END:
+
+Here we make use of the following definitions from the standard library.
+#+begin_src agda2
+open import Data.Nat using (ℕ ; zero ; suc ; _+_)
+open import Data.Nat.Properties using (+-identityʳ)
+open import Data.Product using (_,_ ; uncurry)
+open import Relation.Nullary using (¬_)
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_ ; refl ; sym ; cong ; cong-app)
+open Eq.≡-Reasoning using (begin_ ; _≡⟨⟩_ ; _≡⟨_⟩_ ; _∎)
+#+end_src
+
+For the purposes of this thought experiment, we will work with
+this Agda record.
+#+begin_example agda2
+record PseudoAddition : Set where
+  field
+    _⊕_ : ℕ → ℕ → ℕ
+    z⊕n≡n : (n : ℕ) → zero ⊕ n ≡ n
+    [suc-m]⊕n≡suc-[m⊕n] : (m n : ℕ) → (suc m) ⊕ n ≡ suc (m ⊕ n)
+#+end_example
+
+We call the record ~PseudoAddition~, since we are claiming that the ~⊕~ operator
+is, in fact, addition, even though we do not have its definition.
+Practically speaking, this means we have as assumptions
+the existence of this ~⊕~ operator
+and the two properties describing its behaviour.
+
+We could equivalently have made the fields parameters to this Agda module;
+in Agda, records define a module, so there's not much difference.
+
+* ⊕ equals +… extensionally
+  :PROPERTIES:
+  :CUSTOM_ID: ⊕-equals-+…-extensionally
+  :END:
+
+It's relatively simple to prove that our assumed ~⊕~ operator
+is extensionally equal to addition, given
+the properties ~zero ⊕ n ≡ n~ and ~m ⊕ n ≡ m + n~.
+Enough so that we leave this as exercise to the reader.
+Make use of ~cong~ in the induction step; you'll probably need just two steps.
+#+begin_src agda2
+record PseudoAddition : Set where
+  field
+    _⊕_ : ℕ → ℕ → ℕ
+    z⊕n≡n : (n : ℕ) → zero ⊕ n ≡ n
+    [suc-m]⊕n≡suc-[m⊕n] : (m n : ℕ) → (suc m) ⊕ n ≡ suc (m ⊕ n)
+
+  m⊕n≡m+n : (m n : ℕ) →  m ⊕ n ≡ m + n
+  m⊕n≡m+n zero n = z⊕n≡n n
+  m⊕n≡m+n (suc m) n =
+    begin
+      (suc m ⊕ n)
+    ≡⟨ [suc-m]⊕n≡suc-[m⊕n] m n ⟩
+      suc (m ⊕ n)
+    ≡⟨ cong suc (m⊕n≡m+n m n) ⟩
+      suc (m + n)
+    ∎
+#+end_src
+
+* An example
+  :PROPERTIES:
+  :CUSTOM_ID: An-example
+  :END:
+
+Let's take a short break here to see an actual use of our record;
+we can define an operator similar, but not quite equal to addition,
+and by providing proofs that it satisfies the two properties
+defining plus, the record provides us with a proof that our operator
+is extensionally equal to addition.
+(Note the
+[[https://agda.readthedocs.io/en/v2.6.0.1/language/instance-arguments.html#defining-type-classes][connection]]
+between Agda records and Haskell-style typeclasses).
+#+begin_src agda2
+_+′_ : ℕ → ℕ → ℕ
+m +′ n = m + n + 0
+
++′-is-PseudoAddition : PseudoAddition
++′-is-PseudoAddition =
+  record { _⊕_ = _+′_
+         ; z⊕n≡n = +-identityʳ
+         ; [suc-m]⊕n≡suc-[m⊕n] = λ _ _ → refl }
+
+m+′n≡m+n : (m n : ℕ) → m +′ n ≡ m + n
+m+′n≡m+n = PseudoAddition.m⊕n≡m+n +′-is-PseudoAddition
+#+end_src
+
+* ⊕ does not equal + intensionally
+  :PROPERTIES:
+  :CUSTOM_ID: ⊕-does-not-equal-+-intensionally
+  :END:
+
+So, we can show prove that our operation is extensionally equal to addition.
+However, if we try to prove
+#+begin_example agda2
+  ⊕≡+ : _⊕_ ≡ _+_
+  ⊕≡+ = ?
+#+end_example
+we will find we cannot. (Note we cannot disprove it either).
+
+In fact, even if we know the definition of the operator,
+and that definition is /exactly the same/ as that of addition, as in
+#+begin_src agda2
+_+″_ : ℕ → ℕ → ℕ
+zero  +″ n = n
+suc m +″ n = suc (m +″ n)
+#+end_src
+we *still* cannot prove it is intensionally equal to addition.
+
+*Why not!?*
+
+A [[https://lists.chalmers.se/pipermail/agda/2015/007492.html][post]]
+by Peter Selinger on the Agda mailing list sheds some light on the situation.
+Specifically, he sums up the situation as
+#+begin_quote
+…function equality in Agda is definitional
+equality, i.e., two functions are equal if and only if they are
+internally represented as pointers to the same closure.
+#+end_quote
+
+** Well, actually…
+   :PROPERTIES:
+   :CUSTOM_ID: Well,-actually…
+   :END:
+
+There is small a gotcha here; this statement applies
+to functions /defined by pattern matching/.
+Functions not defined by pattern matching are simply abbreviations,
+and those abbreviations are expanded during equality checks.
+See the later [[https://lists.chalmers.se/pipermail/agda/2015/007497.html][post]]
+in the same thread by Andreas Abel.
+
+So, this code will typecheck.
+#+begin_src agda2
+_+‴_ : ℕ → ℕ → ℕ
+m +‴ n = m + n
+
++‴≡+ : _+‴_ ≡ _+_
++‴≡+ = refl
+#+end_src
+
+* The general case
+  :PROPERTIES:
+  :CUSTOM_ID: The-general-case
+  :END:
+
+Given what we've seen above with ~⊕~ and addition, we can conclude
+this about checking equality of functions in Agda:
+- We can, given enough information, prove that two functions are
+  /extensionally/ equal to each other (~x : A → f x ≡ g x~).
+- Only in special cases can we say that two functions are /intensionally/ equal
+  (~f ≡ g~).
+  - Specifically, when both are /actually the same/ (~f ≡ f~) or when one is an
+    /abbreviation/ of the other (defined without pattern matching).
+
+* Inequality
+  :PROPERTIES:
+  :CUSTOM_ID: Inequality
+  :END:
+
+To round out this discussion, let's consider the negative case;
+when can we say, in Agda, that two functions are not equal?
+And can we prove they are not intensionally equal,
+or only that they are not extensionally equal?
+
+Actually, we can do both. And in general, whenever we prove
+that two functions are not extensionally equal,
+we can prove that they are not intensionally equal.
+We prove this easily as a lemma.
+#+begin_src agda2
+disagree : {A B : Set} → {f g : A → B}
+         → (x : A) → ¬ f x ≡ g x → ¬ f ≡ g
+disagree x fx≢gx refl = fx≢gx refl
+#+end_src
+
+Now let us examine this specific instance dealing with pseudo-addition
+by considering two records, covering the two cases:
+1) ~⊕~ does not satisfy ~zero ⊕ n ≡ n~, for some witness ~n~, and
+2) ~⊕~ does not satisfy ~(suc m) ⊕ n ≡ suc (m ⊕ n)~,
+   for some witnesses ~m~ and ~n~.
+In either case, we can prove by contradiction both
+- that ~⊕~ is not extensionally equal to addition, and
+- that ~⊕~ is not intensionally equal to addition.
+  - Note: we prove these cases manually, not using ~disagree~, because
+    our assumptions reason only about ~⊕~, so are not of
+    the correct shape (~¬ m ⊕ n ≡ m + n~) for ~disagree~.
+
+First, let's assume that ~zero ⊕ n~ is not ~n~.
+#+begin_src agda2
+record NotAddition-zero : Set where
+  field
+    _⊕_ : ℕ → ℕ → ℕ
+    n : ℕ
+    ¬z⊕n≡n : ¬ (zero ⊕ n ≡ n)
+
+  ¬a⊕b≡a+b : ¬ ((a b : ℕ) → a ⊕ b ≡ a + b)
+  ¬a⊕b≡a+b a⊕b≡a+b = ¬z⊕n≡n (a⊕b≡a+b zero n)
+
+  ¬⊕≡+ : ¬ _⊕_ ≡ _+_
+  ¬⊕≡+ ⊕≡+ = ¬z⊕n≡n z⊕n≡n
+    where
+      z⊕n≡n : zero ⊕ n ≡ n
+      z⊕n≡n =
+        begin
+          zero ⊕ n
+        ≡⟨⟩
+          uncurry _⊕_ (zero , n)
+        ≡⟨ cong (λ x → uncurry x (zero , n)) ⊕≡+ ⟩
+          uncurry _+_ (zero , n)
+        ≡⟨⟩
+          n
+        ∎
+#+end_src
+
+Now, let us assume that for some ~m~ and ~n~, ~(suc m) ⊕ n~ is
+not ~suc (m ⊕ n)~.
+#+begin_src agda2
+record NotAddition-suc : Set where
+  field
+    _⊕_ : ℕ → ℕ → ℕ
+    m n : ℕ
+    ¬[suc-m]⊕n≡suc-[m⊕n] : ¬ ((suc m) ⊕ n ≡ suc (m ⊕ n))
+
+  ¬a⊕b≡a+b : ¬ ((a b : ℕ) → a ⊕ b ≡ a + b)
+  ¬a⊕b≡a+b a⊕b≡a+b = ¬[suc-m]⊕n≡suc-[m⊕n] [suc-m]⊕n≡suc-[m⊕n]
+    where
+      [suc-m]⊕n≡suc-[m⊕n] : (suc m) ⊕ n ≡ suc (m ⊕ n)
+      [suc-m]⊕n≡suc-[m⊕n] =
+        begin
+          (suc m) ⊕ n
+        ≡⟨ a⊕b≡a+b (suc m) n ⟩
+          (suc m) + n
+        ≡⟨⟩
+          suc (m + n)
+        ≡⟨ cong suc (sym (a⊕b≡a+b m n)) ⟩
+          suc (m ⊕ n)
+        ∎
+
+  ¬⊕≡+ : ¬ _⊕_ ≡ _+_
+  ¬⊕≡+ ⊕≡+ = ¬[suc-m]⊕n≡suc-[m⊕n] [suc-m]⊕n≡suc-[m⊕n]
+    where
+      [suc-m]⊕n≡suc-[m⊕n] : (suc m) ⊕ n ≡ suc (m ⊕ n)
+      [suc-m]⊕n≡suc-[m⊕n] =
+        begin
+          (suc m) ⊕ n
+        ≡⟨⟩
+          uncurry _⊕_ (suc m , n)
+        ≡⟨ cong (λ x → uncurry x (suc m , n)) ⊕≡+ ⟩
+          uncurry _+_ (suc m , n)
+        ≡⟨⟩
+          suc (uncurry _+_ (m , n))
+        ≡⟨ cong (λ x → suc (uncurry x (m , n))) (sym ⊕≡+) ⟩
+          suc (uncurry _⊕_ (m , n))
+        ≡⟨⟩
+          suc (m ⊕ n)
+        ∎
+#+end_src
+
+* Further reading
+  :PROPERTIES:
+  :CUSTOM_ID: Further-reading
+  :END:
+
+The chapter on [[https://plfa.github.io/Isomorphism/][isomorphisms]]
+in [[https://plfa.github.io/][/Programming Language Foundations in Agda/]]
+includes a [[https://plfa.github.io/Isomorphism#extensionality][discussion]] on
+adding the axiom of extensionality to Agda.
+
+* About this document
+  :PROPERTIES:
+  :CUSTOM_ID: About-this-document
+  :END:
+
+This document was written as a literate Agda file using Org mode,
+from which it was exported to (potentially several) formats.
+The original Org source code, with Agda code between
+the ~#+begin_src agda2~ and ~#+end_src~ blocks,
+can be found [[file:./EqualityOfFunctions.lagda.org][here]],
+along with the pure Agda code tangled from this file.
+
