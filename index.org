@@ -95,14 +95,12 @@ No teaching, only research 😀.
 :CUSTOM_ID: Research
 :END:
 
-My current research is on /formalisation/[fn:formalisation]
-of /generalised computability theory/[fn:generalised-computability].
+My current research is on /formalisation/
+of /generalised computability theory/.
 
-[fn:formalisation]
 By /formalisation/, I mean /mechanisation/,
 specifically in the proof assistant/programming language Agda.
 
-[fn:generalised-computability]
 By /generalised computability theory/, I mean
 theory of computable functions on topological algebras
 (such as the real numbers),
