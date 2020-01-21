@@ -1,0 +1,118 @@
+#+Title: Mark Armstrong - Home Page
+#+Subtitle: PhD candidate & sessional lecturer, McMaster University
+#+Author: Mark Armstrong
+#+Description: My github.io home page.
+#+Setupfile: https://fniessen.github.io/org-html-themes/setup/theme-bigblow.setup
+
+* Personal photo                                                     :ignore:
+:PROPERTIES:
+:CUSTOM_ID: Personal-photo
+:END:
+
+#+attr_org: :width 200px
+#+attr_html: :width 200/250/300/400/500/600px
+#+attr_latex: :width 200px
+[[./images/markarmstrong.jpg]]
+
+* About me
+:PROPERTIES:
+:CUSTOM_ID: About-me
+:END:
+
+I am a PhD candidate, sessional lecturer and teaching assistant
+at McMaster University.
+
+I am an avid Emacs user
+(see my init [[https://github.com/armkeh/setup/tree/master/emacs][here]]).
+
+* Blog
+:PROPERTIES:
+:CUSTOM_ID: Blog
+:END:
+
+So far this is just a few disconnected “posts”.
+
+* Teaching
+:PROPERTIES:
+:CUSTOM_ID: Teaching
+:END:
+
+** Current
+:PROPERTIES:
+:CUSTOM_ID: Current
+:END:
+
+No teaching, only research 😀.
+
+** Previous
+:PROPERTIES:
+:CUSTOM_ID: Previous
+:END:
+
+- Fall 2019: CS 3MI3,
+  [[file:3mi3-2019/homepage.html][Principles of Programming Languages]]
+- Fall 2018: CS 3MI3,
+  Principles of Programming Languages
+- Fall 2016: CS 3MI3,
+  Principles of Programming Languages
+- Winter 2014: CS 3MI3,
+  Principles of Programming Languages (½ term)
+
+** Teaching assistant positions
+:PROPERTIES:
+:CUSTOM_ID: Teaching-assistant-positions
+:END:
+
+- Fall 2019: SE/CS 2DM3,
+  Discrete Mathematics with Applications I
+- Fall 2019: CS 4TH3,
+  Theory of Computation
+- Winter 2019: CS 3EA3,
+  [[http://www.cas.mcmaster.ca/~alhassm/][Specification and Correctness]]
+- Fall 2018: SE/CS 2DM3,
+  Discrete Mathematics with Applications I
+- Winter 2018: SE/CS 2FA3,
+  Discrete Mathematics with Applications II
+- Fall 2017: CS 3MI3,
+  Principles of Programming Languages
+- Winter 2017: CS 2FA3,
+  Discrete Mathematics with Applications II
+- Winter 2017: CS 3TC3,
+  Theory of Computation
+- Winter 2016: CS 2FA3,
+  Discrete Mathematics with Applications II
+- Fall 2015: CS 3MI3,
+  Principles of Programming Languages
+- Winter 2015: CS 3MI3,
+  Principles of Programming Languages
+- Fall 2014: CAS 701,
+  Discrete Mathematics
+- Winter 2014: CS 3MI3
+  Principles of Programming Languages
+
+* Research
+:PROPERTIES:
+:CUSTOM_ID: Research
+:END:
+
+My current research is on /formalisation/[fn:formalisation]
+of /generalised computability theory/[fn:generalised-computability].
+
+[fn:formalisation]
+By /formalisation/, I mean /mechanisation/,
+specifically in the proof assistant/programming language Agda.
+
+[fn:generalised-computability]
+By /generalised computability theory/, I mean
+theory of computable functions on topological algebras
+(such as the real numbers),
+rather than on the natural numbers.
+
+* Credits                                                            :ignore:
+:PROPERTIES:
+:CUSTOM_ID: Credits
+:END:
+
+This website constructed in Emacs Org mode,
+exported to HTML and styled with
+[[https://github.com/fniessen/org-html-themes][Org HTML themes]].
