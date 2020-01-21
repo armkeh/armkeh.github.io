@@ -2,7 +2,7 @@
 #+Subtitle: PhD candidate & sessional lecturer, McMaster University
 #+Author: Mark Armstrong
 #+Description: My github.io home page.
-#+Setupfile: https://fniessen.github.io/org-html-themes/setup/theme-bigblow.setup
+#+Setupfile: ./theme-bigblow.setup
 
 * Personal photo                                                     :ignore:
 :PROPERTIES:
