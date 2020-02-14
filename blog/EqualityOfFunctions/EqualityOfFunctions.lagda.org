@@ -13,6 +13,8 @@
   :CUSTOM_ID: Introduction
   :END:
 
+** Preamble                                     :ignore:
+
 A student fairly new to Agda recently asked me:
 #+begin_quote
 We've discussed that addition is defined by two properties;
@@ -58,7 +60,7 @@ is /unique/. This is the *graph* of the function: plotting output values in the
 /y/-direction against arguments along the /x/-axis, forgetting the algorithm.
 Now two functions are equal if they have the same output value for each
 input. (This definition was proposed by Peter Lejeune Dirichlet in 1829,
-but until 1870 it was thought to be far to general to be useful).
+but until 1870 it was thought to be far too general to be useful).
 
 These definitions capture the /intension/ and the effect (/extension/) of a
 function.
@@ -80,6 +82,8 @@ module EqualityOfFunctions where
   :PROPERTIES:
   :CUSTOM_ID: Equality-in-Agda
   :END:
+
+** Preamble                                     :ignore:
 
 We will use the Agda standard library definitions of the natural numbers,
 addition, and /propositional equality/ in this discussion,
