@@ -342,8 +342,9 @@ we can prove that they are not intensionally equal.
 We prove this easily as a lemma.
 #+begin_src agda2
 disagree : {A B : Set} → {f g : A → B}
-         → (x : A) → ¬ f x ≡ g x → ¬ f ≡ g
-disagree x fx≢gx refl = fx≢gx refl
+         → (witness : A) → ¬ (f witness ≡ g witness)
+         → ¬ (f ≡ g)
+disagree witness fw≢gw refl = fw≢gw refl
 #+end_src
 
 Now let us examine this specific instance dealing with pseudo-addition
@@ -363,23 +364,23 @@ First, let's assume that ~zero ⊕ n~ is not ~n~.
 record NotAddition-zero : Set where
   field
     _⊕_ : ℕ → ℕ → ℕ
-    n : ℕ
-    ¬z⊕n≡n : ¬ (zero ⊕ n ≡ n)
+    nʷ : ℕ   -- witness
+    ¬z⊕nʷ≡nʷ : ¬ (zero ⊕ nʷ ≡ nʷ)
 
   ¬a⊕b≡a+b : ¬ ((a b : ℕ) → a ⊕ b ≡ a + b)
-  ¬a⊕b≡a+b a⊕b≡a+b = ¬z⊕n≡n (a⊕b≡a+b zero n)
+  ¬a⊕b≡a+b a⊕b≡a+b = ¬z⊕nʷ≡nʷ (a⊕b≡a+b zero nʷ)
 
   ¬⊕≡+ : ¬ _⊕_ ≡ _+_
-  ¬⊕≡+ ⊕≡+ = ¬z⊕n≡n z⊕n≡n
+  ¬⊕≡+ ⊕≡+ = ¬z⊕nʷ≡nʷ z⊕n≡n
     where
-      z⊕n≡n : zero ⊕ n ≡ n
+      z⊕n≡n : zero ⊕ nʷ ≡ nʷ
       z⊕n≡n =
         begin
-          zero ⊕ n
-        ≡⟨ cong (λ op → op zero n) ⊕≡+ ⟩
-          zero + n
+          zero ⊕ nʷ
+        ≡⟨ cong (λ op → op zero nʷ) ⊕≡+ ⟩
+          zero + nʷ
         ≡⟨⟩
-          n
+          nʷ
         ∎
 #+end_src
 
@@ -389,41 +390,41 @@ not ~suc (m ⊕ n)~.
 record NotAddition-suc : Set where
   field
     _⊕_ : ℕ → ℕ → ℕ
-    m n : ℕ
-    ¬[suc-m]⊕n≡suc-[m⊕n] : ¬ ((suc m) ⊕ n ≡ suc (m ⊕ n))
+    mʷ nʷ : ℕ   -- witnesses
+    ¬[suc-mʷ]⊕nʷ≡suc-[mʷ⊕nʷ] : ¬ ((suc mʷ) ⊕ nʷ ≡ suc (mʷ ⊕ nʷ))
 
   ¬a⊕b≡a+b : ¬ ((a b : ℕ) → a ⊕ b ≡ a + b)
-  ¬a⊕b≡a+b a⊕b≡a+b = ¬[suc-m]⊕n≡suc-[m⊕n] [suc-m]⊕n≡suc-[m⊕n]
+  ¬a⊕b≡a+b a⊕b≡a+b = ¬[suc-mʷ]⊕nʷ≡suc-[mʷ⊕nʷ] [suc-mʷ]⊕nʷ≡suc-[mʷ⊕nʷ]
     where
-      [suc-m]⊕n≡suc-[m⊕n] : (suc m) ⊕ n ≡ suc (m ⊕ n)
-      [suc-m]⊕n≡suc-[m⊕n] =
+      [suc-mʷ]⊕nʷ≡suc-[mʷ⊕nʷ] : (suc mʷ) ⊕ nʷ ≡ suc (mʷ ⊕ nʷ)
+      [suc-mʷ]⊕nʷ≡suc-[mʷ⊕nʷ] =
         begin
-          (suc m) ⊕ n
-        ≡⟨ a⊕b≡a+b (suc m) n ⟩
-          (suc m) + n
+          (suc mʷ) ⊕ nʷ
+        ≡⟨ a⊕b≡a+b (suc mʷ) nʷ ⟩
+          (suc mʷ) + nʷ
         ≡⟨⟩
-          suc (m + n)
-        ≡⟨ cong suc (sym (a⊕b≡a+b m n)) ⟩
-          suc (m ⊕ n)
+          suc (mʷ + nʷ)
+        ≡⟨ cong suc (sym (a⊕b≡a+b mʷ nʷ)) ⟩
+          suc (mʷ ⊕ nʷ)
         ∎
 
   ¬⊕≡+ : ¬ _⊕_ ≡ _+_
-  ¬⊕≡+ ⊕≡+ = ¬[suc-m]⊕n≡suc-[m⊕n] [suc-m]⊕n≡suc-[m⊕n]
+  ¬⊕≡+ ⊕≡+ = ¬[suc-mʷ]⊕nʷ≡suc-[mʷ⊕nʷ] [suc-mʷ]⊕nʷ≡suc-[mʷ⊕nʷ]
     where
-      [suc-m]⊕n≡suc-[m⊕n] : (suc m) ⊕ n ≡ suc (m ⊕ n)
-      [suc-m]⊕n≡suc-[m⊕n] =
+      [suc-mʷ]⊕nʷ≡suc-[mʷ⊕nʷ] : (suc mʷ) ⊕ nʷ ≡ suc (mʷ ⊕ nʷ)
+      [suc-mʷ]⊕nʷ≡suc-[mʷ⊕nʷ] =
         begin
-          (suc m) ⊕ n
+          (suc mʷ) ⊕ nʷ
         ≡⟨⟩
-          suc m ⊕ n
-        ≡⟨ cong (λ op → op (suc m)  n) ⊕≡+ ⟩
-          suc m + n
+          suc mʷ ⊕ nʷ
+        ≡⟨ cong (λ op → op (suc mʷ)  nʷ) ⊕≡+ ⟩
+          suc mʷ + nʷ
         ≡⟨⟩
-          suc (m + n)
-        ≡⟨ cong (λ op → suc (op m  n)) (sym ⊕≡+) ⟩
-          suc (m ⊕ n)
+          suc (mʷ + nʷ)
+        ≡⟨ cong (λ op → suc (op mʷ nʷ)) (sym ⊕≡+) ⟩
+          suc (mʷ ⊕ nʷ)
         ≡⟨⟩
-          suc (m ⊕ n)
+          suc (mʷ ⊕ nʷ)
         ∎
 #+end_src
 
