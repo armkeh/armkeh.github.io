@@ -13,7 +13,10 @@
   :CUSTOM_ID: Introduction
   :END:
 
-** Preamble                                     :ignore:
+** Introduction preamble                        :ignore:
+   :PROPERTIES:
+   :CUSTOM_ID: Introduction-preamble
+   :END:
 
 A student fairly new to Agda recently asked me:
 #+begin_quote
@@ -85,7 +88,10 @@ module EqualityOfFunctions where
   :CUSTOM_ID: Equality-in-Agda
   :END:
 
-** Preamble                                     :ignore:
+** Equality in Agda preamble                    :ignore:
+   :PROPERTIES:
+   :CUSTOM_ID: Equality-in-Agda-preamble
+   :END:
 
 We will use the Agda standard library definitions of the natural numbers,
 addition, and /propositional equality/ in this discussion,
@@ -217,6 +223,9 @@ record PseudoAddition : Set where
 #+end_example
 
 ** COMMENT The solution
+   :PROPERTIES:
+   :CUSTOM_ID: COMMENT-The-solution
+   :END:
 
 #+begin_src agda2
   m⊕n≡m+n : (m n : ℕ) →  m ⊕ n ≡ m + n
