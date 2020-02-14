@@ -92,16 +92,6 @@ open Eq using (_≡_ ; refl)
 open Eq.≡-Reasoning using (begin_ ; _≡⟨⟩_ ; _≡⟨_⟩_ ; _∎)
 #+end_src
 
-Propositional equality is an intensional equality, as noted in the comment
-at the top of ~Relation.Binary.PropositionalEquality~:
-#+begin_example agda2
-------------------------------------------------------------------------
--- The Agda standard library
---
--- Propositional (intensional) equality
-------------------------------------------------------------------------
-#+end_example
-
 ** Mechanics of propositional equality
    :PROPERTIES:
    :CUSTOM_ID: Mechanics-of-propositional-equality
