@@ -211,6 +211,21 @@ record PseudoAddition : Set where
     [suc-m]⊕n≡suc-[m⊕n] : (m n : ℕ) → (suc m) ⊕ n ≡ suc (m ⊕ n)
 #+end_src
 
+#+begin_src agda2 :exports none
+  {-
+  m⊕n≡m+n : (m n : ℕ) →  m ⊕ n ≡ m + n
+  m⊕n≡m+n zero n = z⊕n≡n n
+  m⊕n≡m+n (suc m) n =
+    begin
+      (suc m ⊕ n)
+    ≡⟨ ??? ⟩
+      suc (m + n)
+    ∎
+  -}
+  -- This was left as exercise.
+  -- Uncomment and complete this definition if you intend to use this code.
+#+end_src
+
 #+begin_example agda2
   m⊕n≡m+n : (m n : ℕ) →  m ⊕ n ≡ m + n
   m⊕n≡m+n zero n = z⊕n≡n n

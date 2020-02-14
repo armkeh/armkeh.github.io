@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-02-14 Fri 13:30 -->
+<!-- 2020-02-14 Fri 13:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Equality of functions in Agda</title>
@@ -284,7 +284,7 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgbda88f5" class="outline-2">
+<div id="outline-container-org915445e" class="outline-2">
 <h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-Introduction">
 <p>
@@ -323,7 +323,7 @@ An important first step is deciding: what do we mean by
 </p>
 </div>
 
-<div id="outline-container-org17f7a1c" class="outline-3">
+<div id="outline-container-orge1218d0" class="outline-3">
 <h3 id="Extensional-or-intensional"><span class="section-number-3">1.1</span> Extensional or intensional</h3>
 <div class="outline-text-3" id="text-Extensional-or-intensional">
 <p>
@@ -369,7 +369,7 @@ that we cannot in general prove functions are intensionally equal in Agda.
 </div>
 </div>
 
-<div id="outline-container-org375b3cb" class="outline-2">
+<div id="outline-container-org867818c" class="outline-2">
 <h2 id="Equality-in-Agda"><span class="section-number-2">2</span> Equality in Agda</h2>
 <div class="outline-text-2" id="text-Equality-in-Agda">
 <p>
@@ -387,7 +387,7 @@ open Eq.&#8801;-Reasoning using <span style="color: #51afef;">(</span>begin_ ; _
 </div>
 </div>
 
-<div id="outline-container-orgba4caa4" class="outline-3">
+<div id="outline-container-orgb389baa" class="outline-3">
 <h3 id="Mechanics-of-propositional-equality"><span class="section-number-3">2.1</span> Mechanics of propositional equality</h3>
 <div class="outline-text-3" id="text-Mechanics-of-propositional-equality">
 <p>
@@ -407,7 +407,7 @@ by <code>refl</code>.
 </div>
 </div>
 
-<div id="outline-container-orga7e87d2" class="outline-3">
+<div id="outline-container-org0a707bf" class="outline-3">
 <h3 id="Intensional-equality"><span class="section-number-3">2.2</span> Intensional equality</h3>
 <div class="outline-text-3" id="text-Intensional-equality">
 <p>
@@ -436,7 +436,7 @@ if we can prove that <code>f ≡ g</code>.
 </div>
 </div>
 
-<div id="outline-container-orgfea07f0" class="outline-3">
+<div id="outline-container-org0745b60" class="outline-3">
 <h3 id="Extensional-equality"><span class="section-number-3">2.3</span> Extensional equality</h3>
 <div class="outline-text-3" id="text-Extensional-equality">
 <p>
@@ -458,7 +458,7 @@ extensional equality below will specifically mean <code>(m n : ℕ) → f m n �
 </div>
 </div>
 
-<div id="outline-container-orgfaf116c" class="outline-2">
+<div id="outline-container-org1d54ff4" class="outline-2">
 <h2 id="Setup"><span class="section-number-2">3</span> Setup</h2>
 <div class="outline-text-2" id="text-Setup">
 <p>
@@ -502,7 +502,7 @@ in Agda, records define a module, so there's not much difference.
 </div>
 </div>
 
-<div id="outline-container-org274ffeb" class="outline-2">
+<div id="outline-container-org942cc88" class="outline-2">
 <h2 id="⊕-equals-+…-extensionally"><span class="section-number-2">4</span> ⊕ equals +… extensionally</h2>
 <div class="outline-text-2" id="text-⊕-equals-+…-extensionally">
 <p>
@@ -534,7 +534,7 @@ Make use of <code>cong</code> in the induction step; you'll probably need just t
 </div>
 </div>
 
-<div id="outline-container-org8085775" class="outline-2">
+<div id="outline-container-org3a6da55" class="outline-2">
 <h2 id="An-example"><span class="section-number-2">5</span> An example</h2>
 <div class="outline-text-2" id="text-An-example">
 <p>
@@ -564,7 +564,7 @@ m+&#8320;n&#8801;m+n = PseudoAddition.m&#8853;n&#8801;m+n +&#8320;-is-PseudoAddi
 </div>
 </div>
 
-<div id="outline-container-org73e9e18" class="outline-2">
+<div id="outline-container-orga8ab8f0" class="outline-2">
 <h2 id="⊕-does-not-equal-+-intensionally"><span class="section-number-2">6</span> ⊕ does not equal + intensionally</h2>
 <div class="outline-text-2" id="text-⊕-does-not-equal-+-intensionally">
 <p>
@@ -611,7 +611,7 @@ internally represented as pointers to the same closure.
 </blockquote>
 </div>
 
-<div id="outline-container-org1b465f9" class="outline-3">
+<div id="outline-container-orgc2ac280" class="outline-3">
 <h3 id="Well,-actually…"><span class="section-number-3">6.1</span> Well, actually…</h3>
 <div class="outline-text-3" id="text-Well,-actually…">
 <p>
@@ -638,7 +638,7 @@ really-plus&#8801;+ = refl
 </div>
 </div>
 
-<div id="outline-container-org982a63a" class="outline-2">
+<div id="outline-container-orgd0071a6" class="outline-2">
 <h2 id="The-general-case"><span class="section-number-2">7</span> The general case</h2>
 <div class="outline-text-2" id="text-The-general-case">
 <p>
@@ -658,7 +658,7 @@ this about checking equality of functions in Agda:
 </div>
 </div>
 
-<div id="outline-container-orgb710004" class="outline-2">
+<div id="outline-container-orgd98cda4" class="outline-2">
 <h2 id="Inequality"><span class="section-number-2">8</span> Inequality</h2>
 <div class="outline-text-2" id="text-Inequality">
 <p>
@@ -781,7 +781,7 @@ not <code>suc (m ⊕ n)</code>.
 </div>
 </div>
 
-<div id="outline-container-org14796ec" class="outline-2">
+<div id="outline-container-org0a3808b" class="outline-2">
 <h2 id="Further-reading"><span class="section-number-2">9</span> Further reading</h2>
 <div class="outline-text-2" id="text-Further-reading">
 <p>
@@ -793,7 +793,7 @@ adding the axiom of extensionality to Agda.
 </div>
 </div>
 
-<div id="outline-container-org6dcec4a" class="outline-2">
+<div id="outline-container-org5350b76" class="outline-2">
 <h2 id="About-this-document"><span class="section-number-2">10</span> About this document</h2>
 <div class="outline-text-2" id="text-About-this-document">
 <p>
@@ -810,7 +810,7 @@ along with the pure Agda code tangled from this file.
 <div id="postamble" class="status">
 <p class="date">Date: January 21st, 2020</p>
 <p class="author">Author: Mark Armstrong</p>
-<p class="date">Created: 2020-02-14 Fri 13:30</p>
+<p class="date">Created: 2020-02-14 Fri 13:56</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
