@@ -8,6 +8,14 @@
 #+Property: header-args:agda2 :tangle src/EqualityOfFunctions.agda
 #+Export_file_name: ../EqualityOfFunctions
 
+* Preamble                                      :ignore:
+  :PROPERTIES:
+  :CUSTOM_ID: Preamble
+  :END:
+
+A raw Agda source file containing all the code below can be found
+[[file:src/EqualityOfFunctions.agda][here]].
+
 * Introduction
   :PROPERTIES:
   :CUSTOM_ID: Introduction
