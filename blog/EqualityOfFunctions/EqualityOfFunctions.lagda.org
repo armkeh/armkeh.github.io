@@ -209,12 +209,31 @@ record PseudoAddition : Set where
   m⊕n≡m+n (suc m) n =
     begin
       (suc m ⊕ n)
+    ≡⟨ {!!} ⟩
+      suc (m + n)
+    ∎
+#+end_src
+
+** COMMENT The solution
+
+#+begin_example agda2
+record PseudoAddition : Set where
+  field
+    _⊕_ : ℕ → ℕ → ℕ
+    z⊕n≡n : (n : ℕ) → zero ⊕ n ≡ n
+    [suc-m]⊕n≡suc-[m⊕n] : (m n : ℕ) → (suc m) ⊕ n ≡ suc (m ⊕ n)
+
+  m⊕n≡m+n : (m n : ℕ) →  m ⊕ n ≡ m + n
+  m⊕n≡m+n zero n = z⊕n≡n n
+  m⊕n≡m+n (suc m) n =
+    begin
+      (suc m ⊕ n)
     ≡⟨ [suc-m]⊕n≡suc-[m⊕n] m n ⟩
       suc (m ⊕ n)
     ≡⟨ cong suc (m⊕n≡m+n m n) ⟩
       suc (m + n)
     ∎
-#+end_src
+#+end_example
 
 * An example
   :PROPERTIES:
