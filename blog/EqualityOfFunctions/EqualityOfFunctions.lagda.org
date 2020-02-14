@@ -161,10 +161,10 @@ Here we make use of the following definitions from the standard library.
 #+begin_src agda2
 open import Data.Nat using (ℕ ; zero ; suc ; _+_)
 open import Data.Nat.Properties using (+-identityʳ)
-open import Data.Product using (_,_ ; uncurry)
+
 open import Relation.Nullary using (¬_)
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_ ; refl ; sym ; cong ; cong-app)
+open Eq using (_≡_ ; refl ; sym ; cong)
 open Eq.≡-Reasoning using (begin_ ; _≡⟨⟩_ ; _≡⟨_⟩_ ; _∎)
 #+end_src
 
@@ -380,10 +380,8 @@ record NotAddition-zero : Set where
       z⊕n≡n =
         begin
           zero ⊕ n
-        ≡⟨⟩
-          uncurry _⊕_ (zero , n)
-        ≡⟨ cong (λ x → uncurry x (zero , n)) ⊕≡+ ⟩
-          uncurry _+_ (zero , n)
+        ≡⟨ cong (λ op → op zero n) ⊕≡+ ⟩
+          zero + n
         ≡⟨⟩
           n
         ∎
@@ -421,13 +419,13 @@ record NotAddition-suc : Set where
         begin
           (suc m) ⊕ n
         ≡⟨⟩
-          uncurry _⊕_ (suc m , n)
-        ≡⟨ cong (λ x → uncurry x (suc m , n)) ⊕≡+ ⟩
-          uncurry _+_ (suc m , n)
+          suc m ⊕ n
+        ≡⟨ cong (λ op → op (suc m)  n) ⊕≡+ ⟩
+          suc m + n
         ≡⟨⟩
-          suc (uncurry _+_ (m , n))
-        ≡⟨ cong (λ x → suc (uncurry x (m , n))) (sym ⊕≡+) ⟩
-          suc (uncurry _⊕_ (m , n))
+          suc (m + n)
+        ≡⟨ cong (λ op → suc (op m  n)) (sym ⊕≡+) ⟩
+          suc (m ⊕ n)
         ≡⟨⟩
           suc (m ⊕ n)
         ∎
