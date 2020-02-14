@@ -68,6 +68,8 @@ function.
 
 So we must be careful /which/ notion of equality we are using during
 our discussion below.
+We will [[⊕ does not equal + intensionally][demonstrate]]
+that we cannot in general prove functions are intensionally equal in Agda.
 
 * Agda header                                   :noexport:
   :PROPERTIES:
