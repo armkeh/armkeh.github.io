@@ -29,8 +29,8 @@ can we prove one function is equal to another?
 #+end_quote
 
 Let's explore this topic a little bit.
-For simplicity, we'll restrict our attention to unary functions between
-natural numbers.
+For simplicity, we'll restrict our attention to just
+unary and binary functions between natural numbers.
 
 An important first step is deciding: what do we mean by
 “equal” when we say that
