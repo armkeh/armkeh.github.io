@@ -230,17 +230,17 @@ is extensionally equal to addition.
 [[https://agda.readthedocs.io/en/v2.6.0.1/language/instance-arguments.html#defining-type-classes][connection]]
 between Agda records and Haskell-style typeclasses).
 #+begin_src agda2
-_+′_ : ℕ → ℕ → ℕ
-m +′ n = m + n + 0
+_+₀_ : ℕ → ℕ → ℕ
+m +₀ n = m + n + 0
 
-+′-is-PseudoAddition : PseudoAddition
-+′-is-PseudoAddition =
-  record { _⊕_ = _+′_
++₀-is-PseudoAddition : PseudoAddition
++₀-is-PseudoAddition =
+  record { _⊕_ = _+₀_
          ; z⊕n≡n = +-identityʳ
          ; [suc-m]⊕n≡suc-[m⊕n] = λ _ _ → refl }
 
-m+′n≡m+n : (m n : ℕ) → m +′ n ≡ m + n
-m+′n≡m+n = PseudoAddition.m⊕n≡m+n +′-is-PseudoAddition
+m+₀n≡m+n : (m n : ℕ) → m +₀ n ≡ m + n
+m+₀n≡m+n = PseudoAddition.m⊕n≡m+n +₀-is-PseudoAddition
 #+end_src
 
 * ⊕ does not equal + intensionally
@@ -259,9 +259,9 @@ we will find we cannot. (Note we cannot disprove it either).
 In fact, even if we know the definition of the operator,
 and that definition is /exactly the same/ as that of addition, as in
 #+begin_src agda2
-_+″_ : ℕ → ℕ → ℕ
-zero  +″ n = n
-suc m +″ n = suc (m +″ n)
+_plus_ : ℕ → ℕ → ℕ
+zero  plus n = n
+suc m plus n = suc (m plus n)
 #+end_src
 we *still* cannot prove it is intensionally equal to addition.
 
@@ -290,11 +290,11 @@ in the same thread by Andreas Abel.
 
 So, this code will typecheck.
 #+begin_src agda2
-_+‴_ : ℕ → ℕ → ℕ
-m +‴ n = m + n
+_really-plus_ : ℕ → ℕ → ℕ
+m really-plus n = m + n
 
-+‴≡+ : _+‴_ ≡ _+_
-+‴≡+ = refl
+really-plus≡+ : _really-plus_ ≡ _+_
+really-plus≡+ = refl
 #+end_src
 
 * The general case
