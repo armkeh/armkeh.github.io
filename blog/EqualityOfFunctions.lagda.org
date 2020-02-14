@@ -6,7 +6,6 @@
 #+Startup: noindent
 #+Setupfile: ./../../theme-readtheorg.setup
 #+Property: header-args:agda2 :tangle src/EqualityOfFunctions.agda
-#+Export_file_name: ../EqualityOfFunctions
 
 * Preamble                                      :ignore:
   :PROPERTIES:
