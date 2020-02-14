@@ -146,7 +146,7 @@ We will use propositional (intensional) equality in order to define
 extensional equality in Agda.
 
 We will call two Agda functions ~f~ and ~g~ of type ~A → B~ extensionally equal
-if we can prove ~(x : A) → f x ≡ g x~ (note we could write a ~∀~ explicitly,
+if we can prove ~(x : A) → f x ≡ g x~. Note we could write a ~∀~ explicitly,
 as in ~∀ (x : A) → f x ≡ g x~, but it is not necessary and we will omit it.
 
 Since we are dealing with binary (curried) functions on the naturals,
@@ -333,8 +333,8 @@ disagree x fx≢gx refl = fx≢gx refl
 
 Now let us examine this specific instance dealing with pseudo-addition
 by considering two records, covering the two cases:
-1) ~⊕~ does not satisfy ~zero ⊕ n ≡ n~, for some witness ~n~, and
-2) ~⊕~ does not satisfy ~(suc m) ⊕ n ≡ suc (m ⊕ n)~,
+1. ~⊕~ does not satisfy ~zero ⊕ n ≡ n~, for some witness ~n~, and
+2. ~⊕~ does not satisfy ~(suc m) ⊕ n ≡ suc (m ⊕ n)~,
    for some witnesses ~m~ and ~n~.
 In either case, we can prove by contradiction both
 - that ~⊕~ is not extensionally equal to addition, and
