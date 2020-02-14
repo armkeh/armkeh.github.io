@@ -203,26 +203,22 @@ record PseudoAddition : Set where
     _⊕_ : ℕ → ℕ → ℕ
     z⊕n≡n : (n : ℕ) → zero ⊕ n ≡ n
     [suc-m]⊕n≡suc-[m⊕n] : (m n : ℕ) → (suc m) ⊕ n ≡ suc (m ⊕ n)
+#+end_src
 
+#+begin_example agda2
   m⊕n≡m+n : (m n : ℕ) →  m ⊕ n ≡ m + n
   m⊕n≡m+n zero n = z⊕n≡n n
   m⊕n≡m+n (suc m) n =
     begin
       (suc m ⊕ n)
-    ≡⟨ {!!} ⟩
+    ≡⟨ ??? ⟩
       suc (m + n)
     ∎
-#+end_src
+#+end_example
 
 ** COMMENT The solution
 
-#+begin_example agda2
-record PseudoAddition : Set where
-  field
-    _⊕_ : ℕ → ℕ → ℕ
-    z⊕n≡n : (n : ℕ) → zero ⊕ n ≡ n
-    [suc-m]⊕n≡suc-[m⊕n] : (m n : ℕ) → (suc m) ⊕ n ≡ suc (m ⊕ n)
-
+#+begin_src agda2
   m⊕n≡m+n : (m n : ℕ) →  m ⊕ n ≡ m + n
   m⊕n≡m+n zero n = z⊕n≡n n
   m⊕n≡m+n (suc m) n =
@@ -233,7 +229,7 @@ record PseudoAddition : Set where
     ≡⟨ cong suc (m⊕n≡m+n m n) ⟩
       suc (m + n)
     ∎
-#+end_example
+#+end_src
 
 * An example
   :PROPERTIES:
@@ -271,7 +267,7 @@ So, we can show prove that our operation is extensionally equal to addition.
 However, if we try to prove
 #+begin_example agda2
   ⊕≡+ : _⊕_ ≡ _+_
-  ⊕≡+ = ?
+  ⊕≡+ = ???
 #+end_example
 we will find we cannot. (Note we cannot disprove it either).
 
