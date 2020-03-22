@@ -32,6 +32,7 @@ I am an avid Emacs user
 
 So far this is just a few disconnected “posts”.
 
+- [[file:./blog/AgdaHighlighting][Agda Highlighting]]
 - [[file:./blog/EqualityOfFunctions.html][Equality of functions in Agda]]
 
 * Teaching

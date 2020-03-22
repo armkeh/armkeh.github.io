@@ -1,0 +1,142 @@
+#+Title: Customisations to Agda's highlighting
+#+Author: Mark Armstrong
+#+Description: Elisp code to change Agda's highlighting behaviour
+#+Setupfile: ../theme-readtheorg.setup
+#+Property: header-args:emacs-lisp :tangle src/AgdaHighlighting.el
+
+* Introduction
+:PROPERTIES:
+:CUSTOM_ID: Introduction
+:END:
+
+This code and the majority of the commentary come from
+[[https://github.com/armkeh/setup/blob/master/emacs/emacs-init.org][my Emacs initialisation file]].
+
+The code described below is collected into a
+[[file:src/AgdaHighlighting.el][raw Elisp code file]],
+from which the contents can be copied directly into your
+Emacs initialisation file, usually located at ~$HOME/.emacs~.
+
+* The problem
+:PROPERTIES:
+:CUSTOM_ID: The-problem
+:END:
+
+I find the background colouring used by Agda for reporting
+errors/warnings makes the underlying code too difficult
+to read, especially in dark themes.
+
+What looks perfectly acceptable when working in a light theme
+—in my case, [[https://protesilaos.com/codelog/2020-03-10-emacs-modus-themes-elpa/][modus operandi]]—
+[[file:images/agda-highlighting-original-light.png]]
+becomes at best unattractive when in a dark theme
+—in my case, [[https://protesilaos.com/codelog/2020-03-10-emacs-modus-themes-elpa/][modus vivendi]].
+[[file:images/agda-highlighting-original-dark.png]]
+
+So I modify the faces Agda defines.
+
+* The modification
+:PROPERTIES:
+:CUSTOM_ID: The-modification
+:END:
+
+In order to modify the faces when Emacs starts, we must load
+the file defining them. Alternatively, we could delay all of this code
+until after an Agda file has been opened, but I am almost always
+working on Agda anyway, so there's not much point.
+#+begin_src emacs-lisp
+(require 'agda2-highlight)
+#+end_src
+
+First, we change all uses of background colouring to coloured boxes instead,
+by looping over the list of themes.
+This way, if Agda defines more faces in the future, they will be
+automatically tended to.
+Note that for many of these faces, the ~:background~ attribute
+is set to ~'unspecified~, and so they are unaffected.
+#+begin_src emacs-lisp
+;; Change backgrounds to boxes.
+(cl-loop for (_ . face) in agda2-highlight-faces
+      do (if (string-prefix-p "agda2-" (symbol-name face)) ;; Some non-Agda faces are in the list; don't change them
+             (unless (equal face 'agda2-highlight-incomplete-pattern-face) ;; Workaround; this face is not defined in recent versions?
+             (set-face-attribute face nil
+               :box (face-attribute face :background)
+               :background 'unspecified))))
+#+end_src
+
+But these boxes can also be intrusive in some cases;
+specifically, for warnings about pattern matching,
+which tend to highlight large portions of code,
+and which may overlap with other highlighting.
+So I modify those faces further as follows.
+#+begin_src emacs-lisp
+;; Coverage warnings highlight the whole function;
+;; change the box to an underline to be less intrusive.
+(set-face-attribute 'agda2-highlight-coverage-problem-face nil
+  :underline (face-attribute 'agda2-highlight-coverage-problem-face :box)
+  :box 'unspecified)
+
+;; Deadcode warnings highlight the whole line;
+;; change the box to a strikethrough to be less intrusive,
+;; as well as thematically appropriate.
+(set-face-attribute 'agda2-highlight-deadcode-face nil
+  :strike-through (face-attribute 'agda2-highlight-deadcode-face :box)
+  :box 'unspecified)
+
+;; Non-definitional pattern matching may be ignored;
+;; remove the colouring and just italicise it to be less intrusive.
+(set-face-attribute 'agda2-highlight-catchall-clause-face nil
+  :box 'unspecified
+  :slant 'italic)
+#+end_src
+
+* The result
+:PROPERTIES:
+:CUSTOM_ID: The-result
+:END:
+
+Now, the highlighting as shown above show as
+[[file:images/agda-highlighting-new-light.png]]
+with a light theme, and as
+[[file:images/agda-highlighting-new-dark.png]]
+with a dark theme.
+
+* The test code
+:PROPERTIES:
+:CUSTOM_ID: The-test-code
+:END:
+
+This is the Agda code used to test out the faces.
+#+begin_src agda2
+module HighlightTesting where
+  open import Data.Nat using (ℕ ; zero ; suc)
+
+  -- Coverage problem, non-definitional pattern matching, dead code.
+  bad-pattern-matching : ℕ → ℕ
+--bad-pattern-matching suc n   Missing case; other lines marked with coverage problem face
+  bad-pattern-matching 0 = 0
+  bad-pattern-matching (suc (suc 0)) = 0
+  bad-pattern-matching (suc (suc n)) = 0 -- Non-definitional case (maybe use CATCHALL pragma?).
+  bad-pattern-matching 0 = 0 -- Dead code.
+
+  -- Non-terminating
+  ∞? : ℕ
+  ∞? = suc ∞?
+
+  -- Unsolved meta warnings
+  fail-to-solve-meta : ℕ
+  fail-to-solve-meta = has-a-meta
+    where
+      has-a-meta : {n : ℕ} → ℕ
+      has-a-meta = 0
+
+  -- Shadowing in telescope
+  shadowing-variable : (x : ℕ) → (x : ℕ) → ℕ
+  shadowing-variable x y = x
+
+  -- Missing function definition
+  has-no-definition : Set
+
+  data unpositive-type : Set where
+    bad : (unpositive-type → ℕ) → unpositive-type
+#+end_src
