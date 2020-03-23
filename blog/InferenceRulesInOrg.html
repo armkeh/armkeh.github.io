@@ -1,0 +1,1258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-03-22 Sun 20:35 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Creating pretty “cross-format” inference rules in Org mode</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Mark Armstrong" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<style type="text/css">.noboldheader th {font-weight: normal;}</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Creating pretty “cross-format” inference rules in Org mode</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#Introduction">1. Introduction</a></li>
+<li><a href="#Approach-1-—-Plaintext">2. Approach 1 – Plaintext</a>
+<ul>
+<li><a href="#Conclusion">2.1. Conclusion</a></li>
+</ul>
+</li>
+<li><a href="#Approach-2-—-Tables">3. Approach 2 – Tables</a>
+<ul>
+<li><a href="#Approach-2.1-—">3.1. Approach 2.1 – Starting out – Basic tables</a>
+<ul>
+<li><a href="#Conclusion">3.1.1. Conclusion</a></li>
+</ul>
+</li>
+<li><a href="#Approach-2.2-–-Circumventing-problems-with-macros">3.2. Approach 2.2 – Enabling names – Manual horizontal rule</a></li>
+<li><a href="#Approach-2.3-–-The-~premises~-and-~name~-macros">3.3. Approach 2.3 – One step forward, two steps back – A macro for premises</a>
+<ul>
+<li><a href="#A-bit-of-elisp">3.3.1. A bit of elisp</a></li>
+<li><a href="#Using-the-elisp:-inline-calls">3.3.2. Using the elisp: inline calls</a></li>
+<li><a href="#Hiding-the-inline-calls:-introducing-the-~premise2~-macro">3.3.3. Hiding the inline calls: introducing the <code>premise2</code> macro</a></li>
+<li><a href="#Where-it-falls-apart:-no-inline-calls-in-tables">3.3.4. Where it falls apart: no inline calls in tables</a></li>
+</ul>
+</li>
+<li><a href="#Solution!">3.4. Approach 2.4 – Automating premises 2.0 – Stepping forward again</a>
+<ul>
+<li><a href="#Writing-the-premises-in-a-formula">3.4.1. Writing the premises in a formula</a></li>
+<li><a href="#Writing-the-premises-in-a-commented-row">3.4.2. Writing the premises in a commented row</a></li>
+</ul>
+</li>
+<li><a href="#Approach-2-conclusion-(for-now)">3.5. Approach 2 conclusion (for now)</a></li>
+</ul>
+</li>
+<li><a href="#Approach-3-–-~ditaa~">4. Approach 3 – <code>ditaa</code></a></li>
+</ul>
+</div>
+</div>
+<p>
+Disclaimer: this project of mine was left incomplete;
+I'm uploading what I have for the moment, and hope to complete
+this idea at some later time, when I am using inference rules more.
+</p>
+
+<div id="outline-container-orgcbca985" class="outline-2">
+<h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-Introduction">
+<p>
+In teaching and writing, I occasionally need
+to create inference/deduction rules.
+</p>
+
+<p>
+In the past, when working only in LaTeX, I found
+<a href="https://www.math.ucsd.edu/~sbuss/ResearchWeb/bussproofs/index.html">the <code>bussproofs</code></a>
+package to be the best solution.
+</p>
+
+<p>
+These days though, I work in Org, and want a simple method
+of writing these that satisfies these requirements.
+</p>
+<ol class="org-ol">
+<li>The Org source
+<ol class="org-ol">
+<li>is at least as easy to type as plaintext (ideally easier), and</li>
+<li>looks like an inference rule; i.e., there is relatively
+little “setup noise”.</li>
+</ol></li>
+
+<li>It looks correct in <i>at least</i> HTML and PDF export;
+in particular,
+<ol class="org-ol">
+<li>the horizontal rule should be the correct length, and</li>
+<li>there should be relatively little vertical space
+around the horizontal rule.</li>
+</ol></li>
+</ol>
+
+<p>
+This gives us this rubric for judging methods:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-center" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Criteria category</th>
+<th scope="col" class="org-left">Criteria</th>
+<th scope="col" class="org-center">Pass/Fail</th>
+<th scope="col" class="org-left">Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1. Org source</td>
+<td class="org-left">a. Ease of typing</td>
+<td class="org-center">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">b. Appearance</td>
+<td class="org-center">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">2. Export</td>
+<td class="org-left">a. Rule length</td>
+<td class="org-center">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">b. Rule vspace</td>
+<td class="org-center">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+This post documents my different attempts to fulfill these requirements.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgca51552" class="outline-2">
+<h2 id="Approach-1-—-Plaintext"><span class="section-number-2">2</span> Approach 1 – Plaintext</h2>
+<div class="outline-text-2" id="text-Approach-1-—-Plaintext">
+<p>
+Initially, I just wrote the rules in plaintext <code>src</code> blocks,
+i.e., <code>#+begin_src text</code>, <code>#+end_src text</code>.
+</p>
+
+<p>
+Using ascii dashes isn't ideal; the rule should be solid.
+</p>
+<div class="org-src-container">
+<pre class="src src-text"> p   q
+------- dashes
+   r
+</pre>
+</div>
+
+<p>
+Instead, we can use unicode <code>em</code> or <code>en</code> dashes.
+</p>
+<div class="org-src-container">
+<pre class="src src-text"> p   q
+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212; em
+   r
+
+ p   q
+&#8211;&#8211;&#8211;&#8211;&#8211;&#8211;&#8211; en
+   r
+</pre>
+</div>
+<p>
+In Org mode and HTML export, the <code>em</code> dashes work perfectly;
+they create a solid rule with the exact length of the the characters entered.
+But in the PDF export, they are wider than most characters,
+making the rule far too long.
+This is a particular problem when working with proof trees.
+Although this simple tree looks perfect in Org and HTML,
+it is gibberish in the PDF export.
+</p>
+<div class="org-src-container">
+<pre class="src src-text"> A     B
+&#8212;&#8212;&#8212;   &#8212;&#8212;&#8212;  
+ C     D     E
+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;
+       F
+</pre>
+</div>
+<p>
+Possibly the issue with PDF export could be solved by
+tweaking the font used in LaTeX, but unfortunately restricting
+my font choice just to get pretty inference rules is too big of an ask.
+</p>
+
+<p>
+In addition to the problems with horizontal length in the PDF,
+the vertical space around the rule is not ideal in both HTML and PDF.
+And I can see no way around this problem;
+it seems unlikely I will modify the height of the <code>em</code> dash character.
+</p>
+</div>
+
+<div id="outline-container-orgbb724cd" class="outline-3">
+<h3 id="Conclusion"><span class="section-number-3">2.1</span> Conclusion</h3>
+<div class="outline-text-3" id="text-Conclusion">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-center" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Criteria category</th>
+<th scope="col" class="org-left">Criteria</th>
+<th scope="col" class="org-center">Pass/Fail</th>
+<th scope="col" class="org-left">Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1. Org source</td>
+<td class="org-left">a. Ease of typing</td>
+<td class="org-center">✔</td>
+<td class="org-left">By definition, as easy as plaintext.</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">b. Appearance</td>
+<td class="org-center">✔</td>
+<td class="org-left">As good as it can get with fixed width and height.</td>
+</tr>
+
+<tr>
+<td class="org-right">2. Export</td>
+<td class="org-left">a. Rule length</td>
+<td class="org-center">❌</td>
+<td class="org-left">Either dashed in Org/HTML, or too long in PDF.</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">b. Rule vspace</td>
+<td class="org-center">❌</td>
+<td class="org-left">Regular character height is too much.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdfeab9c" class="outline-2">
+<h2 id="Approach-2-—-Tables"><span class="section-number-2">3</span> Approach 2 – Tables</h2>
+<div class="outline-text-2" id="text-Approach-2-—-Tables">
+<p>
+There is an environment in Org which has horizontal rules builtin;
+the table!
+</p>
+
+<p>
+There are several potential ways to use tables to create
+inference rule diagrams, and we go from the simple to the complex.
+</p>
+</div>
+
+<div id="outline-container-orgfb48d44" class="outline-3">
+<h3 id="Approach-2.1-—"><span class="section-number-3">3.1</span> Approach 2.1 – Starting out – Basic tables</h3>
+<div class="outline-text-3" id="text-Approach-2.1-—">
+<p>
+Let's start out with a simple table, with the contents centered.
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="void">
+
+
+<colgroup>
+<col  class="org-center" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-center">p   q</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-center">r</td>
+</tr>
+</tbody>
+</table>
+<p>
+Right off the bat, this has the advantage that the horizontal rule
+is <i>exactly</i> the right width in every format, and its vertical spacing
+is <i>far</i> better than the plaintext solution.
+</p>
+
+<p>
+This table was generated from
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+attr_HTML: :frame void
+|  &lt;c&gt;  |
+| p&#160;&#160;&#160;q |
+|-------|
+|   r   |
+</pre>
+</div>
+<p>
+where the <code>:frame void</code> setting for HTML omits the top and bottom rule
+that would usually be present for tables. The LaTeX export does not
+have these rules by default.
+</p>
+
+<p>
+We must tweak the HTML slightly further, though;
+the top row is recognised as a header row, and so it's wrapped
+in <code>&lt;th&gt;&lt;\th&gt;</code> and in the default style is thus bolded.
+We can define a new style for table headers as so:
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+HTML_HEAD: &lt;style type="text/css"&gt;th <span style="color: #90d800;">{</span>font-weight: normal;<span style="color: #90d800;">}</span>&lt;/style&gt;
+</pre>
+</div>
+<p>
+and then repeat our table, with the setting <code>:class noboldheader</code> added.
+Additional settings may be necessary depending upon your CSS.
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="void" class="noboldheader">
+
+
+<colgroup>
+<col  class="org-center" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-center">p   q</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-center">r</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+There are two drawbacks that remain, that will require us to refine this
+appraoch; one relatively insignificant, and the other crippling.
+</p>
+<ol class="org-ol">
+<li>In both the HTML and PDF export, we must in fact use <i>non-breaking</i> spaces
+to separate the premises; otherwise, the export will not retain
+the spacing between them.</li>
+<li><b>We are completely unable to write a name for the inference rule next to</b>
+<b>the horizontal rule</b>!
+<ul class="org-ul">
+<li>Org tables are rather simple, and so a row can only contain
+a horizontal rule or text, not both!</li>
+</ul></li>
+</ol>
+</div>
+
+<div id="outline-container-orge6eb1c9" class="outline-4">
+<h4 id="Conclusion"><span class="section-number-4">3.1.1</span> Conclusion</h4>
+<div class="outline-text-4" id="text-Conclusion">
+<p>
+Given problem 2 above, it's not even worth evaluating this approach;
+it's not a valid solution. But it may be that we can extend it to become one.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgcf89083" class="outline-3">
+<h3 id="Approach-2.2-–-Circumventing-problems-with-macros"><span class="section-number-3">3.2</span> Approach 2.2 – Enabling names – Manual horizontal rule</h3>
+<div class="outline-text-3" id="text-Approach-2.2-–-Circumventing-problems-with-macros">
+<p>
+First and foremost, we need to solve the conflict between using
+the horizontal rule and the name of the inference rule.
+</p>
+
+<p>
+Given the limitations of Org tables, it seems the only solution
+is to not use a proper horizontal rule. Instead, we'll have a cell
+containing a macro which creates rules in HTML and LaTeX.
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+Macro: bar1 @@latex:\hrulefill@@@@html:&lt;hr&gt;@@
+</pre>
+</div>
+<p>
+Applying this
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+attr_HTML: :frame void :class noboldheader
+|    &lt;c&gt;     |      |
+| &#160;p&#160;&#160;&#160;&#160;q&#160;   |      |
+| <span style="color: #90d800;">{</span><span style="color: #b6a0ff;">{</span><span style="color: #6ae4b9;">{</span>bar1<span style="color: #6ae4b9;">}</span><span style="color: #b6a0ff;">}</span><span style="color: #90d800;">}</span> | name |
+|     r      |      |
+</pre>
+</div>
+<p>
+gives us
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="void" class="noboldheader">
+
+
+<colgroup>
+<col  class="org-center" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-center"> p    q </td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-center"><hr></td>
+<td class="org-left">name</td>
+</tr>
+
+<tr>
+<td class="org-center">r</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+<p>
+But with this solution we lose the nice vertical spacing around the rule.
+</p>
+
+<p>
+This is easy enough to solve in the HTML. We simply set
+the table's <code>cellpadding</code> to 0.
+At this point, we do have to introduce a non-breaking space
+before the <code>name</code>, or it will be directly next to the rule.
+</p>
+<table border="2" cellspacing="0" cellpadding="0" rules="groups" frame="void" class="noboldheader">
+
+
+<colgroup>
+<col  class="org-center" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-center"> p    q </td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-center"><hr></td>
+<td class="org-left"> name</td>
+</tr>
+
+<tr>
+<td class="org-center">r</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+On the LaTeX side, we do fortunately have the ability to manipulate
+vertical space on the page by calling <code>\vspace{_}</code> with
+negative amounts.
+We augment our macro
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+Macro: bar2 @@latex:\hrulefill\vspace<span style="color: #90d800;">{</span>-0.3em<span style="color: #90d800;">}</span>@@@@html:&lt;hr&gt;@@
+</pre>
+</div>
+<p>
+and replace <code>{{{bar1}}}</code> with <code>{{{bar2}}}</code> to see
+that the gap above the rule is much improved,
+</p>
+<table border="2" cellspacing="0" cellpadding="0" rules="groups" frame="void" class="noboldheader">
+
+
+<colgroup>
+<col  class="org-center" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-center"> p    q </td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-center"><hr></td>
+<td class="org-left"> name</td>
+</tr>
+
+<tr>
+<td class="org-center">r</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+<p>
+but the space above the rule is more concerning.
+For dealing with that, we can introduce a macro to wrap the premises
+—for good measure, we also place the non-breaking spaces in there.
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+Macro: premise1 @@latex:\vspace<span style="color: #90d800;">{</span>-0.7em<span style="color: #90d800;">}</span>@@&#160;$1&#160;&#160;&#160;$2&#160;
+</pre>
+</div>
+<p>
+and apply it to admire a perfect recreation of the spacing we had with
+a simple table.
+</p>
+<table border="2" cellspacing="0" cellpadding="0" rules="groups" frame="void" class="noboldheader">
+
+
+<colgroup>
+<col  class="org-center" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-center"> p   q </td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-center"><hr></td>
+<td class="org-left"> name</td>
+</tr>
+
+<tr>
+<td class="org-center">r</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+That said, we are still left with some smaller issues.
+</p>
+<ol class="org-ol">
+<li>The <code>premise1</code> macro expects exactly two arguments;
+we would like to have a variable number of premises.</li>
+<li>It would be better to allow a variable amount of space
+between premises.</li>
+<li>The non-breaking space we entered before <code>name</code> to account
+for the lack of padding in the HTML creates too much space
+in the PDF.</li>
+<li>The premises and rules should ideally use <i>math font</i>, not plain font.</li>
+</ol>
+<p>
+We can solve all of these with further macro development.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb104934" class="outline-3">
+<h3 id="Approach-2.3-–-The-~premises~-and-~name~-macros"><span class="section-number-3">3.3</span> Approach 2.3 – One step forward, two steps back – A macro for premises</h3>
+<div class="outline-text-3" id="text-Approach-2.3-–-The-~premises~-and-~name~-macros">
+<p>
+Spoiler: the development here turns out to not be useable
+in a table cell; still, it is a useful step forward.
+It just causes a few steps away from a pretty solution in Org,
+which have to be corrected for afterward.
+</p>
+</div>
+
+<div id="outline-container-org69c0bbe" class="outline-4">
+<h4 id="A-bit-of-elisp"><span class="section-number-4">3.3.1</span> A bit of elisp</h4>
+<div class="outline-text-4" id="text-A-bit-of-elisp">
+<p>
+We start with a little bit of elisp code which our macro
+will use.
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp" id="org38d2fa0"><span style="color: #90d800;">(</span><span style="color: #b6a0ff;">let*</span>
+   <span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">Find the last non-empty string, &#8230;</span>
+  <span style="color: #b6a0ff;">(</span><span style="color: #6ae4b9;">(</span>last-nonempty <span style="color: #f0ce43;">(</span>position <span style="color: #72a4ff;">""</span> premises <span style="color: #ed92f8;">:test-not</span> 'equal <span style="color: #ed92f8;">:from-end</span> t<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span>
+   <span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">&#8230; and take only up to that element of the list.</span>
+   <span style="color: #6ae4b9;">(</span>premises <span style="color: #f0ce43;">(</span>seq-take premises <span style="color: #00baf4;">(</span>+ last-nonempty 1<span style="color: #00baf4;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+
+  <span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">Join the resulting list using the spacer, with the wrapper around</span>
+  <span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">each element.</span>
+  <span style="color: #b6a0ff;">(</span>mapconcat <span style="color: #6ae4b9;">(</span><span style="color: #b6a0ff;">lambda</span> <span style="color: #f0ce43;">(</span>p<span style="color: #f0ce43;">)</span> <span style="color: #f0ce43;">(</span>format wrapper p<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span> premises spacer<span style="color: #b6a0ff;">)</span><span style="color: #90d800;">)</span>
+</pre>
+</div>
+<p>
+This code block has three <code>var</code> arguments:
+</p>
+<ul class="org-ul">
+<li><code>premises</code>, which defaults to <code>()</code>, and should be a list of strings.
+Note that trailing emptystrings will be deleted —the reason for this
+will be seen when we get to defining macros.</li>
+<li><code>wrapper</code>, which defaults to <code>%s</code>, and which should be a format string
+—this will be applied to each premise, to allow for formatting.</li>
+<li><code>spacer</code>, which defaults to a string of three non-breaking spaces,
+—this will be inserted between each premise.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org536a090" class="outline-4">
+<h4 id="Using-the-elisp:-inline-calls"><span class="section-number-4">3.3.2</span> Using the elisp: inline calls</h4>
+<div class="outline-text-4" id="text-Using-the-elisp:-inline-calls">
+<p>
+We can make use of this code block, which is named <code>format-premises</code>,
+by an <i>inline source code call</i>, with the syntax such as
+</p>
+<div class="org-src-container">
+<pre class="src src-text">call_format-premises<span style="color: #90d800;">(</span>wrapper="*%s*",
+                     spacer=" , ",
+                     premises='<span style="color: #b6a0ff;">(</span>"hello" "world"<span style="color: #b6a0ff;">)</span><span style="color: #90d800;">)</span>
+</pre>
+</div>
+<p>
+See <a href="https://orgmode.org/manual/Evaluating-Code-Blocks.html">the Org manual</a>
+regarding inline source code calls.
+</p>
+
+<p>
+This call wraps each of the words <code>hello</code> and <code>world</code> with asterisks,
+which is the Org syntax for bold, and separates them with three dashes.
+Admire the results in the export:
+<code>*hello* , *world*</code>
+</p>
+
+<p>
+Not quite right, actually. By default, the results are wrapped in 
+</p>
+<ul class="org-ul">
+<li>verbatim emphasis delimiters, <code>=</code>, and outside of those,</li>
+<li>an invocation of the <code>results</code> macro, which as far as I can tell
+is simply used to demarcate the results, so that
+successive <code>C-c C-c</code> invocations will overwrite them,
+rather than prepend them.</li>
+</ul>
+<p>
+This can be seen by hitting <code>C-c C-c</code> on the <code>call</code>, which results in the following
+being placed right after it.
+</p>
+<div class="org-src-container">
+<pre class="src src-text"><span style="color: #90d800;">{</span><span style="color: #b6a0ff;">{</span><span style="color: #6ae4b9;">{</span>results<span style="color: #f0ce43;">(</span>=*hello* , *world*=<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">}</span><span style="color: #b6a0ff;">}</span><span style="color: #90d800;">}</span>
+</pre>
+</div>
+<p>
+We definitely don't want the verbatim wrapper,
+and can do without the <code>results</code> macro wrapper
+—in the end use-case of this <code>call</code>, users would not be
+manually invoking it.
+</p>
+
+<p>
+Thankfully, the wrappers can be replaced via
+the optional <code>&lt;end header arguments&gt;</code> argument, placed in
+(square) brackets after the arguments. These affect the result
+of the code block
+—an additional optional argument, <code>&lt;inside header arguments&gt;</code>,
+would come before the arguments and would apply to the source
+block itself; we have no need of this.
+We could use <code>:results raw</code> to eliminate both wrappers.
+That is,
+</p>
+<div class="org-src-container">
+<pre class="src src-text">call_format-premises<span style="color: #90d800;">(</span>wrapper="*%s*",
+                     spacer=" , ",
+                     premises='<span style="color: #b6a0ff;">(</span>"hello" "world"<span style="color: #b6a0ff;">)</span><span style="color: #90d800;">)[</span>:results raw<span style="color: #90d800;">]</span>
+</pre>
+</div>
+<p>
+results in the expected output
+</p>
+<div class="org-src-container">
+<pre class="src src-text">*hello* , *world*
+</pre>
+</div>
+<p>
+which exports as expected, as seen here:
+<b>hello</b> , <b>world</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge02d26c" class="outline-4">
+<h4 id="Hiding-the-inline-calls:-introducing-the-~premise2~-macro"><span class="section-number-4">3.3.3</span> Hiding the inline calls: introducing the <code>premise2</code> macro</h4>
+<div class="outline-text-4" id="text-Hiding-the-inline-calls:-introducing-the-~premise2~-macro">
+<p>
+Now, this invocation is too intrusive for our purposes.
+But we can prettify it into a macro!
+Note the linebreaks here are only for presentation;
+they cannot be present in the actual macro.
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+Macro: premise2
+  call_format-premises<span style="color: #90d800;">(</span>
+     wrapper="$1",
+     spacer="$2",
+     premises='<span style="color: #b6a0ff;">(</span>"$3" "$4" "$5" "$6"
+                "$7" "$8" "$9" "$10"<span style="color: #b6a0ff;">)</span><span style="color: #90d800;">)</span>
+   <span style="color: #90d800;">[</span>:results raw<span style="color: #90d800;">]</span>
+</pre>
+</div>
+<p>
+You'll notice that we have lost some flexibility in the translation:
+the macro allows for 8 premise arguments
+—I say “allows for” because omitting arguments does not
+cause any errors—
+whereas <code>format-premises</code> allows an arbitrary number.
+Unfortunately, it seems Org macros don't have support for an
+arbitrary number of arguments.
+In this case, it seems an acceptable loss; if you have
+more than 8 premises —or honestly, more than 4— then
+this inference rule presentation is probably the wrong tool for you.
+</p>
+
+<p>
+In any case, our macro looks promising;
+if we invoke it
+</p>
+<div class="org-src-container">
+<pre class="src src-text"><span style="color: #90d800;">{</span><span style="color: #b6a0ff;">{</span><span style="color: #6ae4b9;">{</span>premise2<span style="color: #f0ce43;">(</span>&#160;&#160;&#160;,/%s/,p,q<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">}</span><span style="color: #b6a0ff;">}</span><span style="color: #90d800;">}</span>
+</pre>
+</div>
+<p>
+we get nicely formatted output:
+<i>p</i>   <i>q</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge6fb6cb" class="outline-4">
+<h4 id="Where-it-falls-apart:-no-inline-calls-in-tables"><span class="section-number-4">3.3.4</span> Where it falls apart: no inline calls in tables</h4>
+<div class="outline-text-4" id="text-Where-it-falls-apart:-no-inline-calls-in-tables">
+<p>
+Unfortunately, as promising as this development was,
+we've reached a point where it falls apart.
+If we place our macro into the table,
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+attr_HTML: :frame void :cellpadding 0 :class noboldheader
+|            &lt;c&gt;             |                |
+| <span style="color: #90d800;">{</span><span style="color: #b6a0ff;">{</span><span style="color: #6ae4b9;">{</span>premise2<span style="color: #f0ce43;">(</span>/%s/,&#160;&#160;&#160;,p,q<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">}</span><span style="color: #b6a0ff;">}</span><span style="color: #90d800;">}</span> |                |
+|         <span style="color: #90d800;">{</span><span style="color: #b6a0ff;">{</span><span style="color: #6ae4b9;">{</span>bar2<span style="color: #6ae4b9;">}</span><span style="color: #b6a0ff;">}</span><span style="color: #90d800;">}</span>         | @@html:&#160;@@name |
+|            /r/             |                |
+</pre>
+</div>
+<p>
+we unfortunately notice on export that it just expands to the
+text of the <code>call</code>. 
+</p>
+<table border="2" cellspacing="0" cellpadding="0" rules="groups" frame="void" class="noboldheader">
+
+
+<colgroup>
+<col  class="org-center" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-center">call_format-premises(wrapper="<i>%s</i>",spacer="   ",premises='("p" "q" "" "" "" "" "" ""))[:results raw]</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-center"><hr></td>
+<td class="org-left"> name</td>
+</tr>
+
+<tr>
+<td class="org-center"><i>r</i></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+<p>
+This is a limitation of Org tables! They do not support
+inline code in their cells.
+</p>
+
+<p>
+So, we find ourselves at a bit of a dead end.
+But there is a solution, which can make use of
+many of the pieces we constructed here;
+table formulas!
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org85b3e30" class="outline-3">
+<h3 id="Solution!"><span class="section-number-3">3.4</span> Approach 2.4 – Automating premises 2.0 – Stepping forward again</h3>
+<div class="outline-text-3" id="text-Solution!">
+<p>
+While we cannot place inline code invocations in table cells,
+there is a way to compute cell contents by invoking elisp code:
+table formulas!
+</p>
+
+<p>
+At this point, the reader may wonder why I didn't immediately
+consider table formulas; the reason is the <i>appearance in Org</i> criteria.
+By placing the premise calculation in a table formula,
+the table is naturally less shaped like an inference rule.
+This means the first few solutions I work through here
+are not ideal by my standards.
+Thankfully, this can be mitigated with some cleverness;
+we'll get there eventually.
+</p>
+</div>
+
+<div id="outline-container-org91faa3f" class="outline-4">
+<h4 id="Writing-the-premises-in-a-formula"><span class="section-number-4">3.4.1</span> Writing the premises in a formula</h4>
+<div class="outline-text-4" id="text-Writing-the-premises-in-a-formula">
+<p>
+As a first venture, consider:
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+attr_HTML: :frame void :cellpadding 0 :class noboldheader
+|    &lt;c&gt;     |                           |
+| /p/&#160;&#160;&#160;/q/  | @@latex:\vspace<span style="color: #90d800;">{</span>-0.7em<span style="color: #90d800;">}</span>@@ |
+| <span style="color: #90d800;">{</span><span style="color: #b6a0ff;">{</span><span style="color: #6ae4b9;">{</span>bar2<span style="color: #6ae4b9;">}</span><span style="color: #b6a0ff;">}</span><span style="color: #90d800;">}</span> | modus-ponens              |
+|    /r/      |                           |
+#+tblfm: @2$1='<span style="color: #90d800;">(</span>org-sbe format-premises <span style="color: #b6a0ff;">(</span>wrapper "\"/%s/\""<span style="color: #b6a0ff;">)</span> <span style="color: #b6a0ff;">(</span>spacer "\"&#160;&#160;&#160;\""<span style="color: #b6a0ff;">)</span> <span style="color: #b6a0ff;">(</span>premises "p" "q"<span style="color: #b6a0ff;">)</span><span style="color: #90d800;">)</span>
+</pre>
+</div>
+<p>
+The function <code>org-sbe</code> (“Org-source babel execute”) is necessary to
+invoke code in a source block within this file.
+It takes as argument the name of the code block
+—as a string or as, as we have chosen, a symbol—,
+as well as lists for the arguments of the code block,
+in the form <code>(argument-name value₁ value₂ value₃)</code>
+—so, allowing for lists of arguments—
+where each value should be a string.
+The premise cell can then be auto-filled by invoking
+the table formula with <code>C-c C-c</code>.
+Also, notice we have moved the LaTeX code to move up the horizontal rule
+to the cell next to the premise, since we are no longer use a macro.
+With all that in place, here is the resulting table:
+</p>
+<table border="2" cellspacing="0" cellpadding="0" rules="groups" frame="void" class="noboldheader">
+
+
+<colgroup>
+<col  class="org-center" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-center"><i>p</i>   <i>q</i></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-center"><hr></td>
+<td class="org-left">modus-ponens</td>
+</tr>
+
+<tr>
+<td class="org-center"><i>r</i></td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgda4b188" class="outline-4">
+<h4 id="Writing-the-premises-in-a-commented-row"><span class="section-number-4">3.4.2</span> Writing the premises in a commented row</h4>
+<div class="outline-text-4" id="text-Writing-the-premises-in-a-commented-row">
+<p>
+We can improve the appearance of solution in Org
+at least somewhat by finding a way to place the premises
+in the table itself, rather than in the formula.
+</p>
+
+<p>
+Thankfully, Org tables account for use cases such as this;
+they include <i>comment rows</i>, similar to the alignment tag row.
+To use them, we must add a first column
+—which will not be exported—
+which contains a <code>/</code> for comment rows.
+</p>
+
+<p>
+This row can also contain other markers; we actually make
+use of two of them immediately. A <code>_</code> indicates
+that the contents of the row are <i>names</i> for the cells below.
+A <code>^</code> is similar, but the names are for the cells <i>above</i>.
+</p>
+
+<p>
+We can achieve better appearance in Org by using comment rows for
+</p>
+<ul class="org-ul">
+<li>the premises,</li>
+<li>the rule name,</li>
+<li>the conclusion, and</li>
+<li>the wrapper and spacer.</li>
+</ul>
+<p>
+Then the end user needs only insert a table template, fill in the
+comment rows, and evaluate the formulas to get
+their inference rule.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="0" rules="groups" frame="void" class="noboldheader">
+
+
+<colgroup>
+<col  class="org-center" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-center"><i>p ⇒ q</i>   <i>p</i></td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-center"><hr></td>
+<td class="org-left">modus ponens</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-center">"<i>q</i>"</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+<p>
+
+</p>
+
+<p>
+We also replaced the <code>bar2</code> macro with an identical one
+whose name looks a bit more like a horizontal rule.
+For reference, there are 10 dashes in the name,
+and they can easily be typed using <code>C-u 10 -</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-text">#+Macro: inf---------------- @@latex:\hrulefill\vspace<span style="color: #90d800;">{</span>-0.3em<span style="color: #90d800;">}</span>@@@@html:&lt;hr&gt;@@
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org71c7399" class="outline-3">
+<h3 id="Approach-2-conclusion-(for-now)"><span class="section-number-3">3.5</span> Approach 2 conclusion (for now)</h3>
+<div class="outline-text-3" id="text-Approach-2-conclusion-(for-now)">
+<p>
+For the moment, the above is where I am leaving this project.
+</p>
+
+<p>
+Ideally, what should be done next is to separate the tabular construction
+from the table itself entirely; the user would write the rule in simple table format,
+and either place a macro or invoke some elisp to generate a table
+which exports as the desired tabular.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org892a49b" class="outline-2">
+<h2 id="Approach-3-–-~ditaa~"><span class="section-number-2">4</span> Approach 3 – <code>ditaa</code></h2>
+<div class="outline-text-2" id="text-Approach-3-–-~ditaa~">
+<p>
+A final approach would be to generate images of the inference rules
+using <code>ditaa</code>, a program to generate images from ASCII diagram.
+</p>
+
+<p>
+The benefit is that the generated images have a fixed appearance,
+regardless of the export filetype; the downside is that <code>ditaa</code> seems
+to use a poor choice of font for unicode, and so the resulting diagrams
+look rather unprofessional. A colleague noted they looked like they
+were made in Word; a true insult 😀.
+</p>
+
+<p>
+If I return to this project, I will generate examples.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Mark Armstrong</p>
+<p class="date">Created: 2020-03-22 Sun 20:35</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
