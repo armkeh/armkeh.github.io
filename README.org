@@ -1,0 +1,21 @@
+#+Title: My ~github.io~ website
+#+Author: Mark Armstrong
+#+Description: 
+
+* Introduction
+
+This repository sets up my ~github.io~ site.
+
+No real setup is required; by simply naming the
+repository ~github-user-name.github.io~, and uploading an ~index.html~,
+I have an easy to use website, maintained by committing to this repo.
+
+* The ~gitignore~ file                            :noexport:
+
+#+begin_src text :tangle .gitignore
+*~
+
+*.agdai
+*.tex
+*_minted*
+#+end_src
