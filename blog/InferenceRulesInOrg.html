@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-22 Sun 20:35 -->
+<!-- 2020-03-24 Tue 13:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Creating pretty “cross-format” inference rules in Org mode</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="Mark Armstrong" />
+<meta name="author" content="[[https://armkeh.github.io][Mark Armstrong]] @@html:&lt;br&gt;@@@@latex:\\@@ [[file:./../images/markarmstrong.jpg]]" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -289,7 +289,13 @@ I'm uploading what I have for the moment, and hope to complete
 this idea at some later time, when I am using inference rules more.
 </p>
 
-<div id="outline-container-orgcbca985" class="outline-2">
+<p>
+Also, the solutions posted here have been tested only in plain HTML;
+I have not yet utilised the CSS that would be necessary to ensure
+the rules look consistent under different styles.
+</p>
+
+<div id="outline-container-orgd160f8f" class="outline-2">
 <h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-Introduction">
 <p>
@@ -384,7 +390,7 @@ This post documents my different attempts to fulfill these requirements.
 </div>
 </div>
 
-<div id="outline-container-orgca51552" class="outline-2">
+<div id="outline-container-org8468b70" class="outline-2">
 <h2 id="Approach-1-—-Plaintext"><span class="section-number-2">2</span> Approach 1 – Plaintext</h2>
 <div class="outline-text-2" id="text-Approach-1-—-Plaintext">
 <p>
@@ -446,7 +452,7 @@ it seems unlikely I will modify the height of the <code>em</code> dash character
 </p>
 </div>
 
-<div id="outline-container-orgbb724cd" class="outline-3">
+<div id="outline-container-orgcaf810d" class="outline-3">
 <h3 id="Conclusion"><span class="section-number-3">2.1</span> Conclusion</h3>
 <div class="outline-text-3" id="text-Conclusion">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
@@ -503,7 +509,7 @@ it seems unlikely I will modify the height of the <code>em</code> dash character
 </div>
 </div>
 
-<div id="outline-container-orgdfeab9c" class="outline-2">
+<div id="outline-container-org8a3110f" class="outline-2">
 <h2 id="Approach-2-—-Tables"><span class="section-number-2">3</span> Approach 2 – Tables</h2>
 <div class="outline-text-2" id="text-Approach-2-—-Tables">
 <p>
@@ -517,7 +523,7 @@ inference rule diagrams, and we go from the simple to the complex.
 </p>
 </div>
 
-<div id="outline-container-orgfb48d44" class="outline-3">
+<div id="outline-container-org5a93bd6" class="outline-3">
 <h3 id="Approach-2.1-—"><span class="section-number-3">3.1</span> Approach 2.1 – Starting out – Basic tables</h3>
 <div class="outline-text-3" id="text-Approach-2.1-—">
 <p>
@@ -612,7 +618,7 @@ a horizontal rule or text, not both!</li>
 </ol>
 </div>
 
-<div id="outline-container-orge6eb1c9" class="outline-4">
+<div id="outline-container-org1042364" class="outline-4">
 <h4 id="Conclusion"><span class="section-number-4">3.1.1</span> Conclusion</h4>
 <div class="outline-text-4" id="text-Conclusion">
 <p>
@@ -622,7 +628,7 @@ it's not a valid solution. But it may be that we can extend it to become one.
 </div>
 </div>
 </div>
-<div id="outline-container-orgcf89083" class="outline-3">
+<div id="outline-container-orgfe2e4b4" class="outline-3">
 <h3 id="Approach-2.2-–-Circumventing-problems-with-macros"><span class="section-number-3">3.2</span> Approach 2.2 – Enabling names – Manual horizontal rule</h3>
 <div class="outline-text-3" id="text-Approach-2.2-–-Circumventing-problems-with-macros">
 <p>
@@ -811,7 +817,7 @@ We can solve all of these with further macro development.
 </div>
 </div>
 
-<div id="outline-container-orgb104934" class="outline-3">
+<div id="outline-container-org35b2c67" class="outline-3">
 <h3 id="Approach-2.3-–-The-~premises~-and-~name~-macros"><span class="section-number-3">3.3</span> Approach 2.3 – One step forward, two steps back – A macro for premises</h3>
 <div class="outline-text-3" id="text-Approach-2.3-–-The-~premises~-and-~name~-macros">
 <p>
@@ -822,7 +828,7 @@ which have to be corrected for afterward.
 </p>
 </div>
 
-<div id="outline-container-org69c0bbe" class="outline-4">
+<div id="outline-container-org0e69142" class="outline-4">
 <h4 id="A-bit-of-elisp"><span class="section-number-4">3.3.1</span> A bit of elisp</h4>
 <div class="outline-text-4" id="text-A-bit-of-elisp">
 <p>
@@ -830,7 +836,7 @@ We start with a little bit of elisp code which our macro
 will use.
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp" id="org38d2fa0"><span style="color: #90d800;">(</span><span style="color: #b6a0ff;">let*</span>
+<pre class="src src-emacs-lisp" id="org281e88e"><span style="color: #90d800;">(</span><span style="color: #b6a0ff;">let*</span>
    <span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">Find the last non-empty string, &#8230;</span>
   <span style="color: #b6a0ff;">(</span><span style="color: #6ae4b9;">(</span>last-nonempty <span style="color: #f0ce43;">(</span>position <span style="color: #72a4ff;">""</span> premises <span style="color: #ed92f8;">:test-not</span> 'equal <span style="color: #ed92f8;">:from-end</span> t<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span>
    <span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">&#8230; and take only up to that element of the list.</span>
@@ -856,7 +862,7 @@ will be seen when we get to defining macros.</li>
 </div>
 </div>
 
-<div id="outline-container-org536a090" class="outline-4">
+<div id="outline-container-org5d7ca03" class="outline-4">
 <h4 id="Using-the-elisp:-inline-calls"><span class="section-number-4">3.3.2</span> Using the elisp: inline calls</h4>
 <div class="outline-text-4" id="text-Using-the-elisp:-inline-calls">
 <p>
@@ -937,7 +943,7 @@ which exports as expected, as seen here:
 </div>
 </div>
 
-<div id="outline-container-orge02d26c" class="outline-4">
+<div id="outline-container-org479bddf" class="outline-4">
 <h4 id="Hiding-the-inline-calls:-introducing-the-~premise2~-macro"><span class="section-number-4">3.3.3</span> Hiding the inline calls: introducing the <code>premise2</code> macro</h4>
 <div class="outline-text-4" id="text-Hiding-the-inline-calls:-introducing-the-~premise2~-macro">
 <p>
@@ -979,12 +985,12 @@ if we invoke it
 </div>
 <p>
 we get nicely formatted output:
-<i>p</i>   <i>q</i>
+<i>p/   /q</i>
 </p>
 </div>
 </div>
 
-<div id="outline-container-orge6fb6cb" class="outline-4">
+<div id="outline-container-org6008975" class="outline-4">
 <h4 id="Where-it-falls-apart:-no-inline-calls-in-tables"><span class="section-number-4">3.3.4</span> Where it falls apart: no inline calls in tables</h4>
 <div class="outline-text-4" id="text-Where-it-falls-apart:-no-inline-calls-in-tables">
 <p>
@@ -1044,7 +1050,7 @@ table formulas!
 </div>
 </div>
 
-<div id="outline-container-org85b3e30" class="outline-3">
+<div id="outline-container-org881ebac" class="outline-3">
 <h3 id="Solution!"><span class="section-number-3">3.4</span> Approach 2.4 – Automating premises 2.0 – Stepping forward again</h3>
 <div class="outline-text-3" id="text-Solution!">
 <p>
@@ -1065,7 +1071,7 @@ we'll get there eventually.
 </p>
 </div>
 
-<div id="outline-container-org91faa3f" class="outline-4">
+<div id="outline-container-org99cef4b" class="outline-4">
 <h4 id="Writing-the-premises-in-a-formula"><span class="section-number-4">3.4.1</span> Writing the premises in a formula</h4>
 <div class="outline-text-4" id="text-Writing-the-premises-in-a-formula">
 <p>
@@ -1105,7 +1111,7 @@ With all that in place, here is the resulting table:
 </colgroup>
 <tbody>
 <tr>
-<td class="org-center"><i>p</i>   <i>q</i></td>
+<td class="org-center"><i>p/   /q</i></td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
@@ -1123,7 +1129,7 @@ With all that in place, here is the resulting table:
 </div>
 </div>
 
-<div id="outline-container-orgda4b188" class="outline-4">
+<div id="outline-container-orge4e0858" class="outline-4">
 <h4 id="Writing-the-premises-in-a-commented-row"><span class="section-number-4">3.4.2</span> Writing the premises in a commented row</h4>
 <div class="outline-text-4" id="text-Writing-the-premises-in-a-commented-row">
 <p>
@@ -1174,7 +1180,7 @@ their inference rule.
 </colgroup>
 <tbody>
 <tr>
-<td class="org-center"><i>p ⇒ q</i>   <i>p</i></td>
+<td class="org-center"><i>p ⇒ q/   /p</i></td>
 <td class="org-left">&#xa0;</td>
 <td class="org-left">&#xa0;</td>
 </tr>
@@ -1210,7 +1216,7 @@ and they can easily be typed using <code>C-u 10 -</code>.
 </div>
 </div>
 
-<div id="outline-container-org71c7399" class="outline-3">
+<div id="outline-container-org6a6e0f6" class="outline-3">
 <h3 id="Approach-2-conclusion-(for-now)"><span class="section-number-3">3.5</span> Approach 2 conclusion (for now)</h3>
 <div class="outline-text-3" id="text-Approach-2-conclusion-(for-now)">
 <p>
@@ -1227,7 +1233,7 @@ which exports as the desired tabular.
 </div>
 </div>
 
-<div id="outline-container-org892a49b" class="outline-2">
+<div id="outline-container-orgf5826a6" class="outline-2">
 <h2 id="Approach-3-–-~ditaa~"><span class="section-number-2">4</span> Approach 3 – <code>ditaa</code></h2>
 <div class="outline-text-2" id="text-Approach-3-–-~ditaa~">
 <p>
@@ -1250,9 +1256,12 @@ If I return to this project, I will generate examples.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="author">Author: Mark Armstrong</p>
-<p class="date">Created: 2020-03-22 Sun 20:35</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="author">Author: <a href="https://armkeh.github.io">Mark Armstrong</a> <br> <img src="./../images/markarmstrong.jpg" alt="markarmstrong.jpg" /></p>
+     <p class="author">Contact: <a href="mailto:markparmstrong@gmail.com">markparmstrong@gmail.com</a></p>
+     <p class="date">Original date: Tuesday, March 17th, 2020</p>
+     <p class="date">Last updated: 2020-03-24 Tue 13:33</p>
+     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+     <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

@@ -32,7 +32,7 @@ I am an avid Emacs user
 
 So far this is just a few disconnected “posts”.
 
-- [[file:./blog/AgdaHighlighting][Agda Highlighting]]
+- [[file:./blog/AgdaHighlighting.html][Agda Highlighting]]
 - [[file:./blog/InferenceRulesInOrg.html][Inference rules in Org]]
   - The [[file:./blog/InferenceRuleInOrg.pdf][generated PDF]], and
   - the [[file:./blog/InferenceRulesInOrg.org][Org source]].

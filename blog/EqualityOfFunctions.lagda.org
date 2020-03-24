@@ -1,5 +1,5 @@
 #+Title: Equality of functions in Agda
-#+Author: [[https://armkeh.github.io][Mark Armstrong]]
+#+Author: [[https://armkeh.github.io][Mark Armstrong]] [[file:./../images/markarmstrong.jpg]]
 #+Date: January 21st, 2020
 #+Description: Answering a question; when can we say two functions
 #+Description: are equal in Agda?

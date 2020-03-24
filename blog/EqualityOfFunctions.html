@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-02-14 Fri 14:44 -->
+<!-- 2020-03-24 Tue 13:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Equality of functions in Agda</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="[[https://armkeh.github.io][Mark Armstrong]]Mark Armstrong" />
+<meta name="author" content="[[https://armkeh.github.io][Mark Armstrong]] [[file:./../images/markarmstrong.jpg]]" />
 <meta name="description" content="Answering a question; when can we say two functions
 are equal in Agda?"
  />
@@ -289,7 +289,7 @@ A raw Agda source file containing all the code below can be found
 <a href="src/EqualityOfFunctions.agda">here</a>.
 </p>
 
-<div id="outline-container-org1a28533" class="outline-2">
+<div id="outline-container-org0fd49d3" class="outline-2">
 <h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-Introduction">
 <p>
@@ -328,7 +328,7 @@ An important first step is deciding: what do we mean by
 </p>
 </div>
 
-<div id="outline-container-org45a8216" class="outline-3">
+<div id="outline-container-org1b76301" class="outline-3">
 <h3 id="Extensional-or-intensional"><span class="section-number-3">1.1</span> Extensional or intensional</h3>
 <div class="outline-text-3" id="text-Extensional-or-intensional">
 <p>
@@ -374,7 +374,7 @@ that we cannot in general prove functions are intensionally equal in Agda.
 </div>
 </div>
 
-<div id="outline-container-org807bb85" class="outline-2">
+<div id="outline-container-org018427c" class="outline-2">
 <h2 id="Equality-in-Agda"><span class="section-number-2">2</span> Equality in Agda</h2>
 <div class="outline-text-2" id="text-Equality-in-Agda">
 <p>
@@ -383,16 +383,16 @@ addition, and <i>propositional equality</i> in this discussion,
 along with equational reasoning for proofs.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">open import Data.Nat using <span style="color: #51afef;">(</span>&#8469; ; zero ; suc ; _+_<span style="color: #51afef;">)</span>
+<pre class="src src-agda2">open import Data.Nat using <span style="color: #90d800;">(</span>&#8469; ; zero ; suc ; _+_<span style="color: #90d800;">)</span>
 
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using <span style="color: #51afef;">(</span>_&#8801;_ ; refl<span style="color: #51afef;">)</span>
-open Eq.&#8801;-Reasoning using <span style="color: #51afef;">(</span>begin_ ; _&#8801;<span style="color: #C57BDB;">&#10216;&#10217;</span>_ ; _&#8801;<span style="color: #C57BDB;">&#10216;</span>_<span style="color: #C57BDB;">&#10217;</span>_ ; _&#8718;<span style="color: #51afef;">)</span>
+open Eq using <span style="color: #90d800;">(</span>_&#8801;_ ; refl<span style="color: #90d800;">)</span>
+open Eq.&#8801;-Reasoning using <span style="color: #90d800;">(</span>begin_ ; _&#8801;<span style="color: #b6a0ff;">&#10216;&#10217;</span>_ ; _&#8801;<span style="color: #b6a0ff;">&#10216;</span>_<span style="color: #b6a0ff;">&#10217;</span>_ ; _&#8718;<span style="color: #90d800;">)</span>
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org29211ca" class="outline-3">
+<div id="outline-container-org94ba6a5" class="outline-3">
 <h3 id="Mechanics-of-propositional-equality"><span class="section-number-3">2.1</span> Mechanics of propositional equality</h3>
 <div class="outline-text-3" id="text-Mechanics-of-propositional-equality">
 <p>
@@ -412,7 +412,7 @@ by <code>refl</code>.
 </div>
 </div>
 
-<div id="outline-container-orge203802" class="outline-3">
+<div id="outline-container-orgcb3a47b" class="outline-3">
 <h3 id="Intensional-equality"><span class="section-number-3">2.2</span> Intensional equality</h3>
 <div class="outline-text-3" id="text-Intensional-equality">
 <p>
@@ -441,7 +441,7 @@ if we can prove that <code>f ≡ g</code>.
 </div>
 </div>
 
-<div id="outline-container-org4febbce" class="outline-3">
+<div id="outline-container-orgd0424b8" class="outline-3">
 <h3 id="Extensional-equality"><span class="section-number-3">2.3</span> Extensional equality</h3>
 <div class="outline-text-3" id="text-Extensional-equality">
 <p>
@@ -463,20 +463,20 @@ extensional equality below will specifically mean <code>(m n : ℕ) → f m n �
 </div>
 </div>
 
-<div id="outline-container-orgd9519dd" class="outline-2">
+<div id="outline-container-org5edebdc" class="outline-2">
 <h2 id="Setup"><span class="section-number-2">3</span> Setup</h2>
 <div class="outline-text-2" id="text-Setup">
 <p>
 Here we make use of the following definitions from the standard library.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">open import Data.Nat using <span style="color: #51afef;">(</span>&#8469; ; zero ; suc ; _+_<span style="color: #51afef;">)</span>
-open import Data.Nat.Properties using <span style="color: #51afef;">(</span>+-identity&#691;<span style="color: #51afef;">)</span>
+<pre class="src src-agda2">open import Data.Nat using <span style="color: #90d800;">(</span>&#8469; ; zero ; suc ; _+_<span style="color: #90d800;">)</span>
+open import Data.Nat.Properties using <span style="color: #90d800;">(</span>+-identity&#691;<span style="color: #90d800;">)</span>
 
-open import Relation.Nullary using <span style="color: #51afef;">(</span>&#172;_<span style="color: #51afef;">)</span>
+open import Relation.Nullary using <span style="color: #90d800;">(</span>&#172;_<span style="color: #90d800;">)</span>
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using <span style="color: #51afef;">(</span>_&#8801;_ ; refl ; sym ; cong<span style="color: #51afef;">)</span>
-open Eq.&#8801;-Reasoning using <span style="color: #51afef;">(</span>begin_ ; _&#8801;<span style="color: #C57BDB;">&#10216;&#10217;</span>_ ; _&#8801;<span style="color: #C57BDB;">&#10216;</span>_<span style="color: #C57BDB;">&#10217;</span>_ ; _&#8718;<span style="color: #51afef;">)</span>
+open Eq using <span style="color: #90d800;">(</span>_&#8801;_ ; refl ; sym ; cong<span style="color: #90d800;">)</span>
+open Eq.&#8801;-Reasoning using <span style="color: #90d800;">(</span>begin_ ; _&#8801;<span style="color: #b6a0ff;">&#10216;&#10217;</span>_ ; _&#8801;<span style="color: #b6a0ff;">&#10216;</span>_<span style="color: #b6a0ff;">&#10217;</span>_ ; _&#8718;<span style="color: #90d800;">)</span>
 </pre>
 </div>
 
@@ -507,7 +507,7 @@ in Agda, records define a module, so there's not much difference.
 </div>
 </div>
 
-<div id="outline-container-org8179325" class="outline-2">
+<div id="outline-container-orgce3cbb5" class="outline-2">
 <h2 id="⊕-equals-+…-extensionally"><span class="section-number-2">4</span> ⊕ equals +… extensionally</h2>
 <div class="outline-text-2" id="text-⊕-equals-+…-extensionally">
 <p>
@@ -521,8 +521,8 @@ Make use of <code>cong</code> in the induction step; you'll probably need just t
 <pre class="src src-agda2">record PseudoAddition : Set where
   field
     _&#8853;_ : &#8469; &#8594; &#8469; &#8594; &#8469;
-    z&#8853;n&#8801;n : <span style="color: #51afef;">(</span>n : &#8469;<span style="color: #51afef;">)</span> &#8594; zero &#8853; n &#8801; n
-    <span style="color: #51afef;">[</span>suc-m<span style="color: #51afef;">]</span>&#8853;n&#8801;suc-<span style="color: #51afef;">[</span>m&#8853;n<span style="color: #51afef;">]</span> : <span style="color: #51afef;">(</span>m n : &#8469;<span style="color: #51afef;">)</span> &#8594; <span style="color: #51afef;">(</span>suc m<span style="color: #51afef;">)</span> &#8853; n &#8801; suc <span style="color: #51afef;">(</span>m &#8853; n<span style="color: #51afef;">)</span>
+    z&#8853;n&#8801;n : <span style="color: #90d800;">(</span>n : &#8469;<span style="color: #90d800;">)</span> &#8594; zero &#8853; n &#8801; n
+    <span style="color: #90d800;">[</span>suc-m<span style="color: #90d800;">]</span>&#8853;n&#8801;suc-<span style="color: #90d800;">[</span>m&#8853;n<span style="color: #90d800;">]</span> : <span style="color: #90d800;">(</span>m n : &#8469;<span style="color: #90d800;">)</span> &#8594; <span style="color: #90d800;">(</span>suc m<span style="color: #90d800;">)</span> &#8853; n &#8801; suc <span style="color: #90d800;">(</span>m &#8853; n<span style="color: #90d800;">)</span>
 </pre>
 </div>
 
@@ -539,7 +539,7 @@ Make use of <code>cong</code> in the induction step; you'll probably need just t
 </div>
 </div>
 
-<div id="outline-container-org0b4261a" class="outline-2">
+<div id="outline-container-orgf52311c" class="outline-2">
 <h2 id="An-example"><span class="section-number-2">5</span> An example</h2>
 <div class="outline-text-2" id="text-An-example">
 <p>
@@ -558,18 +558,18 @@ m +&#8320; n = m + n + 0
 
 +&#8320;-is-PseudoAddition : PseudoAddition
 +&#8320;-is-PseudoAddition =
-  record <span style="color: #51afef;">{</span> _&#8853;_ = _+&#8320;_
+  record <span style="color: #90d800;">{</span> _&#8853;_ = _+&#8320;_
          ; z&#8853;n&#8801;n = +-identity&#691;
-         ; <span style="color: #C57BDB;">[</span>suc-m<span style="color: #C57BDB;">]</span>&#8853;n&#8801;suc-<span style="color: #C57BDB;">[</span>m&#8853;n<span style="color: #C57BDB;">]</span> = &#955; _ _ &#8594; refl <span style="color: #51afef;">}</span>
+         ; <span style="color: #b6a0ff;">[</span>suc-m<span style="color: #b6a0ff;">]</span>&#8853;n&#8801;suc-<span style="color: #b6a0ff;">[</span>m&#8853;n<span style="color: #b6a0ff;">]</span> = &#955; _ _ &#8594; refl <span style="color: #90d800;">}</span>
 
-m+&#8320;n&#8801;m+n : <span style="color: #51afef;">(</span>m n : &#8469;<span style="color: #51afef;">)</span> &#8594; m +&#8320; n &#8801; m + n
+m+&#8320;n&#8801;m+n : <span style="color: #90d800;">(</span>m n : &#8469;<span style="color: #90d800;">)</span> &#8594; m +&#8320; n &#8801; m + n
 m+&#8320;n&#8801;m+n = PseudoAddition.m&#8853;n&#8801;m+n +&#8320;-is-PseudoAddition
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org1b33716" class="outline-2">
+<div id="outline-container-org62aee35" class="outline-2">
 <h2 id="⊕-does-not-equal-+-intensionally"><span class="section-number-2">6</span> ⊕ does not equal + intensionally</h2>
 <div class="outline-text-2" id="text-⊕-does-not-equal-+-intensionally">
 <p>
@@ -591,7 +591,7 @@ and that definition is <i>exactly the same</i> as that of addition, as in
 <div class="org-src-container">
 <pre class="src src-agda2">_plus_ : &#8469; &#8594; &#8469; &#8594; &#8469;
 zero  plus n = n
-suc m plus n = suc <span style="color: #51afef;">(</span>m plus n<span style="color: #51afef;">)</span>
+suc m plus n = suc <span style="color: #90d800;">(</span>m plus n<span style="color: #90d800;">)</span>
 </pre>
 </div>
 <p>
@@ -616,7 +616,7 @@ internally represented as pointers to the same closure.
 </blockquote>
 </div>
 
-<div id="outline-container-org3de2667" class="outline-3">
+<div id="outline-container-org69f50bc" class="outline-3">
 <h3 id="Well,-actually…"><span class="section-number-3">6.1</span> Well, actually…</h3>
 <div class="outline-text-3" id="text-Well,-actually…">
 <p>
@@ -643,7 +643,7 @@ really-plus&#8801;+ = refl
 </div>
 </div>
 
-<div id="outline-container-org39b31e8" class="outline-2">
+<div id="outline-container-org6469f57" class="outline-2">
 <h2 id="The-general-case"><span class="section-number-2">7</span> The general case</h2>
 <div class="outline-text-2" id="text-The-general-case">
 <p>
@@ -663,7 +663,7 @@ this about checking equality of functions in Agda:
 </div>
 </div>
 
-<div id="outline-container-org11c0466" class="outline-2">
+<div id="outline-container-org6fbe186" class="outline-2">
 <h2 id="Inequality"><span class="section-number-2">8</span> Inequality</h2>
 <div class="outline-text-2" id="text-Inequality">
 <p>
@@ -680,9 +680,9 @@ we can prove that they are not intensionally equal.
 We prove this easily as a lemma.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">disagree : <span style="color: #51afef;">{</span>A B : Set<span style="color: #51afef;">}</span> &#8594; <span style="color: #51afef;">{</span>f g : A &#8594; B<span style="color: #51afef;">}</span>
-         &#8594; <span style="color: #51afef;">(</span>witness : A<span style="color: #51afef;">)</span> &#8594; &#172; <span style="color: #51afef;">(</span>f witness &#8801; g witness<span style="color: #51afef;">)</span>
-         &#8594; &#172; <span style="color: #51afef;">(</span>f &#8801; g<span style="color: #51afef;">)</span>
+<pre class="src src-agda2">disagree : <span style="color: #90d800;">{</span>A B : Set<span style="color: #90d800;">}</span> &#8594; <span style="color: #90d800;">{</span>f g : A &#8594; B<span style="color: #90d800;">}</span>
+         &#8594; <span style="color: #90d800;">(</span>witness : A<span style="color: #90d800;">)</span> &#8594; &#172; <span style="color: #90d800;">(</span>f witness &#8801; g witness<span style="color: #90d800;">)</span>
+         &#8594; &#172; <span style="color: #90d800;">(</span>f &#8801; g<span style="color: #90d800;">)</span>
 disagree witness fw&#8802;gw refl = fw&#8802;gw refl
 </pre>
 </div>
@@ -716,11 +716,11 @@ First, let's assume that <code>zero ⊕ n</code> is not <code>n</code>.
 <pre class="src src-agda2">record NotAddition-zero : Set where
   field
     _&#8853;_ : &#8469; &#8594; &#8469; &#8594; &#8469;
-    n&#695; : &#8469;   <span style="color: #62686E;">-- witness</span>
-    &#172;z&#8853;n&#695;&#8801;n&#695; : &#172; <span style="color: #51afef;">(</span>zero &#8853; n&#695; &#8801; n&#695;<span style="color: #51afef;">)</span>
+    n&#695; : &#8469;   <span style="color: #a8a8a8;">-- witness</span>
+    &#172;z&#8853;n&#695;&#8801;n&#695; : &#172; <span style="color: #90d800;">(</span>zero &#8853; n&#695; &#8801; n&#695;<span style="color: #90d800;">)</span>
 
-  &#172;a&#8853;b&#8801;a+b : &#172; <span style="color: #51afef;">(</span><span style="color: #C57BDB;">(</span>a b : &#8469;<span style="color: #C57BDB;">)</span> &#8594; a &#8853; b &#8801; a + b<span style="color: #51afef;">)</span>
-  &#172;a&#8853;b&#8801;a+b a&#8853;b&#8801;a+b = &#172;z&#8853;n&#695;&#8801;n&#695; <span style="color: #51afef;">(</span>a&#8853;b&#8801;a+b zero n&#695;<span style="color: #51afef;">)</span>
+  &#172;a&#8853;b&#8801;a+b : &#172; <span style="color: #90d800;">(</span><span style="color: #b6a0ff;">(</span>a b : &#8469;<span style="color: #b6a0ff;">)</span> &#8594; a &#8853; b &#8801; a + b<span style="color: #90d800;">)</span>
+  &#172;a&#8853;b&#8801;a+b a&#8853;b&#8801;a+b = &#172;z&#8853;n&#695;&#8801;n&#695; <span style="color: #90d800;">(</span>a&#8853;b&#8801;a+b zero n&#695;<span style="color: #90d800;">)</span>
 
   &#172;&#8853;&#8801;+ : &#172; _&#8853;_ &#8801; _+_
   &#172;&#8853;&#8801;+ &#8853;&#8801;+ = &#172;z&#8853;n&#695;&#8801;n&#695; z&#8853;n&#8801;n
@@ -729,9 +729,9 @@ First, let's assume that <code>zero ⊕ n</code> is not <code>n</code>.
       z&#8853;n&#8801;n =
         begin
           zero &#8853; n&#695;
-        &#8801;<span style="color: #51afef;">&#10216;</span> cong <span style="color: #C57BDB;">(</span>&#955; op &#8594; op zero n&#695;<span style="color: #C57BDB;">)</span> &#8853;&#8801;+ <span style="color: #51afef;">&#10217;</span>
+        &#8801;<span style="color: #90d800;">&#10216;</span> cong <span style="color: #b6a0ff;">(</span>&#955; op &#8594; op zero n&#695;<span style="color: #b6a0ff;">)</span> &#8853;&#8801;+ <span style="color: #90d800;">&#10217;</span>
           zero + n&#695;
-        &#8801;<span style="color: #51afef;">&#10216;&#10217;</span>
+        &#8801;<span style="color: #90d800;">&#10216;&#10217;</span>
           n&#695;
         &#8718;
 </pre>
@@ -745,48 +745,48 @@ not <code>suc (m ⊕ n)</code>.
 <pre class="src src-agda2">record NotAddition-suc : Set where
   field
     _&#8853;_ : &#8469; &#8594; &#8469; &#8594; &#8469;
-    m&#695; n&#695; : &#8469;   <span style="color: #62686E;">-- witnesses</span>
-    &#172;<span style="color: #51afef;">[</span>suc-m&#695;<span style="color: #51afef;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #51afef;">[</span>m&#695;&#8853;n&#695;<span style="color: #51afef;">]</span> : &#172; <span style="color: #51afef;">(</span><span style="color: #C57BDB;">(</span>suc m&#695;<span style="color: #C57BDB;">)</span> &#8853; n&#695; &#8801; suc <span style="color: #C57BDB;">(</span>m&#695; &#8853; n&#695;<span style="color: #C57BDB;">)</span><span style="color: #51afef;">)</span>
+    m&#695; n&#695; : &#8469;   <span style="color: #a8a8a8;">-- witnesses</span>
+    &#172;<span style="color: #90d800;">[</span>suc-m&#695;<span style="color: #90d800;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #90d800;">[</span>m&#695;&#8853;n&#695;<span style="color: #90d800;">]</span> : &#172; <span style="color: #90d800;">(</span><span style="color: #b6a0ff;">(</span>suc m&#695;<span style="color: #b6a0ff;">)</span> &#8853; n&#695; &#8801; suc <span style="color: #b6a0ff;">(</span>m&#695; &#8853; n&#695;<span style="color: #b6a0ff;">)</span><span style="color: #90d800;">)</span>
 
-  &#172;a&#8853;b&#8801;a+b : &#172; <span style="color: #51afef;">(</span><span style="color: #C57BDB;">(</span>a b : &#8469;<span style="color: #C57BDB;">)</span> &#8594; a &#8853; b &#8801; a + b<span style="color: #51afef;">)</span>
-  &#172;a&#8853;b&#8801;a+b a&#8853;b&#8801;a+b = &#172;<span style="color: #51afef;">[</span>suc-m&#695;<span style="color: #51afef;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #51afef;">[</span>m&#695;&#8853;n&#695;<span style="color: #51afef;">]</span> <span style="color: #51afef;">[</span>suc-m&#695;<span style="color: #51afef;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #51afef;">[</span>m&#695;&#8853;n&#695;<span style="color: #51afef;">]</span>
+  &#172;a&#8853;b&#8801;a+b : &#172; <span style="color: #90d800;">(</span><span style="color: #b6a0ff;">(</span>a b : &#8469;<span style="color: #b6a0ff;">)</span> &#8594; a &#8853; b &#8801; a + b<span style="color: #90d800;">)</span>
+  &#172;a&#8853;b&#8801;a+b a&#8853;b&#8801;a+b = &#172;<span style="color: #90d800;">[</span>suc-m&#695;<span style="color: #90d800;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #90d800;">[</span>m&#695;&#8853;n&#695;<span style="color: #90d800;">]</span> <span style="color: #90d800;">[</span>suc-m&#695;<span style="color: #90d800;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #90d800;">[</span>m&#695;&#8853;n&#695;<span style="color: #90d800;">]</span>
     where
-      <span style="color: #51afef;">[</span>suc-m&#695;<span style="color: #51afef;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #51afef;">[</span>m&#695;&#8853;n&#695;<span style="color: #51afef;">]</span> : <span style="color: #51afef;">(</span>suc m&#695;<span style="color: #51afef;">)</span> &#8853; n&#695; &#8801; suc <span style="color: #51afef;">(</span>m&#695; &#8853; n&#695;<span style="color: #51afef;">)</span>
-      <span style="color: #51afef;">[</span>suc-m&#695;<span style="color: #51afef;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #51afef;">[</span>m&#695;&#8853;n&#695;<span style="color: #51afef;">]</span> =
+      <span style="color: #90d800;">[</span>suc-m&#695;<span style="color: #90d800;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #90d800;">[</span>m&#695;&#8853;n&#695;<span style="color: #90d800;">]</span> : <span style="color: #90d800;">(</span>suc m&#695;<span style="color: #90d800;">)</span> &#8853; n&#695; &#8801; suc <span style="color: #90d800;">(</span>m&#695; &#8853; n&#695;<span style="color: #90d800;">)</span>
+      <span style="color: #90d800;">[</span>suc-m&#695;<span style="color: #90d800;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #90d800;">[</span>m&#695;&#8853;n&#695;<span style="color: #90d800;">]</span> =
         begin
-          <span style="color: #51afef;">(</span>suc m&#695;<span style="color: #51afef;">)</span> &#8853; n&#695;
-        &#8801;<span style="color: #51afef;">&#10216;</span> a&#8853;b&#8801;a+b <span style="color: #C57BDB;">(</span>suc m&#695;<span style="color: #C57BDB;">)</span> n&#695; <span style="color: #51afef;">&#10217;</span>
-          <span style="color: #51afef;">(</span>suc m&#695;<span style="color: #51afef;">)</span> + n&#695;
-        &#8801;<span style="color: #51afef;">&#10216;&#10217;</span>
-          suc <span style="color: #51afef;">(</span>m&#695; + n&#695;<span style="color: #51afef;">)</span>
-        &#8801;<span style="color: #51afef;">&#10216;</span> cong suc <span style="color: #C57BDB;">(</span>sym <span style="color: #7bc275;">(</span>a&#8853;b&#8801;a+b m&#695; n&#695;<span style="color: #7bc275;">)</span><span style="color: #C57BDB;">)</span> <span style="color: #51afef;">&#10217;</span>
-          suc <span style="color: #51afef;">(</span>m&#695; &#8853; n&#695;<span style="color: #51afef;">)</span>
+          <span style="color: #90d800;">(</span>suc m&#695;<span style="color: #90d800;">)</span> &#8853; n&#695;
+        &#8801;<span style="color: #90d800;">&#10216;</span> a&#8853;b&#8801;a+b <span style="color: #b6a0ff;">(</span>suc m&#695;<span style="color: #b6a0ff;">)</span> n&#695; <span style="color: #90d800;">&#10217;</span>
+          <span style="color: #90d800;">(</span>suc m&#695;<span style="color: #90d800;">)</span> + n&#695;
+        &#8801;<span style="color: #90d800;">&#10216;&#10217;</span>
+          suc <span style="color: #90d800;">(</span>m&#695; + n&#695;<span style="color: #90d800;">)</span>
+        &#8801;<span style="color: #90d800;">&#10216;</span> cong suc <span style="color: #b6a0ff;">(</span>sym <span style="color: #6ae4b9;">(</span>a&#8853;b&#8801;a+b m&#695; n&#695;<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span> <span style="color: #90d800;">&#10217;</span>
+          suc <span style="color: #90d800;">(</span>m&#695; &#8853; n&#695;<span style="color: #90d800;">)</span>
         &#8718;
 
   &#172;&#8853;&#8801;+ : &#172; _&#8853;_ &#8801; _+_
-  &#172;&#8853;&#8801;+ &#8853;&#8801;+ = &#172;<span style="color: #51afef;">[</span>suc-m&#695;<span style="color: #51afef;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #51afef;">[</span>m&#695;&#8853;n&#695;<span style="color: #51afef;">]</span> <span style="color: #51afef;">[</span>suc-m&#695;<span style="color: #51afef;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #51afef;">[</span>m&#695;&#8853;n&#695;<span style="color: #51afef;">]</span>
+  &#172;&#8853;&#8801;+ &#8853;&#8801;+ = &#172;<span style="color: #90d800;">[</span>suc-m&#695;<span style="color: #90d800;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #90d800;">[</span>m&#695;&#8853;n&#695;<span style="color: #90d800;">]</span> <span style="color: #90d800;">[</span>suc-m&#695;<span style="color: #90d800;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #90d800;">[</span>m&#695;&#8853;n&#695;<span style="color: #90d800;">]</span>
     where
-      <span style="color: #51afef;">[</span>suc-m&#695;<span style="color: #51afef;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #51afef;">[</span>m&#695;&#8853;n&#695;<span style="color: #51afef;">]</span> : <span style="color: #51afef;">(</span>suc m&#695;<span style="color: #51afef;">)</span> &#8853; n&#695; &#8801; suc <span style="color: #51afef;">(</span>m&#695; &#8853; n&#695;<span style="color: #51afef;">)</span>
-      <span style="color: #51afef;">[</span>suc-m&#695;<span style="color: #51afef;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #51afef;">[</span>m&#695;&#8853;n&#695;<span style="color: #51afef;">]</span> =
+      <span style="color: #90d800;">[</span>suc-m&#695;<span style="color: #90d800;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #90d800;">[</span>m&#695;&#8853;n&#695;<span style="color: #90d800;">]</span> : <span style="color: #90d800;">(</span>suc m&#695;<span style="color: #90d800;">)</span> &#8853; n&#695; &#8801; suc <span style="color: #90d800;">(</span>m&#695; &#8853; n&#695;<span style="color: #90d800;">)</span>
+      <span style="color: #90d800;">[</span>suc-m&#695;<span style="color: #90d800;">]</span>&#8853;n&#695;&#8801;suc-<span style="color: #90d800;">[</span>m&#695;&#8853;n&#695;<span style="color: #90d800;">]</span> =
         begin
-          <span style="color: #51afef;">(</span>suc m&#695;<span style="color: #51afef;">)</span> &#8853; n&#695;
-        &#8801;<span style="color: #51afef;">&#10216;&#10217;</span>
+          <span style="color: #90d800;">(</span>suc m&#695;<span style="color: #90d800;">)</span> &#8853; n&#695;
+        &#8801;<span style="color: #90d800;">&#10216;&#10217;</span>
           suc m&#695; &#8853; n&#695;
-        &#8801;<span style="color: #51afef;">&#10216;</span> cong <span style="color: #C57BDB;">(</span>&#955; op &#8594; op <span style="color: #7bc275;">(</span>suc m&#695;<span style="color: #7bc275;">)</span>  n&#695;<span style="color: #C57BDB;">)</span> &#8853;&#8801;+ <span style="color: #51afef;">&#10217;</span>
+        &#8801;<span style="color: #90d800;">&#10216;</span> cong <span style="color: #b6a0ff;">(</span>&#955; op &#8594; op <span style="color: #6ae4b9;">(</span>suc m&#695;<span style="color: #6ae4b9;">)</span>  n&#695;<span style="color: #b6a0ff;">)</span> &#8853;&#8801;+ <span style="color: #90d800;">&#10217;</span>
           suc m&#695; + n&#695;
-        &#8801;<span style="color: #51afef;">&#10216;&#10217;</span>
-          suc <span style="color: #51afef;">(</span>m&#695; + n&#695;<span style="color: #51afef;">)</span>
-        &#8801;<span style="color: #51afef;">&#10216;</span> cong <span style="color: #C57BDB;">(</span>&#955; op &#8594; suc <span style="color: #7bc275;">(</span>op m&#695; n&#695;<span style="color: #7bc275;">)</span><span style="color: #C57BDB;">)</span> <span style="color: #C57BDB;">(</span>sym &#8853;&#8801;+<span style="color: #C57BDB;">)</span> <span style="color: #51afef;">&#10217;</span>
-          suc <span style="color: #51afef;">(</span>m&#695; &#8853; n&#695;<span style="color: #51afef;">)</span>
-        &#8801;<span style="color: #51afef;">&#10216;&#10217;</span>
-          suc <span style="color: #51afef;">(</span>m&#695; &#8853; n&#695;<span style="color: #51afef;">)</span>
+        &#8801;<span style="color: #90d800;">&#10216;&#10217;</span>
+          suc <span style="color: #90d800;">(</span>m&#695; + n&#695;<span style="color: #90d800;">)</span>
+        &#8801;<span style="color: #90d800;">&#10216;</span> cong <span style="color: #b6a0ff;">(</span>&#955; op &#8594; suc <span style="color: #6ae4b9;">(</span>op m&#695; n&#695;<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span> <span style="color: #b6a0ff;">(</span>sym &#8853;&#8801;+<span style="color: #b6a0ff;">)</span> <span style="color: #90d800;">&#10217;</span>
+          suc <span style="color: #90d800;">(</span>m&#695; &#8853; n&#695;<span style="color: #90d800;">)</span>
+        &#8801;<span style="color: #90d800;">&#10216;&#10217;</span>
+          suc <span style="color: #90d800;">(</span>m&#695; &#8853; n&#695;<span style="color: #90d800;">)</span>
         &#8718;
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org862ede7" class="outline-2">
+<div id="outline-container-org2cc7186" class="outline-2">
 <h2 id="Further-reading"><span class="section-number-2">9</span> Further reading</h2>
 <div class="outline-text-2" id="text-Further-reading">
 <p>
@@ -798,7 +798,7 @@ adding the axiom of extensionality to Agda.
 </div>
 </div>
 
-<div id="outline-container-orgdbedd1e" class="outline-2">
+<div id="outline-container-org3859bef" class="outline-2">
 <h2 id="About-this-document"><span class="section-number-2">10</span> About this document</h2>
 <div class="outline-text-2" id="text-About-this-document">
 <p>
@@ -813,10 +813,12 @@ along with the pure Agda code tangled from this file.
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: January 21st, 2020</p>
-<p class="author">Author: <a href="https://armkeh.github.io">Mark Armstrong</a></p>
-<p class="date">Created: 2020-02-14 Fri 14:44</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="author">Author: <a href="https://armkeh.github.io">Mark Armstrong</a> <img src="./../images/markarmstrong.jpg" alt="markarmstrong.jpg" /></p>
+     <p class="author">Contact: <a href="mailto:markparmstrong@gmail.com">markparmstrong@gmail.com</a></p>
+     <p class="date">Original date: January 21st, 2020</p>
+     <p class="date">Last updated: 2020-03-24 Tue 13:04</p>
+     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+     <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

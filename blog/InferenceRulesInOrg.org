@@ -1,11 +1,16 @@
 #+Title: Creating pretty “cross-format” inference rules in Org mode
-#+Author: Mark Armstrong
+#+Author: [[https://armkeh.github.io][Mark Armstrong]] @@html:<br>@@@@latex:\\@@ [[file:./../images/markarmstrong.jpg]]
+#+Date: Tuesday, March 17th, 2020
 #+Description: 
 #+LaTeX_header: \usepackage{unicode}
 
 Disclaimer: this project of mine was left incomplete;
 I'm uploading what I have for the moment, and hope to complete
 this idea at some later time, when I am using inference rules more.
+
+Also, the solutions posted here have been tested only in plain HTML;
+I have not yet utilised the CSS that would be necessary to ensure
+the rules look consistent under different styles.
 
 * Introduction
 :PROPERTIES:

@@ -1,5 +1,6 @@
 #+Title: Customisations to Agda's highlighting
-#+Author: Mark Armstrong
+#+Author: [[https://armkeh.github.io][Mark Armstrong]] [[file:./../images/markarmstrong.jpg]]
+#+Date: Sunday, March 22nd 2020
 #+Description: Elisp code to change Agda's highlighting behaviour
 #+Setupfile: ../theme-readtheorg.setup
 #+Property: header-args:emacs-lisp :tangle src/AgdaHighlighting.el
