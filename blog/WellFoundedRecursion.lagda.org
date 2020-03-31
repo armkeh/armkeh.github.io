@@ -1,0 +1,185 @@
+#+Title: An exploration of well-founded recursion
+#+Author: Mark Armstrong
+#+Description: 
+#+Startup: noindent
+
+* Introduction
+
+Using well-founded relations to assist the termination checker
+of Agda is something I have always meant to investigate,
+but never quite gotten around to.
+This post attempts to rectify that.
+
+First, I must give credit to the example code posted
+by [[https://github.com/sergei-romanenko/agda-samples/blob/master/08-WellFounded.agda][Sergei Romanenko]],
+which explores the technique using a ~log₂~ algorithm.
+
+* Agda header
+
+We use several facts about natural numbers, specfically
+regarding ~<~ and ~≤~ (from which ~<~ is derived) below.
+#+begin_src agda2
+module WellFoundedRecursion where
+
+open import Data.Nat
+  using (ℕ ; zero ; suc ; _+_ ; _∸_ ; _⊓_ ; _<′_ ; _≤′_ ; ≤′-refl ; ≤′-step)
+open import Data.Nat.Properties using (<-cmp ; ≤-refl)
+
+open import Relation.Binary.Definitions using (tri< ; tri≈ ; tri>)
+open import Relation.Binary.PropositionalEquality using (_≡_ ; refl)
+
+open import Function using (case_of_)
+#+end_src
+
+** Lemmas
+
+#+begin_src agda2
+--suc-< : {m n : ℕ} → suc m < n → m < n
+--suc-< (s≤s (s≤s z≤n)) = s≤s z≤n
+--suc-< (s≤s (s≤s (s≤s x))) = s≤s (suc-< (s≤s (s≤s x)))
+#+end_src
+
+* Problem 1 – The Euclidean algorithm
+
+** Preamble
+
+Euclid's GCD is a well known and elegantly simple algorithm.
+It hinges upon the fact that
+given natural numbers ~m~ and ~n~ with ~m < n~, ~GCD(m,n) = GCD(m,n-m)~.
+Note also that if ~m = n~, then ~GCD(m,n) = m = n~,
+and if ~n = 0~, then ~GCD(m,n) = m~.
+
+Making use of the three-way comparison function ~<-cmp~,
+we can easily transcribe this algorithm into Agda.
+#+begin_src agda2
+module WithoutWFR where
+  
+  {-# TERMINATING #-}
+  EuclidGCD : ℕ → ℕ → ℕ
+  EuclidGCD zero      m         = m
+  EuclidGCD n@(suc _) zero      = n
+  EuclidGCD n@(suc _) m@(suc _) =
+    case <-cmp n m of
+      λ { (tri< _ _ _) → EuclidGCD n (m ∸ n)
+        ; (tri≈ _ _ _) → m
+        ; (tri> _ _ _) → EuclidGCD (n ∸ m) m
+        }
+#+end_src
+But Agda will not believe this is terminating, because it fails to see
+in the recursive case that ~m ∸ n~/~n ∸ m~ are
+structurally smaller than ~m~ or ~n~.
+
+Note that the use of the ~TERMINATING~ pragma does allow us to
+use ~EuclidGCD~; unlike the ~NONTERMINATING~ pragma, which
+would prevent Agda from normalising uses of ~EuclidGCD~.
+#+begin_src agda2
+  _ : EuclidGCD 12 20 ≡ 4
+  _ = refl
+#+end_src
+But it is ultimately against the spirit of verified programming in Agda
+to use this “just believe me” approach.
+
+
+This is understandable; we must apply the proofs
+of ~m < n~ or ~n < m~ in order to establish those facts.
+If we try to prove it directly, we get stuck in the base cases.
+#+begin_example agda2
+m∸n-decreases : (m n : ℕ) → m ∸ n < m
+m∸n-decreases m zero = ??? -- Stuck; m ≮ n
+m∸n-decreases zero (suc n) = ??? -- Stuck ; zero ≮ zero
+m∸n-decreases (suc m) (suc n) =
+  suc-< (m ∸ n) (suc m) (s≤s (m∸n-decreases m n))
+#+end_example
+
+To actually prove this,
+we must know that ~n~ is not zero, and further
+that ~n < m~ to eliminate to eliminate those two cases.
+Still, the proof is not trivial enough that Agda can “figure it out”
+without our help.
+#+begin_src agda2
+m∸n-decreases : (m n : ℕ) → suc n < m → m ∸ suc n < m
+m∸n-decreases .(suc (suc _)) zero (s≤s (s≤s z≤n)) = s≤s ≤-refl
+m∸n-decreases (suc .(suc m)) (suc n) (s≤s (s≤s {_} {m} pf)) =
+  suc-< (s≤s (m∸n-decreases (suc m) n (s≤s pf)))
+#+end_src
+
+With this proof in hand, we are equipped to use a well-founded relation
+to rework our ~EuclidGCD~ function so that it passes the termination checker.
+We start by defining the concepts ourselves,
+then we will utilise the (level-agnostic) versions from the standard library.
+
+** The solution, defining our own notion of well-foundedness
+
+#+begin_src agda2
+module definingWFR where
+#+end_src
+
+We begin with the concept of /accessibility/. An element ~x~ of ~A~ is
+accessible by relation ~_<_~ if every ~y~ such that ~y < x~ is accessible.
+#+begin_src agda2 :exports none
+  module AccessibilityFromScratch where
+#+end_src
+#+begin_src agda2
+    data Acc {A : Set} (_<_ : A → A → Set) (x : A) : Set where
+      acc : (rs : (y : A) → y < x → Acc _<_ y) → Acc _<_ x
+#+end_src
+I'm honestly not quite certain of the reasoning behind
+the name ~rs~; I interpret it as “Recurse on Smaller”.
+This is motivated by the standard library description of
+the type of ~rs~:
+#+begin_quote
+When using well-founded recursion you can recurse arbitrarily, as
+long as the arguments become smaller, and “smaller” is
+well-founded.
+#+end_quote 
+
+The standard library “extracts” that type. It is the type of
+“well-founded recursion”; we do the same here.
+#+begin_src agda2
+  WfRec : {A : Set} → (A → A → Set) → (A → Set) → A → Set
+  WfRec {A} _<_ P x = {y : A} → y < x → P y
+#+end_src
+Then the above definition is compressed to
+#+begin_src agda2
+  data Acc {A : Set} (_<_ : A → A → Set) (x : A) : Set where
+    acc : (rs : WfRec _<_ (Acc _<_) x) → Acc _<_ x
+#+end_src
+
+As a bit of an aside, the standard library uses the notion
+of a “recursive structure”; it has the shape
+#+begin_example agda2
+(A : Set) → (A → Set) → A → Set
+#+end_example
+so that the type of ~WfRec~ is written
+#+begin_example agda2
+WfRec : {A : Set} → (A → A → Set) → RecStruct A
+#+end_example
+I won't chase these generalisations any further here;
+they are interesting, but can make it hard to follow the definitions
+—hence, my writing this section to unravel it all.
+
+To use well-founded recursion, we must choose a binary relation
+and a value which is decreasing according to that relation.
+For the naturals, “less than” is the obvious choice.
+#+begin_src agda2
+  EuclidGCD′ : (m n : ℕ) → Acc _≤_ m → ℕ
+  EuclidGCD′ zero m _ = m
+  EuclidGCD′ n@(suc _) zero _ = n
+  EuclidGCD′ m@(suc m') n@(suc n') (acc rs) =
+    case <-cmp m n of
+      λ { (tri<  n<m _ _) → EuclidGCD′ m (n ∸ m) (rs ≤-refl)
+        ; (tri≈ _ _ _)   → m
+        ; (tri> _ _ m<n) → EuclidGCD′ (m ∸ n) n (rs {!!}) -- (m∸n-decreases m n' m<n)
+        }
+#+end_src
+
+#+begin_src agda2
+  Well-founded : {A : Set} → (A → A → Set) → Set
+  Well-founded {A} _<_ = (x : A) → Acc _<_ x
+
+  <-well-founded : Well-founded _<_
+  <-acc : {n y : ℕ} → y < n → Acc _<_ y
+  <-well-founded n = acc (<-acc {n})
+  <-acc (s≤s z≤n) = {!!}
+  <-acc (s≤s (s≤s pf)) = {!!}
+#+end_src
