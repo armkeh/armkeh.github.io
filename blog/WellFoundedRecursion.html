@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-04-01 Wed 18:50 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>An exploration of well-founded recursion</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Mark Armstrong" />
+<meta name="description" content="Exploring definitions using well-founded recursion in Agda."
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/styles/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/styles/readtheorg/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">An exploration of well-founded recursion</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#Introduction">1. Introduction</a></li>
+<li><a href="#Agda-header">2. Agda header</a></li>
+<li><a href="#Problem-1-–-The-Euclidean-algorithm">3. Problem 1 – The Euclidean algorithm</a>
+<ul>
+<li><a href="#Preamble">3.1. Preamble</a></li>
+<li><a href="#Solution-version-1-–-Defining-our-own-notion-of-well-foundedness">3.2. Solution version 1 – Defining our own notion of well-foundedness</a></li>
+<li><a href="#Solution-version-2-–-Using-the-standard-library's-definitions">3.3. Solution version 2 – Using the standard library's definitions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5edeaeb" class="outline-2">
+<h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-Introduction">
+<p>
+Using well-founded relations to assist the termination checker
+of Agda is something I have always meant to investigate,
+but never quite gotten around to.
+This post attempts to rectify that.
+</p>
+
+<p>
+First, I must give credit to the example code posted
+by <a href="https://github.com/sergei-romanenko/agda-samples/blob/master/08-WellFounded.agda">Sergei Romanenko</a>,
+which explores the technique using a <code>log₂</code> algorithm.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9d85fba" class="outline-2">
+<h2 id="Agda-header"><span class="section-number-2">2</span> Agda header</h2>
+<div class="outline-text-2" id="text-Agda-header">
+<p>
+We use several facts about natural numbers, specfically
+regarding <code>&lt;</code> and <code>≤</code> (from which <code>&lt;</code> is derived) below.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">module WellFoundedRecursion where
+
+open import Data.Nat
+  using <span style="color: #90d800;">(</span> &#8469; ; zero ; suc
+        ; _+_ ; _&#8760;_ ; _&#8852;_
+        ; _&#8804;_ ; _&lt;_ ; z&#8804;n ; s&#8804;s
+        ; _&#8804;&#8242;_ ; _&lt;&#8242;_ ; &#8804;&#8242;-refl ; &#8804;&#8242;-step<span style="color: #90d800;">)</span>
+open import Data.Nat.Properties
+  using <span style="color: #90d800;">(</span> &lt;-cmp ; &#8804;-step ; &#8804;-refl ; &lt;-trans&#737; ; &#8804;&#8658;&#8804;&#8242;
+        ; m&#8760;n&#8804;m<span style="color: #90d800;">)</span>
+
+open import Relation.Binary.Definitions using <span style="color: #90d800;">(</span>tri&lt; ; tri&#8776; ; tri&gt;<span style="color: #90d800;">)</span>
+open import Relation.Binary.PropositionalEquality using <span style="color: #90d800;">(</span>_&#8801;_ ; refl<span style="color: #90d800;">)</span>
+
+open import Function using <span style="color: #90d800;">(</span>case_of_<span style="color: #90d800;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaa76f9c" class="outline-2">
+<h2 id="Problem-1-–-The-Euclidean-algorithm"><span class="section-number-2">3</span> Problem 1 – The Euclidean algorithm</h2>
+<div class="outline-text-2" id="text-Problem-1-–-The-Euclidean-algorithm">
+</div>
+
+<div id="outline-container-org5564f80" class="outline-3">
+<h3 id="Preamble"><span class="section-number-3">3.1</span> Preamble</h3>
+<div class="outline-text-3" id="text-Preamble">
+<p>
+Euclid's GCD is a well known and elegantly simple algorithm.
+It hinges upon the fact that
+given natural numbers <code>m</code> and <code>n</code> with <code>m &lt; n</code>, <code>GCD(m,n) = GCD(m,n-m)</code>.
+Note also that if <code>m = n</code>, then <code>GCD(m,n) = m = n</code>,
+and if <code>n = 0</code>, then <code>GCD(m,n) = m</code>.
+</p>
+
+<p>
+Making use of the three-way comparison function <code>&lt;-cmp</code>,
+we can easily transcribe this algorithm into Agda.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">module WithoutWFR where
+  
+  <span style="color: #a8a8a8;">{-# TERMINATING #-}</span>
+  EuclidGCD : &#8469; &#8594; &#8469; &#8594; &#8469;
+  EuclidGCD zero      m         = m
+  EuclidGCD n@<span style="color: #90d800;">(</span>suc _<span style="color: #90d800;">)</span> zero      = n
+  EuclidGCD n@<span style="color: #90d800;">(</span>suc _<span style="color: #90d800;">)</span> m@<span style="color: #90d800;">(</span>suc _<span style="color: #90d800;">)</span> =
+    case &lt;-cmp n m of
+      &#955; <span style="color: #90d800;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; EuclidGCD n <span style="color: #b6a0ff;">(</span>m &#8760; n<span style="color: #b6a0ff;">)</span>
+        ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; m
+        ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; EuclidGCD <span style="color: #b6a0ff;">(</span>n &#8760; m<span style="color: #b6a0ff;">)</span> m
+        <span style="color: #90d800;">}</span>
+</pre>
+</div>
+<p>
+But Agda will not believe this is terminating, because it fails to see
+in the recursive case that <code>m ∸ n</code>/~n ∸ m~ are
+structurally smaller than <code>m</code> or <code>n</code>.
+</p>
+
+<p>
+Note that the use of the <code>TERMINATING</code> pragma does allow us to
+use <code>EuclidGCD</code>; unlike the <code>NONTERMINATING</code> pragma, which
+would prevent Agda from normalising uses of <code>EuclidGCD</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  _ : EuclidGCD 12 20 &#8801; 4
+  _ = refl
+</pre>
+</div>
+<p>
+But it is ultimately against the spirit of verified programming in Agda
+to use this “just believe me” approach.
+</p>
+
+
+<p>
+This is understandable; we must apply the proofs
+of <code>m &lt; n</code> or <code>n &lt; m</code> in order to establish those facts.
+If we try to state that using <code>_&lt;_</code>, we get stuck in the base cases
+during the proof.
+</p>
+<pre class="example">
+m∸n&lt;m : {m n : ℕ} → m ∸ n &lt; m
+m∸n&lt;m {m} {zero} = ??? -- Stuck; m ≮ n
+m∸n&lt;m {zero} {suc n} = ??? -- Stuck ; zero ≮ zero
+m∸n&lt;m {suc m} {suc n} =
+  &lt;-transˡ (m∸n&lt;m {m} {n}) -- suc m ∸ suc n = m ∸ n &lt; m, by I.H.
+          (≤-step ≤-refl) -- and m ≤ suc m.
+</pre>
+
+<p>
+To actually prove this,
+we must know that both <code>m</code> and <code>n</code> are non-zero
+—then we may use the fact
+that <code>m ∸ n</code> is <i>less than or equal to</i> to <code>m</code>,
+the proof of which is in the standard library and is very close
+to our attempted proof above for <code>_&lt;_</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">Sm&#8760;Sn&lt;Sm : <span style="color: #90d800;">(</span>m n : &#8469;<span style="color: #90d800;">)</span> &#8594; suc m &#8760; suc n &lt; suc m
+Sm&#8760;Sn&lt;Sm m n = s&#8804;s <span style="color: #90d800;">(</span>m&#8760;n&#8804;m m n<span style="color: #90d800;">)</span>
+</pre>
+</div>
+
+<p>
+With this proof in hand, we are equipped to use a well-founded relation
+to rework our <code>EuclidGCD</code> function so that it passes the termination checker.
+We start by defining the concepts ourselves,
+then we will utilise the (level-agnostic) versions from the standard library.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcf4be0a" class="outline-3">
+<h3 id="Solution-version-1-–-Defining-our-own-notion-of-well-foundedness"><span class="section-number-3">3.2</span> Solution version 1 – Defining our own notion of well-foundedness</h3>
+<div class="outline-text-3" id="text-Solution-version-1-–-Defining-our-own-notion-of-well-foundedness">
+<div class="org-src-container">
+<pre class="src src-agda2">module definingWFR where
+</pre>
+</div>
+
+<p>
+We begin with the concept of <i>accessibility</i>. An element <code>x</code> of <code>A</code> is
+accessible by relation <code>_&lt;_</code> iff every <code>y</code> such that <code>y &lt; x</code> is accessible.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">    data Acc <span style="color: #90d800;">{</span>A : Set<span style="color: #90d800;">}</span> <span style="color: #90d800;">(</span>_&lt;_ : A &#8594; A &#8594; Set<span style="color: #90d800;">)</span> <span style="color: #90d800;">(</span>x : A<span style="color: #90d800;">)</span> : Set where
+      acc : <span style="color: #90d800;">(</span>rs : <span style="color: #b6a0ff;">(</span>y : A<span style="color: #b6a0ff;">)</span> &#8594; y &lt; x &#8594; Acc _&lt;_ y<span style="color: #90d800;">)</span> &#8594; Acc _&lt;_ x
+</pre>
+</div>
+<p>
+I'm honestly not quite certain of the reasoning behind
+the name <code>rs</code>; I interpret it as “Recurse on Smaller”.
+This is motivated by the standard library description of
+the type of <code>rs</code>:
+</p>
+<blockquote>
+<p>
+When using well-founded recursion you can recurse arbitrarily, as
+long as the arguments become smaller, and “smaller” is
+well-founded.
+</p>
+</blockquote>
+
+<p>
+The standard library “extracts” that type. It is the type of
+“well-founded recursion”; we do the same here.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  WfRec : <span style="color: #90d800;">{</span>A : Set<span style="color: #90d800;">}</span> &#8594; <span style="color: #90d800;">(</span>A &#8594; A &#8594; Set<span style="color: #90d800;">)</span> &#8594; <span style="color: #90d800;">(</span>A &#8594; Set<span style="color: #90d800;">)</span> &#8594; A &#8594; Set
+  WfRec <span style="color: #90d800;">{</span>A<span style="color: #90d800;">}</span> _&lt;_ P x = <span style="color: #90d800;">{</span>y : A<span style="color: #90d800;">}</span> &#8594; y &lt; x &#8594; P y
+</pre>
+</div>
+<p>
+Then the above definition is shortened to
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  data Acc <span style="color: #90d800;">{</span>A : Set<span style="color: #90d800;">}</span> <span style="color: #90d800;">(</span>_&lt;_ : A &#8594; A &#8594; Set<span style="color: #90d800;">)</span> <span style="color: #90d800;">(</span>x : A<span style="color: #90d800;">)</span> : Set where
+    acc : <span style="color: #90d800;">(</span>rs : WfRec _&lt;_ <span style="color: #b6a0ff;">(</span>Acc _&lt;_<span style="color: #b6a0ff;">)</span> x<span style="color: #90d800;">)</span> &#8594; Acc _&lt;_ x
+</pre>
+</div>
+
+<p>
+A relation is well-founded if all elements
+of the underlying set are accessible;
+that is, we will need to prove that for every <code>x : A</code>,
+every <code>y &lt; x</code> is accessible to
+be able to call <code>_&lt;_</code> well founded.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  Well-founded : <span style="color: #90d800;">{</span>A : Set<span style="color: #90d800;">}</span> &#8594; <span style="color: #90d800;">(</span>A &#8594; A &#8594; Set<span style="color: #90d800;">)</span> &#8594; Set
+  Well-founded <span style="color: #90d800;">{</span>A<span style="color: #90d800;">}</span> _&lt;_ = <span style="color: #90d800;">(</span>x : A<span style="color: #90d800;">)</span> &#8594; Acc _&lt;_ x
+</pre>
+</div>
+
+<p>
+Let us prove that less than on the naturals is well-founded.
+We use an alternate version of less from the standard library
+defined using reflexivity and “step” as constructors,
+which the standard library describes as
+</p>
+<blockquote>
+<p>
+more suitable for well-founded induction (see Induction.Nat).
+</p>
+</blockquote>
+<p>
+I did not manage to complete the proof using <code>_&lt;_</code> before turning
+to this <code>_&lt;′_</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  &lt;&#8242;-acc : <span style="color: #90d800;">{</span>x y : &#8469;<span style="color: #90d800;">}</span> &#8594; y &lt;&#8242; x &#8594; Acc _&lt;&#8242;_ y
+  &lt;&#8242;-acc .<span style="color: #90d800;">{</span>suc y<span style="color: #90d800;">}</span> <span style="color: #90d800;">{</span>y<span style="color: #90d800;">}</span> &#8804;&#8242;-refl = acc &lt;&#8242;-acc
+  &lt;&#8242;-acc <span style="color: #90d800;">(</span>&#8804;&#8242;-step <span style="color: #b6a0ff;">{</span>_<span style="color: #b6a0ff;">}</span> y&lt;&#8242;x<span style="color: #90d800;">)</span> = &lt;&#8242;-acc y&lt;&#8242;x
+
+  &lt;&#8242;-well-founded : Well-founded _&lt;&#8242;_
+  &lt;&#8242;-well-founded n = acc &lt;&#8242;-acc
+</pre>
+</div>
+<p>
+Since the right side of the base case of <code>&lt;′-acc</code> is
+exactly <code>&lt;′-well-founded</code>, I've seen these presented as
+mutual definitions; I find it more illuminating to
+detangle them.
+</p>
+
+<p>
+Now, to define the Euclidean algorithm function,
+we must decide upon a value upon which to base our well-founded recursion
+with respect to <code>_&lt;_</code>. That is, we must decide upon a value
+which is strictly decreasing at each call.
+However, we are only decreasing one of the two arguments at each call,
+and it is not necessarily the same argument each time.
+So neither <code>m</code> or <code>n</code> is an adequate choice.
+Instead, we may consider the <i>maximum</i> of the two, <code>m ⊔ n</code>,
+which does always decrease, since we monus a non-zero value
+from the greater of the two arguments at each call.
+This does require some lemmas regarding <code>_⊔_</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  open import Data.Nat.Properties
+    using <span style="color: #90d800;">(</span>m&lt;n&#8658;m&lt;n&#8852;o ; m&lt;n&#8658;m&lt;o&#8852;n ; &#8852;-pres-&lt;m<span style="color: #90d800;">)</span>
+
+  EuclidGCD&#8242; : <span style="color: #90d800;">(</span>m n : &#8469;<span style="color: #90d800;">)</span> &#8594; Acc _&lt;&#8242;_ <span style="color: #90d800;">(</span>m &#8852; n<span style="color: #90d800;">)</span> &#8594; &#8469;
+  EuclidGCD&#8242; zero m _ = m
+  EuclidGCD&#8242; n@<span style="color: #90d800;">(</span>suc _<span style="color: #90d800;">)</span> zero _ = n
+  EuclidGCD&#8242; m@<span style="color: #90d800;">(</span>suc m&#8320;<span style="color: #90d800;">)</span> n@<span style="color: #90d800;">(</span>suc n&#8320;<span style="color: #90d800;">)</span> <span style="color: #90d800;">(</span>acc rs<span style="color: #90d800;">)</span> =
+    case &lt;-cmp m n of
+      &#955; <span style="color: #90d800;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; m&lt;n _ _<span style="color: #b6a0ff;">)</span> &#8594;
+          EuclidGCD&#8242; m <span style="color: #b6a0ff;">(</span>n &#8760; m<span style="color: #b6a0ff;">)</span>
+                     <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">{</span>suc m&#8320; &#8852; <span style="color: #f0ce43;">(</span>n&#8320; &#8760; m&#8320;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">}</span>
+                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;o&#8852;n m <span style="color: #00baf4;">(</span>&#8852;-pres-&lt;m m&lt;n <span style="color: #58dd13;">(</span>Sm&#8760;Sn&lt;Sm n&#8320; m&#8320;<span style="color: #58dd13;">)</span><span style="color: #00baf4;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+        ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span>   &#8594; m
+        ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ n&lt;m<span style="color: #b6a0ff;">)</span> &#8594;
+          EuclidGCD&#8242; <span style="color: #b6a0ff;">(</span>m &#8760; n<span style="color: #b6a0ff;">)</span> n
+                     <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">{</span>m&#8320; &#8760; n&#8320; &#8852; suc n&#8320;<span style="color: #6ae4b9;">}</span>
+                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;n&#8852;o n <span style="color: #00baf4;">(</span>&#8852;-pres-&lt;m <span style="color: #58dd13;">(</span>Sm&#8760;Sn&lt;Sm m&#8320; n&#8320;<span style="color: #58dd13;">)</span> n&lt;m<span style="color: #00baf4;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+        <span style="color: #90d800;">}</span>
+</pre>
+</div>
+<p>
+In the recursive cases, <code>rs</code> has the type
+</p>
+<pre class="example">
+{y : ℕ} → suc y ≤′ suc (m₀ ⊔ n₀) → Acc (λ m₁ n₁ → suc m₁ ≤′ n₁) y
+</pre>
+<p>
+We've written the implicit argument in in each use
+(although Agda doesn't need it to be given)
+for clarity.
+</p>
+
+<p>
+Now, we can define a “clean” version of the Euclidean algorithm function
+by utilising our proof that <code>_&lt;′_</code> is well-founded.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  EuclidGCD : <span style="color: #90d800;">(</span>m n : &#8469;<span style="color: #90d800;">)</span> &#8594; &#8469;
+  EuclidGCD m n = EuclidGCD&#8242; m n <span style="color: #90d800;">(</span>&lt;&#8242;-well-founded <span style="color: #b6a0ff;">(</span>m &#8852; n<span style="color: #b6a0ff;">)</span><span style="color: #90d800;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf6467e5" class="outline-3">
+<h3 id="Solution-version-2-–-Using-the-standard-library's-definitions"><span class="section-number-3">3.3</span> Solution version 2 – Using the standard library's definitions</h3>
+<div class="outline-text-3" id="text-Solution-version-2-–-Using-the-standard-library's-definitions">
+<p>
+:TODO:
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Mark Armstrong</p>
+     <p class="author">Contact: <a href="mailto:markparmstrong@gmail.com">markparmstrong@gmail.com</a></p>
+     <p class="date">Original date: April 1st, 2020</p>
+     <p class="date">Last updated: 2020-04-01 Wed 18:49</p>
+     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+     <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
