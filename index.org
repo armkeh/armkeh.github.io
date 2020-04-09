@@ -121,10 +121,16 @@ My résumé is hosted on [[https://github.com/armkeh/resume][my Github]].
 
 #+HTML: It is also embedded here for convenience.
 
-# The iframe here is the full width of its containing box,
-# and its height is automatically set to the height necessary
-# to hold its contents without scrolling via a script found
-# on this StackOverflow post: https://stackoverflow.com/questions/9975810/
+#+begin_comment
+The iframe here is the full width of its containing box,
+and its height is automatically set to the height necessary
+to hold its contents without scrolling via a script found
+on this StackOverflow post: https://stackoverflow.com/questions/9975810/
+
+This will not work correctly in the local HTML file on my machine;
+the pages must be on the same domain for this to work
+—specifically, both this file and the resume are on my ~github.io~ domain.
+#+end_comment
 
 #+HTML_head: <script>
 #+HTML_head:   function resizeIframe(obj) {
