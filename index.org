@@ -112,6 +112,33 @@ theory of computable functions on topological algebras
 (such as the real numbers),
 rather than on the natural numbers.
 
+* Résumé
+:PROPERTIES:
+:CUSTOM_ID: Résumé
+:END:
+
+My résumé is hosted on [[https://github.com/armkeh/resume][my Github]].
+
+#+HTML: It is also embedded here for convenience.
+
+# The iframe here is the full width of its containing box,
+# and its height is automatically set to the height necessary
+# to hold its contents without scrolling via a script found
+# on this StackOverflow post: https://stackoverflow.com/questions/9975810/
+
+#+HTML_head: <script>
+#+HTML_head:   function resizeIframe(obj) {
+#+HTML_head:     obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+#+HTML_head:   }
+#+HTML_head: </script>
+
+#+HTML: <iframe
+#+HTML:   src="https://armkeh.github.io/resume"
+#+HTML:   style="width: 100%;"
+#+HTML:   scrolling="no"
+#+HTML:   onload="resizeIframe(this)">
+#+HTML: </iframe>
+
 * Credits                                                            :ignore:
 :PROPERTIES:
 :CUSTOM_ID: Credits
