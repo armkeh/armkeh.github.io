@@ -1,5 +1,5 @@
 #+Title: An exploration of well-founded recursion
-#+Author: Mark Armstrong
+#+Author: [[https://armkeh.github.io][Mark Armstrong]] [[file:./../images/markarmstrong.jpg]]
 #+Date: April 1st, 2020
 #+Description: Exploring definitions using well-founded recursion in Agda.
 #+Startup: noindent
@@ -19,7 +19,8 @@ This post attempts to rectify that.
 
 First, I must give credit to the example code posted
 by [[https://github.com/sergei-romanenko/agda-samples/blob/master/08-WellFounded.agda][Sergei Romanenko]],
-which explores the technique using a ~log₂~ algorithm.
+which explores the technique using a ~log₂~ algorithm;
+my own developments were written by using that as an example.
 
 * Agda header
   :PROPERTIES:
@@ -31,6 +32,7 @@ regarding ~<~ and ~≤~ (from which ~<~ is derived) below.
 #+begin_src agda2
 module WellFoundedRecursion where
 
+open import Data.Unit using (⊤)
 open import Data.Nat
   using ( ℕ ; zero ; suc
         ; _+_ ; _∸_ ; _⊔_
@@ -38,7 +40,10 @@ open import Data.Nat
         ; _≤′_ ; _<′_ ; ≤′-refl ; ≤′-step)
 open import Data.Nat.Properties
   using ( <-cmp ; ≤-step ; ≤-refl ; <-transˡ ; ≤⇒≤′
-        ; m∸n≤m)
+        ; m∸n≤m
+        ; m<n⇒m<n⊔o ; m<n⇒m<o⊔n ; ⊔-pres-<m)
+open import Data.Product using (_×_ ; _,_)
+open import Data.Sum using (_⊎_ ; inj₁ ; inj₂)
 
 open import Relation.Binary.Definitions using (tri< ; tri≈ ; tri>)
 open import Relation.Binary.PropositionalEquality using (_≡_ ; refl)
@@ -221,9 +226,6 @@ which does always decrease, since we monus a non-zero value
 from the greater of the two arguments at each call.
 This does require some lemmas regarding ~_⊔_~.
 #+begin_src agda2
-  open import Data.Nat.Properties
-    using (m<n⇒m<n⊔o ; m<n⇒m<o⊔n ; ⊔-pres-<m)
-
   EuclidGCD′ : (m n : ℕ) → Acc _<′_ (m ⊔ n) → ℕ
   EuclidGCD′ zero m _ = m
   EuclidGCD′ n@(suc _) zero _ = n
@@ -260,4 +262,364 @@ by utilising our proof that ~_<′_~ is well-founded.
    :CUSTOM_ID: Solution-version-2-–-Using-the-standard-library's-definitions
    :END:
 
-:TODO:
+The standard library defines its notions of well-foundedness
+and accessibility in ~Induction.WellFounded~,
+and proves that ~_<′_~ is well-founded
+in ~Data.Nat.Induction~ —previously it was ~Induction.Nat~,
+which does still exist, but is deprecated.
+#+begin_src agda2
+open import Data.Nat.Induction using (<′-wellFounded)
+open import Induction.WellFounded using (Acc ; acc)
+#+end_src
+
+Aside from the fact that ~rs~ takes an explicit argument
+where we used an implicit one, and a slightly different name
+for the well-foundedness of ~_<′_~, we are able
+to echo our definitions above using the standard library.
+#+begin_src agda2
+EuclidGCD′ : (m n : ℕ) → Acc _<′_ (m ⊔ n) → ℕ
+EuclidGCD′ zero m _ = m
+EuclidGCD′ n@(suc _) zero _ = n
+EuclidGCD′ m@(suc m₀) n@(suc n₀) (acc rs) =
+  case <-cmp m n of
+    λ { (tri< m<n _ _) →
+        EuclidGCD′ m (n ∸ m)
+                   (rs (suc m₀ ⊔ (n₀ ∸ m₀))
+                       (≤⇒≤′ (m<n⇒m<o⊔n m (⊔-pres-<m m<n (Sm∸Sn<Sm n₀ m₀)))))
+      ; (tri≈ _ _ _)   → m
+      ; (tri> _ _ n<m) →
+        EuclidGCD′ (m ∸ n) n
+                   (rs (m₀ ∸ n₀ ⊔ suc n₀)
+                       (≤⇒≤′ (m<n⇒m<n⊔o n (⊔-pres-<m (Sm∸Sn<Sm m₀ n₀) n<m))))
+      }
+
+EuclidGCD : (m n : ℕ) → ℕ
+EuclidGCD m n = EuclidGCD′ m n (<′-wellFounded (m ⊔ n))
+#+end_src
+
+As a next step, let's move on to a more complicated domain than
+the natural numbers.
+
+* Problem 2 Draft 1 – Bintree's with union
+
+This turned out to be obviously terminating,
+once I got the algorithm correct.
+But the code is preserved here.
+#+begin_src agda2
+module BinTree₁ (Elem : Set) (# : Elem → ℕ) where
+
+  data BinTree : Set where
+    nilT : BinTree
+    branch : BinTree → Elem → BinTree → BinTree
+
+  [_] : Elem → BinTree
+  [ e ] = branch nilT e nilT
+
+  insert : Elem → BinTree → BinTree
+  insert e nilT = [ e ]
+  insert e (branch t₁ x t₂) = case <-cmp (# e) (# x) of λ
+    { (tri< e<x ¬e≡x ¬e>x) → branch (insert e t₁) x t₂
+    ; (tri≈ ¬e<x e≡x ¬e>x) → branch t₁ e t₂
+    ; (tri> ¬e<x ¬e≡x e>x) → branch t₁ x (insert e t₂)
+    }
+
+  module Bad where
+
+    union : BinTree → BinTree → BinTree
+    union nilT t = t
+    union (branch l₁ e₁ r₁) (branch l₂ e₂ r₂) =
+      case <-cmp (# e₁) (# e₂) of λ
+        { (tri< _ _ _) →
+            union (insert e₂ (branch l₁ e₁ (union r₁ r₂)))
+                  l₂
+        ; (tri≈ _ _ _) → branch (union l₁ l₂) e₁ (union r₁ r₂)
+        ; (tri> _ _ _) →
+            union (insert e₂ (branch (union l₁ l₂) e₁ r₁))
+                  r₂
+        }
+    union t@(branch _ _ _) nilT = t
+
+  height : BinTree → ℕ
+  height nilT = 0
+  height (branch t₁ _ t₂) = suc (height t₁ ⊔ height t₂)
+
+  open import Data.Nat.Properties using (n≤m⊔n ; m≤m⊔n)
+  
+  n<′suc[m⊔n] : {m n : ℕ} → n <′ suc (m ⊔ n)
+  n<′suc[m⊔n] = ≤⇒≤′ (s≤s (n≤m⊔n _ _))
+
+  m<′suc[m⊔n] : {m n : ℕ} → m <′ suc (m ⊔ n)
+  m<′suc[m⊔n] = ≤⇒≤′ (s≤s (m≤m⊔n _ _))
+
+  union′ : (t₁ t₂ : BinTree) → Acc _<′_ (height t₂) → BinTree
+  union′ nilT t _ = t
+  union′ (branch l₁ e₁ r₁) (branch l₂ e₂ r₂) (acc rs) =
+    let hʳ₁ = height r₁
+        hʳ₂ = height r₂
+        hˡ₁ = height l₁
+        hˡ₂ = height l₂
+    in
+    case <-cmp (# e₁) (# e₂) of λ
+        { (tri< _ _ _) →
+            union′ (insert e₂ (branch l₁ e₁ (union′ r₁ r₂ (rs _ n<′suc[m⊔n]))))
+                   l₂
+                   (rs _ m<′suc[m⊔n])
+        ; (tri≈ _ _ _) → branch (union′ l₁ l₂ (rs _ m<′suc[m⊔n]))
+                                e₁
+                                (union′ r₁ r₂ (rs _ n<′suc[m⊔n]))
+        ; (tri> _ _ _) →
+            union′ (insert e₂ (branch (union′ l₁ l₂ (rs _ m<′suc[m⊔n])) e₁ r₁))
+                   r₂
+                   (rs _ n<′suc[m⊔n])
+        } 
+  union′ t@(branch _ _ _) nilT _ = t
+
+  _∪_ : (t₁ t₂ : BinTree) → BinTree
+  t₁ ∪ t₂ = union′ t₁ t₂ (<′-wellFounded (height t₂))
+#+end_src
+
+Test it out:
+#+begin_src agda2
+module Test where
+
+  open BinTree₁ ℕ (λ x → x)
+
+  tree₁ : BinTree
+  tree₁ = branch (branch (branch nilT
+                                 1
+                                 nilT)
+                         3
+                         nilT)
+                 5
+                 (branch (branch nilT
+                                 7
+                                 nilT)
+                         8
+                         nilT)
+
+  tree₂ : BinTree
+  tree₂ = branch (branch nilT
+                         2
+                         nilT)
+                 4 (branch (branch nilT
+                                   5
+                                   nilT)
+                           6
+                           (branch nilT
+                                   9
+                                   nilT))
+
+  _ : tree₁ ∪ tree₂ ≡
+      branch (branch (branch nilT
+                             1
+                             (branch nilT
+                                     2
+                                     nilT))
+                     3
+                     (branch nilT
+                             4
+                             nilT))
+             5
+             (branch (branch (branch nilT
+                                     6
+                                     nilT)
+                             7
+                             nilT)
+                     8
+                     (branch nilT
+                             9
+                             nilT))
+  _ = refl
+
+  _ : tree₂ ∪ tree₁ ≡
+      branch (branch (branch nilT
+                             1
+                             nilT)
+                     2
+                     (branch nilT
+                             3
+                             nilT))
+             4
+             (branch (branch nilT
+                             5
+                             nilT)
+                     6
+                     (branch (branch (branch nilT
+                                             7
+                                             nilT)
+                                     8
+                                     nilT)
+                             9
+                             nilT))
+  _ = refl
+#+end_src
+
+* Problem 2
+
+#+begin_src agda2
+module BinTree (Elem : Set) (# : Elem → ℕ) where
+
+  data BinTree : Set where
+    nilT : BinTree
+    branch : BinTree → Elem → BinTree → BinTree
+
+--  [_] : Elem → BinTree
+--  [ e ] = branch nilT e nilT
+
+--  insert : Elem → BinTree → BinTree
+--  insert e nilT = [ e ]
+--  insert e (branch t₁ x t₂) = case <-cmp (# e) (# x) of λ
+--    { (tri< e<x ¬e≡x ¬e>x) → branch (insert e t₁) x t₂
+--    ; (tri≈ ¬e<x e≡x ¬e>x) → branch t₁ e t₂
+--    ; (tri> ¬e<x ¬e≡x e>x) → branch t₁ x (insert e t₂)
+--    }
+
+  height : BinTree → ℕ
+  height nilT = zero
+  height (branch t₁ _ t₂) = suc (height t₁ ⊔ height t₂)
+
+  data Lean : Set where
+    left : ℕ → Lean
+    right : ℕ → Lean
+    none : Lean
+
+  -- Note that a lean of 0 means the heights are off by just one.
+  lean : BinTree → Lean
+  lean nilT = none
+  lean (branch t₁ _ t₂) = case <-cmp (height t₁) (height t₂) of λ
+    { (tri< _ _ _) → right (height t₂ ∸ height t₁)
+    ; (tri≈ _ _ _) → none
+    ; (tri> _ _ _) → left (height t₁ ∸ height t₂)
+    }
+
+  rootBalanced : BinTree → Set
+  rootBalanced t = lean t ≡ none ⊎ {!lean t ≡ left 0 ⊎ lean t ≡ right 0!}
+
+  balanced : BinTree → Set
+  balanced nilT = ⊤
+  balanced t@(branch t₁ _ t₂) =
+    balanced t₁ × rootBalanced t × balanced t₂ 
+
+  pivotLeft : BinTree → BinTree
+  pivotLeft (branch l root (branch rl root′ rr)) =
+    branch (branch l root rl) root′ rr
+  {-# CATCHALL #-}
+  pivotLeft t = t
+
+  pivotRight : BinTree → BinTree
+  pivotRight (branch (branch ll root′ lr) root r) =
+    branch ll root′ (branch lr root r)
+  {-# CATCHALL #-}
+  pivotRight t = t
+
+  -- The balance factor is zero if the left and right subtrees are the same height,
+  -- or if they are off by at most one (lean of 0).
+  rootBalanceFactor : BinTree → ℕ
+  rootBalanceFactor nilT = zero
+  rootBalanceFactor t@(branch t₁ _ t₂) = case lean t of λ
+    { (left  factor) → factor
+    ; (right factor) → factor
+    ; none           → zero
+    }
+
+  open import Data.Nat using (_⊓_)
+
+  -- For the balance algorithm, we need to check if there is
+  -- any unbalanced node in a subtree. Checking for the maximum imbalance
+  -- suffices.
+  maxImbalance : BinTree → ℕ
+  maxImbalance nilT = zero
+  maxImbalance t@(branch t₁ _ t₂) =
+    maxImbalance t₁ ⊓ rootBalanceFactor t ⊓ maxImbalance t₂
+
+  module Bad where
+  
+    {-# TERMINATING #-}
+    balance : BinTree → BinTree
+    balance nilT = nilT
+    balance t@(branch t₁ e t₂) = case maxImbalance t₁ of λ
+      { (suc _) → balance (branch (balance t₁) e t₂)
+      ; zero    → case maxImbalance t₂ of λ
+                  { (suc _) → balance (branch t₁ e (balance t₂))
+                  ; zero    → case lean t of λ
+                              { (left (suc _))  → balance (pivotRight t)
+                              ; (right (suc _)) → balance (pivotLeft t)
+                              ; none            → t
+                              ; (left zero)     → t
+                              ; (right zero)    → t
+                              }
+                  }
+      }
+#+end_src
+
+#+begin_src agda2
+  -- There's no guarantee with our algorithm that the maximum imbalance
+  -- decreases at each step. But the /sum/ of the imbalances
+  -- should decrease, because we always make one subtree “better”.
+
+  totalImbalance : BinTree → ℕ
+  totalImbalance nilT = 0
+  totalImbalance t@(branch t₁ _ t₂) =
+    totalImbalance t₁ + rootBalanceFactor t + totalImbalance t₂
+
+  _≺_ : BinTree → BinTree → Set
+  t₁ ≺ t₂ = (height t₁ <′ height t₂ × totalImbalance t₁ ≤ totalImbalance t₂)
+          ⊎ (height t₁ ≤ height t₂  × totalImbalance t₁ <′ totalImbalance t₂)
+
+  balance′ : (t : BinTree) → Acc _≺_ t  → BinTree
+  balance′ nilT _ = nilT
+  balance′ t@(branch t₁ e t₂) (acc rs) = case maxImbalance t₁ of λ
+    { (suc _) → balance′ (branch (balance′ t₁ {!!}) e t₂) (rs _ {!!})
+    ; zero    → {!!}
+    }
+
+  open import Induction.WellFounded using (WellFounded)
+
+  ≺-acc : {x y : BinTree} → y ≺ x → Acc _≺_ y
+  ≺-acc {branch _ _ _} {y} (inj₁ (fst , snd)) = acc {!!}
+  ≺-acc {branch _ _ _} {y} (inj₂ (fst , snd)) = {!!}
+
+  ≺-WellFounded : WellFounded _≺_
+  -- No trees less than the empty tree, in either sense.
+  ≺-WellFounded nilT = acc (λ { _ (inj₁ ())
+                              ; _ (inj₂ ()) })
+  -- …
+  ≺-WellFounded (branch _ _ _) = acc (λ { y (inj₁ (fst , snd)) → acc {!!}
+                                        ; y (inj₂ (fst , snd)) → acc (λ y₁ x₃ → {!≺-WellFounded ?!}) } )
+#+end_src
+
+#+begin_src agda2
+module BadBalanceTest where
+
+  open BinTree ℕ (λ x → x)
+  open Bad renaming (balance to badBalance)
+
+  t₂′ : BinTree
+  t₂′ = branch nilT 3 nilT
+
+  t₂ : BinTree
+  t₂ = branch nilT 2 t₂′
+
+  tree : BinTree
+  tree = branch nilT 1 t₂
+
+  {- Walk through the algorithm manually
+  _ : balanceFactor t₂ ≡ 0
+  _ = refl
+
+  _ : balanceFactor nilT ≡ 0
+  _ = refl
+
+  _ : lean tree ≡ right 2
+  _ = refl
+
+  tree′ : BinTree
+  tree′ = pivotLeft tree
+
+  _ : tree′ ≡ {!nilT!}
+  _ = refl
+  -}
+
+  _ : badBalance tree ≡ branch (branch nilT 1 nilT) 2 (branch nilT 3 nilT)
+  _ = refl
+#+end_src
