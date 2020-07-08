@@ -162,7 +162,7 @@ A few webpages I've made together with my kids.
 :CUSTOM_ID: McMaster-Venture-STEM-camps,-2020
 :END:
 
-- [[file:./kids/callie/venture-2020/egg-report.html][Egg drop challenge]]
+- [[file:./kids/Callie/Venture2020/day2-egg-drop.html][Egg drop challenge]]
 
 * Credits                                                            :ignore:
 :PROPERTIES:
