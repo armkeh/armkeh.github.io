@@ -1,12 +1,58 @@
-#+Title: Callie's egg drop experiment
+#+Title: Callie's egg drop experiment report
 #+Author: Callie Armstrong
-#+Options: toc:nil num:nil
+#+Options: toc:nil num:nil html-postamble:nil
+
+* HTML header                                   :noexport:
+:PROPERTIES:
+:CUSTOM_ID: HTML-header
+:END:
+
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 
-* Introduction                                                     :noexport:
+** Columns
+:PROPERTIES:
+:CUSTOM_ID: Columns
+:END:
+
+#+HTML_head: <style>
+
+We use a two-column layout where we have two images in a row.
+
+This layout does not look good if the window is too narrow,
+such as when the page is loaded on a phone.
+We can use media queries to set the CSS
+for the sidebar based on the window width.
+When the window is narrow, just treat it
+—and the content left of it—
+normally.
+#+HTML_head: .left-float {}
+#+HTML_head: .right-float {}
+
+When we're in a wide window, set up the sidebar.
+#+HTML_head: @media only screen and (min-width: 768px) {
+#+HTML_head:   .left-float {
+#+HTML_head:     float: left;
+#+HTML_head:     width: 50%;
+#+HTML_head:   }
+#+HTML_head:   .right-float {
+#+HTML_head:     float: right;
+#+HTML_head:     width: 50%;
+#+HTML_head:   }
+#+HTML_head: }
+
+#+HTML_head: </style>
+
+* Introduction                                  :ignore:
 :PROPERTIES:
 :CUSTOM_ID: Introduction
 :END:
+
+#+HTML: <h3><center>
+Venture Academy All Girls STEM grades 3-5 camp, July 2020, day 2
+#+HTML: </center></h3>
+
+#+attr_html: :width 200
+[[./media/Egg Drop!.gif]]
 
 For my egg drop experiment for day 2 of
 the Venture girls STEM camp,
@@ -17,35 +63,48 @@ I made three different baskets.
 :CUSTOM_ID: Basket-1:-A-pop-bottle
 :END:
 
-#+Caption: A pop bottle with a large bag as parachute
+#+HTML: <div class="left-float">
+
+#+Caption: A pop bottle with a large bag as parachute.
 #+attr_html: :width 500
 [[./media/popbottle1.jpg]]
 
-#+Caption: Using a smaller part of a bag as parachute
+#+HTML: </div>
+#+HTML: <div class="right-float">
+
+#+Caption: Using a smaller part of a bag as parachute.
 #+attr_html: :width 500
 [[./media/popbottle2.jpg]]
 
-My pop bottle basket did not work well.
-I tried two different parachutes.
-I used a hard boiled egg.
+#+HTML: </div>
+
+- My pop bottle basket did not work well.
+- The hard boiled egg cracked both times.
+- I tried two different parachutes.
 
 * Basket 2: An egg carton
 :PROPERTIES:
 :CUSTOM_ID: Basket-2:-An-egg-carton
 :END:
 
+#+HTML: <div class="left-float">
+
 #+Caption: An egg carton with the smaller parachute; the egg survived!
 #+attr_html: :width 500
 [[./media/carton1-survived.jpg]]
 
-#+Caption: The second time the egg broke
+#+HTML: </div>
+#+HTML: <div class="right-float">
+
+#+Caption: The second time the egg cracked.
 #+attr_html: :width 500
 [[./media/carton2-broke.jpg]]
 
-My egg carton basket with a parachute worked okay.
-I used a hard boiled egg.
-The egg broke on the second drop.
-The best part of it was the egg was snug.
+#+HTML: </div>
+
+- My egg carton basket with a parachute worked okay.
+- The hard-boiled cracked on the second drop.
+- The best part of the design was the egg was snug.
 
 Slow motion video of the first drop:
 #+HTML: <video width="180" height="320" controls style="display: block; margin: 0 auto;">
@@ -58,22 +117,32 @@ Slow motion video of the first drop:
 :CUSTOM_ID: Basket-3:-A-tupperware-container
 :END:
 
-#+Caption: The uncooked egg inside this container survived! :)
+#+Caption: The uncooked egg inside this container did not crack! :)
 #+attr_html: :width 500
 [[./media/tupperware.jpg]]
 
-My tupperware basket worked well.
-It did not have a parachute.
-Instead I filled it with shredded paper and cotton balls.
-The egg was uncooked.
-The egg didn't break!
-The best part of it was it was soft.
+- My tupperware basket worked well.
+- It did not have a parachute.
+- Instead I filled it with shredded paper and cotton balls.
+- The egg was uncooked.
+- The egg didn't break!
+- The best part of the design was it was soft.
 
-Slow motion video of the first drop:
+Slow motion video of the drop:
 #+HTML: <video width="180" height="320" controls style="display: block; margin: 0 auto;">
 #+HTML:   <source src="./media/container-drop.mp4" type="video/mp4">
 #+HTML: Your browser does not support the video tag.
 #+HTML: </video>
+
+* Conclusion                                    :ignore:
+:PROPERTIES:
+:CUSTOM_ID: Conclusion
+:END:
+
+#+HTML: <hr>
+
+#+attr_html: :width 200
+[[./media/hula hoop.gif]]
 
 * COMMENT Some typing practice from Callie
 :PROPERTIES:
