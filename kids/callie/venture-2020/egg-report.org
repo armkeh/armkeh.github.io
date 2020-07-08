@@ -4,34 +4,43 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 
 * Introduction                                                     :noexport:
+:PROPERTIES:
+:CUSTOM_ID: Introduction
+:END:
 
 For my egg drop experiment for day 2 of
 the Venture girls STEM camp,
 I made three different baskets.
 
 * Basket 1: A pop bottle
+:PROPERTIES:
+:CUSTOM_ID: Basket-1:-A-pop-bottle
+:END:
 
 #+Caption: A pop bottle with a large bag as parachute
 #+attr_html: :width 500
-[[./popbottle1.jpg]]
+[[./media/popbottle1.jpg]]
 
 #+Caption: Using a smaller part of a bag as parachute
 #+attr_html: :width 500
-[[./popbottle2.jpg]]
+[[./media/popbottle2.jpg]]
 
 My pop bottle basket did not work well.
 I tried two different parachutes.
 I used a hard boiled egg.
 
 * Basket 2: An egg carton
+:PROPERTIES:
+:CUSTOM_ID: Basket-2:-An-egg-carton
+:END:
 
 #+Caption: An egg carton with the smaller parachute; the egg survived!
 #+attr_html: :width 500
-[[./carton1-survived.jpg]]
+[[./media/carton1-survived.jpg]]
 
 #+Caption: The second time the egg broke
 #+attr_html: :width 500
-[[./carton2-broke.jpg]]
+[[./media/carton2-broke.jpg]]
 
 My egg carton basket with a parachute worked okay.
 I used a hard boiled egg.
@@ -40,17 +49,18 @@ The best part of it was the egg was snug.
 
 Slow motion video of the first drop:
 #+HTML: <video width="180" height="320" controls style="display: block; margin: 0 auto;">
-#+HTML:   <source src="carton-drop.mp4" type="video/mp4">
+#+HTML:   <source src="./media/carton-drop.mp4" type="video/mp4">
 #+HTML: Your browser does not support the video tag.
 #+HTML: </video>
 
-# [[file:carton-drop.mp4]]
-
 * Basket 3: A tupperware container
+:PROPERTIES:
+:CUSTOM_ID: Basket-3:-A-tupperware-container
+:END:
 
 #+Caption: The uncooked egg inside this container survived! :)
 #+attr_html: :width 500
-[[./tupperware.jpg]]
+[[./media/tupperware.jpg]]
 
 My tupperware basket worked well.
 It did not have a parachute.
@@ -61,11 +71,14 @@ The best part of it was it was soft.
 
 Slow motion video of the first drop:
 #+HTML: <video width="180" height="320" controls style="display: block; margin: 0 auto;">
-#+HTML:   <source src="container-drop.mp4" type="video/mp4">
+#+HTML:   <source src="./media/container-drop.mp4" type="video/mp4">
 #+HTML: Your browser does not support the video tag.
 #+HTML: </video>
 
 * COMMENT Some typing practice from Callie
+:PROPERTIES:
+:CUSTOM_ID: COMMENT-Some-typing-practice-from-Callie
+:END:
 
 The quick brown fox jumped over the lazy dog.
 the abcdefghijklmnopurstuvwxyz

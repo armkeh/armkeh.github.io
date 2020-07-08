@@ -32,7 +32,7 @@ I am an avid Emacs user
 
 So far this is just a few disconnected “posts”.
 
-- [[file:./blog/AgdaHighlighting.html][Agda Highlighting]]
+-[file:./blog/AgdaHighlighting.html][Agda Highlighting]]
 - [[file:./blog/InferenceRulesInOrg.html][Inference rules in Org]]
   - The [[file:./blog/InferenceRuleInOrg.pdf][generated PDF]], and
   - the [[file:./blog/InferenceRulesInOrg.org][Org source]].
@@ -144,6 +144,25 @@ the pages must be on the same domain for this to work
 #+HTML:   scrolling="no"
 #+HTML:   onload="resizeIframe(this)">
 #+HTML: </iframe>
+
+* My kids
+:PROPERTIES:
+:CUSTOM_ID: My-kids
+:END:
+
+A few webpages I've made together with my kids.
+
+** Callie
+:PROPERTIES:
+:CUSTOM_ID: Callie
+:END:
+
+*** McMaster Venture STEM camps, 2020
+:PROPERTIES:
+:CUSTOM_ID: McMaster-Venture-STEM-camps,-2020
+:END:
+
+- [[file:./kids/callie/venture-2020/egg-report.html][Egg drop challenge]]
 
 * Credits                                                            :ignore:
 :PROPERTIES:
