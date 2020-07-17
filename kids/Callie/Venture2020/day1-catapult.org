@@ -1,0 +1,98 @@
+#+Title: Callie' s catapult report
+#+Author: Callie Armstrong
+#+Options: toc:nil num:nil html-postamble:nil
+
+* HTML header                                   :noexport:
+:PROPERTIES:
+:CUSTOM_ID: HTML-header
+:END:
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
+** Columns
+:PROPERTIES:
+:CUSTOM_ID: Columns
+:END:
+
+#+HTML_head: <style>
+
+We use a two-column layout where we have two images in a row.
+
+This layout does not look good if the window is too narrow,
+such as when the page is loaded on a phone.
+We can use media queries to set the CSS
+for the sidebar based on the window width.
+When the window is narrow, just treat it
+—and the content left of it—
+normally.
+#+HTML_head: .left-float {}
+#+HTML_head: .right-float {}
+
+When we're in a wide window, set up the sidebar.
+#+HTML_head: @media only screen and (min-width: 768px) {
+#+HTML_head:   .left-float {
+#+HTML_head:     float: left;
+#+HTML_head:     width: 50%;
+#+HTML_head:   }
+#+HTML_head:   .right-float {
+#+HTML_head:     float: right;
+#+HTML_head:     width: 50%;
+#+HTML_head:   }
+#+HTML_head: }
+
+#+HTML_head: </style>
+
+* Introduction                                  :ignore:
+:PROPERTIES:
+:CUSTOM_ID: Introduction
+:END:
+
+#+HTML: <h3><center>
+Venture Academy All Girls STEM grades 3-5 camp, July 2020, day 1
+#+HTML: </center></h3>
+
+#+attr_html: :width 200
+[[./media/giphy.gif]]
+
+:TODO:
+
+* My catapults
+
+#+HTML: <div class="left-float">
+
+#+attr_html: :width 500
+[[./media/catapults.jpg]]
+
+#+HTML: </div>
+#+HTML: <div class="right-float">
+
+#+attr_html: :width 500
+[[./media/catapult-loaded.jpg]]
+
+#+HTML: </div>
+
+:TODO:
+
+* Firing a catapult
+
+#+HTML: <video width="320" height="180" controls style="display: block; margin: 0 auto;">
+#+HTML:   <source src="./media/catapult-loaded.mp4" type="video/mp4">
+#+HTML: Your browser does not support the video tag.
+#+HTML: </video>
+
+:TODO: 
+
+* Measuring my catapults
+
+#+attr_html: :width 500
+[[./media/catapult-measurements.jpg]]
+
+* Conclusion                                    :ignore:
+:PROPERTIES:
+:CUSTOM_ID: Conclusion
+:END:
+
+#+HTML: <hr>
+
+#+attr_html: :width 200
+[[./media/HospitableHarshDore-small.gif]]

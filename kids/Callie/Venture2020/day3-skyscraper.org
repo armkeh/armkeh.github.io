@@ -50,3 +50,55 @@ When we're in a wide window, set up the sidebar.
 #+HTML: <h3><center>
 Venture Academy All Girls STEM grades 3-5 camp, July 2020, day 3
 #+HTML: </center></h3>
+
+#+attr_html: :width 200
+[[./media/CN.gif]]
+
+:TODO: describe project
+
+* Materials and designing
+
+#+attr_html: :width 200
+[[./media/tower-materials.jpg]]
+
+:TODO:
+
+#+attr_html: :width 200
+[[./media/tower-designing.jpg]]
+
+:TODO:
+
+* The tower in progress
+
+#+HTML: <div class="left-float">
+
+#+attr_html: :width 200
+[[./media/tower-almost-complete.jpg]]
+
+#+HTML: </div>
+#+HTML: <div class="right-float">
+
+#+attr_html: :width 200
+[[./media/tower-almost-complete-side.jpg]]
+
+#+HTML: </div>
+
+:TODO:
+
+* The finished tower
+
+#+attr_html: :width 200
+[[./media/tower-complete.jpg]]
+
+:TODO:
+
+* How I tested it
+
+:TODO:
+
+* Conclusion                                    :ignore:
+
+#+HTML: <hr>
+
+#+attr_html: :width 200
+[[./media/Finn & Jake building a tower!.gif]]
