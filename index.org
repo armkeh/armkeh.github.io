@@ -25,14 +25,38 @@ at McMaster University.
 I am an avid Emacs user
 (see my init [[https://github.com/armkeh/setup/tree/master/emacs][here]]).
 
-* Blog
+* Projects and blog
 :PROPERTIES:
 :CUSTOM_ID: Blog
 :END:
 
-So far this is just a few disconnected “posts”.
+These project repositories and blog posts are work
+outside of my research and teaching.
 
--[file:./blog/AgdaHighlighting.html][Agda Highlighting]]
+** Projects
+:PROPERTIES:
+:CUSTOM_ID: Projects
+:END:
+
+- My [[https://github.com/armkeh/setup][dot files]], primarily for Emacs,
+  but also for ~bash~, ~zsh~ and ~isync/mbsync~.
+- A [[https://github.com/armkeh/resume][resume template]] in Org mode, which exports neatly to
+  PDF, HTML and markdown.
+- A /literate/ library
+  of [[https://github.com/armkeh/unicode-sty][unicode symbol definitions]]
+  to allow use of unicode characters with LaTeX, LuaLaTeX
+  or XeLaTeX.
+
+** Blog
+:PROPERTIES:
+:CUSTOM_ID: Blog
+:END:
+
+So far this is a series of disconnected posts, mostly about
+Agda and Org mode.
+
+- [[file:./blog/WellFoundedRecursion.html][Well-founded recursion (in Agda)]]
+- [[file:./blog/AgdaHighlighting.html][Agda Highlighting]]
 - [[file:./blog/InferenceRulesInOrg.html][Inference rules in Org]]
   - The [[file:./blog/InferenceRuleInOrg.pdf][generated PDF]], and
   - the [[file:./blog/InferenceRulesInOrg.org][Org source]].
@@ -48,7 +72,8 @@ So far this is just a few disconnected “posts”.
 :CUSTOM_ID: Current
 :END:
 
-No teaching, only research 😀.
+- Fall 2020: CS 3MI3,
+  [[https://armkeh.github.io/principles-of-programming-languages/index.html][Principles of Programming Languages]]
 
 ** Previous
 :PROPERTIES:
@@ -56,7 +81,7 @@ No teaching, only research 😀.
 :END:
 
 - Fall 2019: CS 3MI3,
-  [[file:3mi3-2019/homepage.html][Principles of Programming Languages]]
+  [[https://www.cas.mcmaster.ca/~armstmp/3mi3-2019/homepage.html][Principles of Programming Languages]]
 - Fall 2018: CS 3MI3,
   Principles of Programming Languages
 - Fall 2016: CS 3MI3,
@@ -112,14 +137,20 @@ theory of computable functions on topological algebras
 (such as the real numbers),
 rather than on the natural numbers.
 
-* Résumé
+- [[https://github.com/armkeh/talks/blob/master/cas-apr19-poster/poster.pdf][Poster]] on my research produced for the
+  2019 McMaster CAS department poster competition.
+  - Which won third place.
+
+* Resume
 :PROPERTIES:
 :CUSTOM_ID: Résumé
 :END:
 
-My résumé is hosted on [[https://github.com/armkeh/resume][my Github]].
+My resume is hosted on [[https://github.com/armkeh/resume][my Github]].
 
-#+HTML: It is also embedded here for convenience.
+The HTML version is also embedded here for convenience.
+You may need to refresh the page or wait a short while
+for it to display correctly.
 
 #+begin_comment
 The iframe here is the full width of its containing box,
