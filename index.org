@@ -55,6 +55,7 @@ outside of my research and teaching.
 So far this is a series of disconnected posts, mostly about
 Agda and Org mode.
 
+- [[file:./blog/DecidabilityInACompactificationOfNat.html][Decidability in the One-Point Compactification of ℕ]]
 - [[file:./blog/WellFoundedRecursion.html][Well-founded recursion (in Agda)]]
 - [[file:./blog/AgdaHighlighting.html][Agda Highlighting]]
 - [[file:./blog/InferenceRulesInOrg.html][Inference rules in Org]]
