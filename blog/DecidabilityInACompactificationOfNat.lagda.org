@@ -1,0 +1,349 @@
+#+Title: Decidability in the One-Point Compactification of ℕ
+#+Author: [[https://armkeh.github.io][Mark Armstrong]] [[file:./../images/markarmstrong.jpg]]
+#+Date: August 25, 2020
+#+Description: An Agda implementation of a decider for arbitrary predicates
+#+Description: on the one-point compactification of ℕ.
+#+Startup: noindent
+#+Setupfile: ./../theme-readtheorg.setup
+#+Export_file_name: DecidabilityInACompactificationOfNat
+#+Property: header-args:agda2 :tangle src/DecidabilityInACompactificationOfNat.agda
+
+* Introduction
+  :PROPERTIES:
+  :CUSTOM_ID: Introduction
+  :END:
+
+:TODO: More narrative here.
+
+From a [[https://lists.chalmers.se/pipermail/agda/2020/012150.html][recent Agda mailing list post]]
+by Martin Escardo.
+#+begin_quote
+We can write the following unlikely functional program in Agda (and in
+Martin-Loef Type Theory of any variety):
+
+ (1) Consider the type of decreasing infinite sequences of digits 0 and 1.
+
+     Call this type ℕ∞, because
+
+      - The sequence of n-many ones followed by infinitely many zeros
+        encodes the natural number n.
+
+      - The sequence of infinitely many ones encodes ∞,
+
+     So we have an embedding ℕ → ℕ∞ and a new point ∞ in ℕ∞.
+
+ (2) There is an Agda program that decides, for a given p : ℕ∞ → Bool,
+     whether or not there is x : ℕ∞ with p x ≡ True.
+
+     Clearly such a program *does not* exist if we replace ℕ∞ by ℕ.
+     This non-existence is a theorem of computability theory.
+
+     But it does exist with ℕ∞.
+#+end_quote
+
+* Agda header                                   :noexport:
+
+#+begin_src agda2
+module DecidabilityInACompactificationOfNat where
+
+open import Data.Empty using (⊥-elim)
+open import Data.Unit using (tt)
+open import Data.Nat using (ℕ ; zero ; suc)
+open import Data.Bool using (Bool ; true ; false ; _≟_)
+open import Data.Product using (Σ-syntax ; _,_)
+open import Data.Sum using (_⊎_ ; inj₁ ; inj₂)
+open import Data.Maybe using (Maybe ; just ; nothing ; is-nothing ; Is-just ; Is-nothing)
+open import Data.Maybe.Properties using (just-injective)
+open import Data.Maybe.Relation.Unary.Any using (Any)
+open import Data.Maybe.Relation.Unary.All using (All)
+open import Relation.Nullary using (¬_ ; _because_ ; Dec ; yes ; no)
+open import Relation.Binary.PropositionalEquality as Eq
+  using (_≡_ ; refl ; sym ; trans ; cong ; inspect ; [_])
+open import Function using (_∘_ ; case_of_)
+
+open Eq.≡-Reasoning
+#+end_src
+
+* Some small extensions to the standard library
+  :PROPERTIES:
+  :CUSTOM_ID: Some-small-extensions-to-the-standard-library
+  :END:
+
+These I found useful at least at some stage of development
+though I did not end up using all of them.
+They may already be implemented in the standard library,
+just not where I looked; I'd have to double check.
+#+begin_src agda2
+nothing≢just : {A : Set} → (a : A) → ¬ (nothing ≡ just a)
+nothing≢just a ()
+
+Is-nothing? : {A : Set} → (x : Maybe A) → Dec (Is-nothing x)
+Is-nothing? nothing = yes All.nothing
+Is-nothing? (just _) = no λ { (All.just ()) }
+
+Is-just? : {A : Set} → (x : Maybe A) → Dec (Is-just x)
+Is-just? nothing = no λ ()
+Is-just? (just _) = yes (Any.just tt)
+#+end_src
+
+* The one-point compactification of ℕ
+  :PROPERTIES:
+  :CUSTOM_ID: The-one-point-compactification-of-ℕ
+  :END:
+
+First, let us use the name ~ℕ*~, rather than ~ℕ∞~.
+This leads us to naturally append ~*~ to the standard names for
+elements of or functions on ~ℕ*~, which is far more readable
+than appending ~∞~ everywhere.
+We will still call the “new point” of ~ℕ*~ ~∞~.
+
+Rather than decreasing infinite sequences of ~0~'s and ~1~'s,
+I choose to represent ~ℕ*~ as a potentially infinite string
+of unary constructors; specifically,
+the constructor ~just~ of the ~Maybe~ type.
+#+begin_src agda2
+record ℕ* : Set where
+  coinductive
+  field
+    c : Maybe ℕ*
+open ℕ*
+#+end_src
+
+We need to define bisimilarity of elements of ~ℕ*~ in order
+to be able to compare them.
+#+begin_src agda2
+record _≈_ (m n : ℕ*) : Set where
+  coinductive
+  field
+    c-≈ : ℕ*.c m ≡ ℕ*.c n
+open _≈_
+#+end_src
+
+Symmetry and transitivity follow easily.
+#+begin_src agda2
+≈-sym : {m n : ℕ*} → m ≈ n → n ≈ m
+c-≈ (≈-sym m≈n) = sym (c-≈ m≈n)
+
+≈-trans : {m n o : ℕ*} → m ≈ n → n ≈ o → m ≈ o
+c-≈ (≈-trans m≈n n≈o) = trans (c-≈ m≈n) (c-≈ n≈o)
+#+end_src
+
+* Naming some elements of ℕ*
+  :PROPERTIES:
+  :CUSTOM_ID: Naming-some-elements-of-~ℕ*~
+  :END:
+
+It's convenient to refer to the elements of ~ℕ*~ by these more familiar names.
+#+begin_src agda2
+0* : ℕ*
+c 0* = nothing
+
+suc* : ℕ* → ℕ*
+c (suc* n) = just n
+
+∞ : ℕ*
+c ∞ = just ∞
+#+end_src
+
+Now we provide a series of proofs that these names refer
+to the numbers we have in mind; namely, we want to prove that
+- zero is not a successor[fn::From this, we could prove the corollary
+  that zero is not infinity, but this would require a use of transitivity,
+  so we provide a direct proof.]
+- successors is an injecive function,
+- infinity is a fix-point of successor, and
+- infinity is the only fix-point of successor.
+
+#+begin_src agda2
+¬[0*≈suc*-n] : (n : ℕ*) → ¬ 0* ≈ suc* n
+¬[0*≈suc*-n] n 0*≈suc*-n = nothing≢just n (c-≈ 0*≈suc*-n)
+
+¬[0*≈∞] : ¬ (0* ≈ ∞)
+¬[0*≈∞] 0*≈∞ = nothing≢just ∞ (c-≈ 0*≈∞)
+#+end_src
+
+#+begin_src agda2
+suc*-∞≈∞ : suc* ∞ ≈ ∞
+c-≈ (suc*-∞≈∞) = refl
+#+end_src
+
+#+begin_src agda2
+suc*-injective : {m n : ℕ*}
+      → suc* m ≈ suc* n → m ≈ n
+c-≈ (suc*-injective m≈n) = cong c (just-injective (c-≈ m≈n))
+#+end_src
+
+#+begin_src agda2
+¬[n≈∞]⇒¬[suc*-n≈∞] : (n : ℕ*) → ¬ (n ≈ ∞) → ¬ (suc* n ≈ ∞)
+¬[n≈∞]⇒¬[suc*-n≈∞] n ¬[n≈∞] suc*-n≈∞ =
+  ¬[n≈∞] (suc*-injective (≈-trans suc*-n≈∞
+                                  (≈-sym suc*-∞≈∞)))
+#+end_src
+
+* The embedding of ℕ into ℕ*
+  :PROPERTIES:
+  :CUSTOM_ID: The-embedding-of-~ℕ~-into-~ℕ*~
+  :END:
+
+Now the embedding of a natural number ~n~ into ~ℕ~ produces
+a string of ~just~'s of length ~n~, followed by a ~nothing~.
+We could have used our constants here, but we define it
+directly instead.
+#+begin_src agda2
+embed : ℕ → ℕ*
+embed zero = 0*
+embed (suc n) = suc* (embed n)
+#+end_src
+
+There is no way that we can obtain the fix-point infinity by embedding.
+#+begin_src agda2
+¬[embed-n≈∞] : (n : ℕ) → ¬ (embed n ≈ ∞)
+¬[embed-n≈∞] zero = ¬[0*≈∞]
+¬[embed-n≈∞] (suc n) = ¬[n≈∞]⇒¬[suc*-n≈∞] (embed n) (¬[embed-n≈∞] n)
+#+end_src
+
+* Decidable case checks on ℕ*
+  :PROPERTIES:
+  :CUSTOM_ID: Decidable-case-checks-on-~ℕ*~
+  :END:
+
+It may be useful for us to be able to distinguish values of ~ℕ*~,
+because we cannot pattern match on elements.
+Decidable ~Is-zero*~ and ~Is-suc*~ predicates
+allow us to work around that limitation.
+#+begin_src agda2
+Is-zero* : ℕ* → Set
+Is-zero* = _≈ 0*
+
+Is-suc* : ℕ* → Set
+Is-suc* n = Σ[ m ∈ ℕ* ] n ≈ suc* m
+#+end_src
+
+We can define an ~Is-∞~ predicate, but unless I miss my mark,
+this cannot be decidable.
+#+begin_src agda2
+Is-∞ : ℕ* → Set
+Is-∞ = _≈ ∞
+#+end_src
+
+I cannot see a way around using ~inspect~ to define the deciders
+for these. In the ~no~ cases, we must somewhat carefully
+constuct the contradictory value.
+#+begin_src agda2
+Is-zero*? : (n : ℕ*) → Dec (Is-zero* n)
+Is-zero*? n with c n | inspect c n
+... | nothing | [ c-n≡nothing ] = yes (record { c-≈ = c-n≡nothing })
+... | just predn | [ c-n≡just-predn ]  =
+  no λ n≈0* → ¬[0*≈suc*-n] predn (≈-sym (≈-trans (record { c-≈ = sym c-n≡just-predn }) n≈0*))
+#+end_src
+
+:TODO: commentary; I needed these for the approach to ~Is-suc*?~ which
+uses ~Is-zero*?~, in order to translate the proofs.
+#+begin_src agda2
+pred* : (n : ℕ*) → ¬ (Is-zero* n) → ℕ*
+pred* n ¬Is-zero*-n with c n | inspect c n
+… | nothing | [ c-n≡nothing ] = ⊥-elim (¬Is-zero*-n (record { c-≈ = c-n≡nothing }))
+… | just predn | [ _ ] = predn
+
+suc*-pred* : (n : ℕ*) → (¬Is-zero*-n : ¬ (Is-zero* n))
+           → suc* (pred* n ¬Is-zero*-n) ≈ n
+suc*-pred* n ¬Is-zero*-n with c n | inspect c n
+… | nothing | [ c-n≡nothing ] = ⊥-elim (¬Is-zero*-n (record { c-≈ = c-n≡nothing }))
+… | just predn | [ c-n≡just-predn ] = ≈-sym (record { c-≈ = c-n≡just-predn })
+
+¬[Is-zero*-n]⇒Is-suc*-n : (n : ℕ*) → ¬ (Is-zero* n) → Is-suc* n
+¬[Is-zero*-n]⇒Is-suc*-n n ¬Is-zero*-n = pred* n ¬Is-zero*-n
+                                       , ≈-sym (suc*-pred* n ¬Is-zero*-n)
+#+end_src
+
+It seems natural to decide if a ~ℕ*~ is a successor
+by first deciding if it is zero.
+#+begin_src agda2
+Is-suc*? : (m : ℕ*) → Dec (Is-suc* m)
+Is-suc*? m = case Is-zero*? m of
+  λ { (yes Is-zero*-m)
+        → no λ { (n , m≈suc*-n) → ¬[0*≈suc*-n] n (≈-trans (≈-sym Is-zero*-m)
+                                                          m≈suc*-n) }
+    ; (no ¬Is-zero*-m) → yes (¬[Is-zero*-n]⇒Is-suc*-n m ¬Is-zero*-m)
+    }
+#+end_src
+ 
+* Decidability of arbitrary predicates on ℕ*
+  :PROPERTIES:
+  :CUSTOM_ID: Decidability-of-arbitrary-predicates-on-~ℕ*~
+  :END:
+
+:TODO: 😀
+
+I had begun a naive approach before I began using bisimilarity above,
+but it quickly got rejected by the termination checker.
+
+Specifically, it begins by checking ~p 0*~, then if that fails
+it moves on /with a modified predicate/ I called ~Suc p~.
+That works fine, /until we examine the result/ of
+running ~decide~ on that predicate.
+
+All the same, I will likely return to it next,
+unless I suddenly see the correct way forward.
+The current source code is commented out
+in the Org source of this document.
+It needs refactoring, so I don't want to show it yet.
+
+* COMMENT Scratch
+  :PROPERTIES:
+  :CUSTOM_ID: COMMENT-Scratch
+  :END:
+
+I had originally tried to define ~Is-zero?~ and ~Is-suc?~ using
+these functions from the ~Maybe~ modules.
+But this was before I began using bisimilarity.
+That, combined with the complicated definitions
+of ~Is-nothing~ and ~Is-just~ made these impractical at best.
+#+begin_src agda2
+{- These which are based on Is-nothing and Is-just
+   seem not to be useful
+Is-zero* : ℕ* → Set
+Is-zero* = Is-nothing ∘ ℕ*.c
+
+Is-zero*? : (n : ℕ*) → Dec (Is-zero* n)
+Is-zero*? = Is-nothing? ∘ ℕ*.c
+
+Is-suc* : ℕ* → Set
+Is-suc* = Is-just ∘ ℕ*.c
+
+Is-suc*? : (n : ℕ*) → Dec (Is-suc* n)
+Is-suc*? = Is-just? ∘ ℕ*.c
+-}
+#+end_src
+
+This naive approach seemed almost complete at one point.
+At time of writing, it may still be, though it will need refactoring
+as it was written before the move to bisimilarity.
+Even if it is salvagable, it seems unlikely to ever satisfy
+the termination checker.
+#+begin_src agda2
+{-
+Suc : (ℕ* → Bool) → (ℕ* → Bool)
+Suc p n = p (suc* n)
+
+{-# TERMINATING #-}
+decide : (p : ℕ* → Bool) → (Σ[ x ∈ ℕ* ] p x ≡ true) ⊎ ((y : ℕ*) → p y ≡ false)
+decide p = case p 0* ≟ true of
+  λ { (yes p-0*) → inj₁ (0* , p-0*)
+    ; (no ¬p-0*) → case decide (Suc p) of
+      λ { (inj₁ (fst , snd)) → inj₁ (suc* fst , snd)
+        ; (inj₂ y) → inj₂ (λ n → case Is-zero*? n of
+          λ { (yes n≡0*) →
+                begin
+                  p n
+                ≡⟨ cong p n0* ⟩
+                  p 0*
+                ≡⟨ {!!} ⟩
+                  false
+                ∎
+            ; (no ¬n≡0*) → {!!}
+            })
+        }
+    }
+-}
+#+end_src
