@@ -1,0 +1,169 @@
+#+Title: Computer science reading log
+#+Author: Mark Armstrong
+#+Description: A place to keep notes as I read computer science texts.
+#+Setupfile: :TODO:
+
+* Description
+:PROPERTIES:
+:CUSTOM_ID: Description
+:END:
+
+This file, which is also exported to a page on my website,
+is a log of computer science texts and papers I have read
+(with the first entries being from late fall of 2020),
+along with notes I have taken during that reading
+and sometimes a bit of history of my interactions with the book.
+
+This document is maintained mainly for my own review,
+so it may not be of interest to others.
+If I have some meaningful extra thoughts on a reading,
+I will likely make some content elsewhere,
+such as a blogpost.
+
+The library section immediately below this contains a list of the
+texts in alphabetical order of title,
+and is also used by me to track any borrowing of my books.
+
+* Library
+:PROPERTIES:
+:CUSTOM_ID: Library
+:END:
+
+- [[Purely Functional Data Structures]]
+
+* Current
+:PROPERTIES:
+:CUSTOM_ID: Current
+:END:
+
+** Purely Functional Data Structures
+:PROPERTIES:
+:CUSTOM_ID: Purely-Functional-Data-Structures
+:END:
+
+*** Preamble
+:PROPERTIES:
+:CUSTOM_ID: Preamble
+:END:
+
+From the back of the book:
+#+begin_quote
+Most books on data structures assume an imperative
+language like C or C++. However, data structures for
+these languages do not always translate well to functional
+languages such as Standard ML, Haskell, or
+Scheme. This book describes data structures from the
+point of view of functional languages, with examples,
+and presents design techniques so that programmers
+can develop their own functional data structures, such as
+red-black trees and binomial queues, and a hist of new data
+structures developed exclusively for functional
+languages. All source code is given in Standard ML and
+Haskell, and most of the programs can easily be adapted
+to other functional languages.
+
+This handy reference for professional programmers
+working with functional languages can also be used as a
+tutorial or for self-study.
+#+end_quote
+
+*** My history with the book
+:PROPERTIES:
+:CUSTOM_ID: My-history-with-the-book
+:END:
+
+I picked this book up in 2019, as one of the texts purchased
+using my PDA from teaching principles of programming languages
+at McMaster as a sessional.
+
+I gave it a quick scan after picking it up,
+but didn't really get past the introduction and the first sections
+of the next few chapters.
+
+During my next time teaching principles of programming languages,
+I began an actual readthrough to see if the content here
+would inspire any interesting lecture/tutorial topics.
+
+*** 1 – Introduction
+:PROPERTIES:
+:CUSTOM_ID: 1-–-Introduction
+:END:
+
+I appreciate here the discussion of four meanings of
+the term “data structure”; Okasaki points out the term can mean
+1. an abstract datatype,
+   - (a type along with functions/methods on that type)
+   - (the book calls this simply an abstraction)
+2. a concrete realisation (I would say implementation or representation)
+   of an abstract datatype,
+   - (concrete designs fall into this category, along with
+     implementations in programming languages)
+3. an instance of a datatype,
+4. a variable of that datatype, which the book calls
+   “a unique identity that is invariant under updates”.
+   - I would think of this as simply a variable;
+     perhaps there's an issue with this way of thinking though.
+   - (The idea being that we say, for instance, “the stack”
+     when in fact we are referring to
+     several /instances/ of a stack datatype,
+     one following from the other after some update.)
+   - (The existance of several instances is emphasised
+     when we have persitance of data, as in functional languages;
+     when we “update” a tree, we in fact create a new tree.)
+
+*** 2 – Persistance
+:PROPERTIES:
+:CUSTOM_ID: 2-–-Persistance
+:END:
+
+**** Data in memory                          :103120:
+:PROPERTIES:
+:CUSTOM_ID: Data-in-memory
+:END:
+
+This chapter gives a wonderful new way to think about
+manipulating data in a functional language
+if you have not thought about the actual layout
+of data in memory in a functional language before.
+
+Of course the function for concatenating two lists comes
+naturally, even after working in functional languages
+for only a short time:
+#+begin_example agda2
+concat [] ys = ys
+concat (x :: xs) ys = x :: (concat xs ys)
+#+end_example
+Realising that each element of a list exists in some memory cell,
+along with a pointer to the “next” element (or nil if the tail is empty),
+this code carries out the following:
+#+begin_src text
+1. Visit each memory cell of x in order,
+   keeping them in a stack (specifically, on the call stack).
+2. Create a copy of the top element, modifying its
+   “next” pointer to point to the first element of y
+   (instead of to nil). Then pop this element off the stack.
+3. Until the stack is empty, continue to copy the topmost element,
+   modifying its “next” pointer to point to the most recently
+   copied element,
+4. Return the pointer to the last copied element.
+#+end_src
+
+**** Performance                             :103120:
+
+Exercise 2.2 here is a good note about performance;
+a naive ~member~ implementation on a sorted binary tree
+will carry out ~2 * height~ comparisons in the worst case,
+more than is strictly necessary.
+
+For instance,
+checking first if the query element is less than the root,
+and then checks if it is greater than the root,
+(with equality then being the conclusion if both checks return false.)
+
+The second check above does save time in some instances,
+since we can avoid searching the right tree if
+we have already found an element equal to the query.
+But more generally, this added check costs time,
+and to improve worst-case performance,
+we should avoid it and simply carry on searching,
+keeping track of the best candidate for equality as we go.

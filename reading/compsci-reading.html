@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-11-01 Sun 01:15 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Computer science reading log</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Mark Armstrong" />
+<meta name="description" content="A place to keep notes as I read computer science texts."
+ />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<style>pre.src{background:#000000;color:white;} </style>
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+<!--/*--><![CDATA[/*><!--*/
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Computer science reading log</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#Description">1. Description</a></li>
+<li><a href="#Library">2. Library</a></li>
+<li><a href="#Current">3. Current</a>
+<ul>
+<li><a href="#Purely-Functional-Data-Structures">3.1. Purely Functional Data Structures</a>
+<ul>
+<li><a href="#Preamble">3.1.1. Preamble</a></li>
+<li><a href="#My-history-with-the-book">3.1.2. My history with the book</a></li>
+<li><a href="#1-–-Introduction">3.1.3. 1 – Introduction</a></li>
+<li><a href="#2-–-Persistance">3.1.4. 2 – Persistance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-Description" class="outline-2">
+<h2 id="Description"><span class="section-number-2">1</span> Description</h2>
+<div class="outline-text-2" id="text-Description">
+<p>
+This file, which is also exported to a page on my website,
+is a log of computer science texts and papers I have read
+(with the first entries being from late fall of 2020),
+along with notes I have taken during that reading
+and sometimes a bit of history of my interactions with the book.
+</p>
+
+<p>
+This document is maintained mainly for my own review,
+so it may not be of interest to others.
+If I have some meaningful extra thoughts on a reading,
+I will likely make some content elsewhere,
+such as a blogpost.
+</p>
+
+<p>
+The library section immediately below this contains a list of the
+texts in alphabetical order of title,
+and is also used by me to track any borrowing of my books.
+</p>
+</div>
+</div>
+
+<div id="outline-container-Library" class="outline-2">
+<h2 id="Library"><span class="section-number-2">2</span> Library</h2>
+<div class="outline-text-2" id="text-Library">
+<ul class="org-ul">
+<li><a href="#Purely-Functional-Data-Structures">3.1</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-Current" class="outline-2">
+<h2 id="Current"><span class="section-number-2">3</span> Current</h2>
+<div class="outline-text-2" id="text-Current">
+</div>
+
+<div id="outline-container-Purely-Functional-Data-Structures" class="outline-3">
+<h3 id="Purely-Functional-Data-Structures"><span class="section-number-3">3.1</span> Purely Functional Data Structures</h3>
+<div class="outline-text-3" id="text-Purely-Functional-Data-Structures">
+</div>
+
+<div id="outline-container-Preamble" class="outline-4">
+<h4 id="Preamble"><span class="section-number-4">3.1.1</span> Preamble</h4>
+<div class="outline-text-4" id="text-Preamble">
+<p>
+From the back of the book:
+</p>
+<blockquote>
+<p>
+Most books on data structures assume an imperative
+language like C or C++. However, data structures for
+these languages do not always translate well to functional
+languages such as Standard ML, Haskell, or
+Scheme. This book describes data structures from the
+point of view of functional languages, with examples,
+and presents design techniques so that programmers
+can develop their own functional data structures, such as
+red-black trees and binomial queues, and a hist of new data
+structures developed exclusively for functional
+languages. All source code is given in Standard ML and
+Haskell, and most of the programs can easily be adapted
+to other functional languages.
+</p>
+
+<p>
+This handy reference for professional programmers
+working with functional languages can also be used as a
+tutorial or for self-study.
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-My-history-with-the-book" class="outline-4">
+<h4 id="My-history-with-the-book"><span class="section-number-4">3.1.2</span> My history with the book</h4>
+<div class="outline-text-4" id="text-My-history-with-the-book">
+<p>
+I picked this book up in 2019, as one of the texts purchased
+using my PDA from teaching principles of programming languages
+at McMaster as a sessional.
+</p>
+
+<p>
+I gave it a quick scan after picking it up,
+but didn't really get past the introduction and the first sections
+of the next few chapters.
+</p>
+
+<p>
+During my next time teaching principles of programming languages,
+I began an actual readthrough to see if the content here
+would inspire any interesting lecture/tutorial topics.
+</p>
+</div>
+</div>
+
+<div id="outline-container-1-–-Introduction" class="outline-4">
+<h4 id="1-–-Introduction"><span class="section-number-4">3.1.3</span> 1 – Introduction</h4>
+<div class="outline-text-4" id="text-1-–-Introduction">
+<p>
+I appreciate here the discussion of four meanings of
+the term “data structure”; Okasaki points out the term can mean
+</p>
+<ol class="org-ol">
+<li>an abstract datatype,
+<ul class="org-ul">
+<li>(a type along with functions/methods on that type)</li>
+<li>(the book calls this simply an abstraction)</li>
+</ul></li>
+<li>a concrete realisation (I would say implementation or representation)
+of an abstract datatype,
+<ul class="org-ul">
+<li>(concrete designs fall into this category, along with
+implementations in programming languages)</li>
+</ul></li>
+<li>an instance of a datatype,</li>
+<li>a variable of that datatype, which the book calls
+“a unique identity that is invariant under updates”.
+<ul class="org-ul">
+<li>I would think of this as simply a variable;
+perhaps there's an issue with this way of thinking though.</li>
+<li>(The idea being that we say, for instance, “the stack”
+when in fact we are referring to
+several <i>instances</i> of a stack datatype,
+one following from the other after some update.)</li>
+<li>(The existance of several instances is emphasised
+when we have persitance of data, as in functional languages;
+when we “update” a tree, we in fact create a new tree.)</li>
+</ul></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-2-–-Persistance" class="outline-4">
+<h4 id="2-–-Persistance"><span class="section-number-4">3.1.4</span> 2 – Persistance</h4>
+<div class="outline-text-4" id="text-2-–-Persistance">
+</div>
+
+<ol class="org-ol">
+<li><a id="Data-in-memory"></a>Data in memory&#xa0;&#xa0;&#xa0;<span class="tag"><span class="103120">103120</span></span><br />
+<div class="outline-text-5" id="text-Data-in-memory">
+<p>
+This chapter gives a wonderful new way to think about
+manipulating data in a functional language
+if you have not thought about the actual layout
+of data in memory in a functional language before.
+</p>
+
+<p>
+Of course the function for concatenating two lists comes
+naturally, even after working in functional languages
+for only a short time:
+</p>
+<pre class="example" id="orgb36ab12">
+concat [] ys = ys
+concat (x :: xs) ys = x :: (concat xs ys)
+</pre>
+<p>
+Realising that each element of a list exists in some memory cell,
+along with a pointer to the “next” element (or nil if the tail is empty),
+this code carries out the following:
+</p>
+<div class="org-src-container">
+<pre class="src src-text">1. Visit each memory cell of x in order,
+   keeping them in a stack <span style="color: #00cd68;">(</span>specifically, on the call stack<span style="color: #00cd68;">)</span>.
+2. Create a copy of the top element, modifying its
+   <span style="color: #00cd68;">&#8220;</span>next<span style="color: #00cd68;">&#8221;</span> pointer to point to the first element of y
+   <span style="color: #00cd68;">(</span>instead of to nil<span style="color: #00cd68;">)</span>. Then pop this element off the stack.
+3. Until the stack is empty, continue to copy the topmost element,
+   modifying its <span style="color: #00cd68;">&#8220;</span>next<span style="color: #00cd68;">&#8221;</span> pointer to point to the most recently
+   copied element,
+4. Return the pointer to the last copied element.
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orgcd2dacd"></a>Performance&#xa0;&#xa0;&#xa0;<span class="tag"><span class="103120">103120</span></span><br />
+<div class="outline-text-5" id="text-3-1-4-2">
+<p>
+Exercise 2.2 here is a good note about performance;
+a naive <code>member</code> implementation on a sorted binary tree
+will carry out <code>2 * height</code> comparisons in the worst case,
+more than is strictly necessary.
+</p>
+
+<p>
+For instance,
+checking first if the query element is less than the root,
+and then checks if it is greater than the root,
+(with equality then being the conclusion if both checks return false.)
+</p>
+
+<p>
+The second check above does save time in some instances,
+since we can avoid searching the right tree if
+we have already found an element equal to the query.
+But more generally, this added check costs time,
+and to improve worst-case performance,
+we should avoid it and simply carry on searching,
+keeping track of the best candidate for equality as we go.
+</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Mark Armstrong</p>
+     <p class="author">Contact: <a href="mailto:markparmstrong@gmail.com">markparmstrong@gmail.com</a></p>
+     <p class="date">Original date: </p>
+     <p class="date">Last updated: 2020-11-01 Sun 01:15</p>
+     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.4)</p>
+     <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

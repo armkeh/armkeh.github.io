@@ -3,6 +3,14 @@
 #+Author: Mark Armstrong
 #+Description: My github.io home page.
 #+Setupfile: ./theme-bigblow.setup
+ 
+* HTML settings                                 :noexport:
+
+#+HTML_head: <script>
+#+HTML_head:   function resizeIframe(obj) {
+#+HTML_head:     obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+#+HTML_head:   }
+#+HTML_head: </script>
 
 * Personal photo                                                     :ignore:
 :PROPERTIES:
@@ -62,6 +70,23 @@ Agda and Org mode.
   - The [[file:./blog/InferenceRuleInOrg.pdf][generated PDF]], and
   - the [[file:./blog/InferenceRulesInOrg.org][Org source]].
 - [[file:./blog/EqualityOfFunctions.html][Equality of functions in Agda]]
+
+* Reading
+:PROPERTIES:
+:CUSTOM_ID: Reading
+:END:
+
+I keep a reading log [[./reading/compsci-reading.html][here]] of computer science papers
+and texts I have or am reading, along with notes.
+
+The page is also embedded here for convenience.
+
+#+HTML: <iframe
+#+HTML:   src="./reading/compsci-reading.html"
+#+HTML:   style="width: 100%;"
+#+HTML:   scrolling="no"
+#+HTML:   onload="resizeIframe(this)">
+#+HTML: </iframe>
 
 * Teaching
 :PROPERTIES:
@@ -144,7 +169,7 @@ rather than on the natural numbers.
 
 * Resume
 :PROPERTIES:
-:CUSTOM_ID: Résumé
+:CUSTOM_ID: Resume
 :END:
 
 My resume is hosted on [[https://github.com/armkeh/resume][my Github]].
@@ -163,12 +188,6 @@ This will not work correctly in the local HTML file on my machine;
 the pages must be on the same domain for this to work
 —specifically, both this file and the resume are on my ~github.io~ domain.
 #+end_comment
-
-#+HTML_head: <script>
-#+HTML_head:   function resizeIframe(obj) {
-#+HTML_head:     obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
-#+HTML_head:   }
-#+HTML_head: </script>
 
 #+HTML: <iframe
 #+HTML:   src="https://armkeh.github.io/resume"
