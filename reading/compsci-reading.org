@@ -1,7 +1,7 @@
 #+Title: Computer science reading log
 #+Author: Mark Armstrong
 #+Description: A place to keep notes as I read computer science texts.
-#+Setupfile: :TODO:
+# :TODO: #+Setupfile:
 
 * Description
 :PROPERTIES:
@@ -31,10 +31,78 @@ and is also used by me to track any borrowing of my books.
 
 - [[Purely Functional Data Structures]]
 
-* Current
-:PROPERTIES:
-:CUSTOM_ID: Current
-:END:
+* Current books
+
+** Structure and Interpretation of Computer Programs (SICP)
+
+*** Preamble
+
+The “wizard book”.
+
+*** My history with the book
+
+:TODO:
+
+*** Foreward
+
+**** Advocating for dynamic type checking
+
+#+begin_quote
+“It is better to have 100 functions operate on one data structure
+ than to have 10 functions operate on 10 data structures.”
+#+end_quote
+
+The first edition of this book was released
+roughly a decade following the first appearance of SML,
+which had parametric polymorphism, and
+almost two decades following the first appearance of Simula 67,
+commonly considered the first object oriented language.
+
+With these languages and type systems in mind,
+it does seems to me that this quote is oversimplifying matters.
+We can have the best of both worlds
+via subtyping or parametric polymorphism.
+
+But considering the large exodus that was to take place
+towards dynamically typed languages (Python, Ruby, Javascript, etc.),
+this sentiment is in retrospect at least not too surprising.
+
+I take this to be more of an admonition of
+the static type systems employed by C-like languages
+(at least at the time.)
+The very next paragraph does directly ask the reader
+to compare this book to one on Pascal, after all.
+
+*** Preface to the second edition
+
+**** Software as a soap bubble
+
+#+begin_quote
+“Is it possible that software is not like anything else, that it is
+meant to be discarded: that the whole point is to always see it as a soap bubble?
+
+— Alan J. Perlis
+#+end_quote
+
+I hope not 🙁. Though even the best maintained software
+and libraries seem doomed to be abandoned when we move on
+from their implementation languages.
+
+I'm thinking particularly here of Agda;
+will it (and the knowledge mechanised using it)
+live on, or will it be supplanted
+by one of its contemporaries or descendents?
+
+Let us hope that someday we become better at transcending
+particular languages; metaprogramming to the rescue?
+
+*** Chapter 1: Building Abstractions with Procedures
+
+I've used this chapter and the following in fall 2020
+as inspiration for a set of notes introducing Clojure
+for my third year principles of programming languages course.
+As of writing, those notes can be found
+[[https://armkeh.github.io/principles-of-programming-languages/notes/live-coding/11-06-Programs-as-data-in-Clojure.html][here]].
 
 ** Purely Functional Data Structures
 :PROPERTIES:
@@ -167,3 +235,56 @@ But more generally, this added check costs time,
 and to improve worst-case performance,
 we should avoid it and simply carry on searching,
 keeping track of the best candidate for equality as we go.
+
+
+* Papers
+
+** Mathematical knowledge
+
+*** Carette, Farmer, Kohlhase, Rabe
+
+Available at https://arxiv.org/abs/1904.10405
+
+On my system at
+[[~/Dropbox/Organisation/reading/other-discrete-math/Carette,Farmer,Kohlhase,Rabe -- Big Math and the One Brain-Barrier.pdf]]
+
+**** My history with the paper
+
+- Read partially sometime in early 2020, for interest's sake.
+- Read in November 2020, for interest's sake.
+
+**** My summary
+
+A position paper on the challenges faced by “big math” developments,
+i.e., developments which cannot feasibly be thoroughly understood
+by a single expert —the one brain barrier— or perhaps even by
+a small team of experts.
+
+Such developments are increasingly becoming the main avenue
+for mathematical development, and it is not well understood
+how systems can succeed in the five aspects of mathematical knowledge systems
+the paper identifies; namely,
+- /inference/, the tools to add to the system (through deduction,
+  abduction (sufficient explanation) or induction (sufficient examples.)
+- /organisation/ (of the system),
+- /tabulation/, i.e., storage of large amounts of data by the system,
+- /computation/, i.e., the ability of the system to compute solutions
+  to sufficiently large problems (which may be beyond human ability), and
+- /narration/.
+
+Individual systems which do well in each area exist,
+but no existing system solves all five problems well.
+
+The paper briefly discusses several such developments
+as small case studies, and further proposes
+a “tetrahedron” organisation of the five aspects.
+[[file:./media/big-math-tetrahedron.png]]
+
+**** Assorted thoughts
+
+- I had not seen the usage of induction to mean “sufficient examples” previously.
+  I suppose that this lines up with the notion of mathematical induction;
+  for instance, for induction over the natural numbers,
+  we give a proof of the predicate for sufficient example naturals
+  —zero and the successor of an arbitrary natural—
+  and consider the proof justified as these examples cover all possible cases.
