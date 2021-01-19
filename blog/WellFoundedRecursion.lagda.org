@@ -32,6 +32,7 @@ regarding ~<~ and ~≤~ (from which ~<~ is derived) below.
 #+begin_src agda2
 module WellFoundedRecursion where
 
+open import Data.Empty using (⊥)
 open import Data.Unit using (⊤)
 open import Data.Nat
   using ( ℕ ; zero ; suc
@@ -46,7 +47,7 @@ open import Data.Product using (_×_ ; _,_)
 open import Data.Sum using (_⊎_ ; inj₁ ; inj₂)
 
 open import Relation.Binary.Definitions using (tri< ; tri≈ ; tri>)
-open import Relation.Binary.PropositionalEquality using (_≡_ ; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_ ; refl ; sym)
 
 open import Function using (case_of_)
 #+end_src
@@ -301,17 +302,46 @@ As a next step, let's move on to a more complicated domain than
 the natural numbers.
 
 * Problem 2 Draft 1 – Bintree's with union
+  :PROPERTIES:
+  :CUSTOM_ID: Problem-2-Draft-1-–-Bintree's-with-union
+  :END:
 
-This turned out to be obviously terminating,
-once I got the algorithm correct.
-But the code is preserved here.
+At the time I began writing this post,
+I had been considering implementations of
+order-preserving functions on unordered binary trees in Agda
+as I was following along with the course
+[[https://www.cas.mcmaster.ca/~kahl/DepTyp/2020/][CAS 763, Certified Programming with Dependent Types]].
+
+Specifically, when I began writing this, I had been working on
+the union function.
+At first, I thought a direct approach
+was not obviously terminating to Agda.
+I had seen an implementation using in-order traversals
+of the two trees in the course.
+But it turned out my direct algorithm was obviously terminating,
+just a bit tricker to define
+(I had made a mistake which made it non-terminating).
+
+I've preserved the code here, for documentation.
+For an actual problem on well-founded recursion, skip to the next section,
+[[Problem 2 – Tree balancing][on tree balancing]].
+
+We start with a definition of (not necessarily ordered)
+binary trees.
+We require an ordering on the ~Elem~ set
+by way of a injective function from ~Elem~ to ~ℕ~.
 #+begin_src agda2
-module BinTree₁ (Elem : Set) (# : Elem → ℕ) where
+module BinTree₁ (Elem : Set)
+                (# : Elem → ℕ)
+                (#-injective : {e₁ e₂ : Elem} → # e₁ ≡ # e₂ → e₁ ≡ e₂)
+              where
 
   data BinTree : Set where
     nilT : BinTree
     branch : BinTree → Elem → BinTree → BinTree
-
+#+end_src
+along with some basic operations.
+#+begin_src agda2
   [_] : Elem → BinTree
   [ e ] = branch nilT e nilT
 
@@ -323,26 +353,80 @@ module BinTree₁ (Elem : Set) (# : Elem → ℕ) where
     ; (tri> ¬e<x ¬e≡x e>x) → branch t₁ x (insert e t₂)
     }
 
-  module Bad where
+  _∈_ : Elem → BinTree → Set
+  e ∈ nilT = ⊥
+  e ∈ branch t₁ f t₂ = e ∈ t₁  ⊎  e ≡ f  ⊎  e ∈ t₂
+#+end_src
 
-    union : BinTree → BinTree → BinTree
-    union nilT t = t
-    union (branch l₁ e₁ r₁) (branch l₂ e₂ r₂) =
+This union operation seemed at my first attempt to be
+not obviously terminating; however, that was due to a mistake.
+We must be careful all the ~₁~'s and ~₂~'s are correct!
+This correct code does in fact terminate.
+#+begin_src agda2
+  module DirectUnion where
+
+    _∪_ : BinTree → BinTree → BinTree
+    nilT ∪ t = t
+    (branch l₁ e₁ r₁) ∪ (branch l₂ e₂ r₂) =
       case <-cmp (# e₁) (# e₂) of λ
-        { (tri< _ _ _) →
-            union (insert e₂ (branch l₁ e₁ (union r₁ r₂)))
-                  l₂
-        ; (tri≈ _ _ _) → branch (union l₁ l₂) e₁ (union r₁ r₂)
-        ; (tri> _ _ _) →
-            union (insert e₂ (branch (union l₁ l₂) e₁ r₁))
-                  r₂
+        { (tri< _ _ _) → (insert e₂ (branch l₁ e₁ (r₁ ∪ r₂))) ∪ l₂
+        ; (tri≈ _ _ _) → branch (l₁ ∪ l₂) e₁ (r₁ ∪ r₂)
+        ; (tri> _ _ _) → (insert e₂ (branch (l₁ ∪ l₂) e₁ r₁)) ∪ r₂
         }
-    union t@(branch _ _ _) nilT = t
+    t@(branch _ _ _) ∪ nilT = t
+#+end_src
 
+We can prove that this is the union of the two trees.
+We first need a lemma about ~_∈_~ and ~insert~.
+In both the lemma and the theorem we must
+split on a call to ~<-cmp~, since both ~insert~ and ~<-cmp~ are
+defined based on a call to ~<-cmp~.
+This does result in a large number of cases,
+but they are all trivial.
+#+begin_src agda2
+    insert-preserves-∈ : {a : Elem} → {t : BinTree} → a ∈ t → (e : Elem) → a ∈ (insert e t)
+    insert-preserves-∈ {a} t@{branch l x _} (inj₁ a∈l) e with <-cmp (# e) (# x)
+    … | tri< _ _ _ = inj₁ (insert-preserves-∈ a∈l e)
+    … | tri≈ _ _ _ = inj₁ a∈l
+    … | tri> _ _ _ = inj₁ a∈l
+    insert-preserves-∈ {a} {branch _ .a _} (inj₂ (inj₁ refl)) e with <-cmp (# e) (# a)
+    … | tri< _ _ _ = inj₂ (inj₁ refl)
+    … | tri≈ _ #e≡#a _ = inj₂ (inj₁ (#-injective (sym #e≡#a)))
+    … | tri> _ _ _ = inj₂ (inj₁ refl)
+    insert-preserves-∈ {a} {branch _ x r} (inj₂ (inj₂ a∈r)) e with <-cmp (# e) (# x)
+    … | tri< _ _ _ = inj₂ (inj₂ a∈r)
+    … | tri≈ _ _ _ = inj₂ (inj₂ a∈r)
+    … | tri> _ _ _ = inj₂ (inj₂ (insert-preserves-∈ a∈r e))
+
+    e∈t₁⇒e∈t₁∪t₂ : {e : Elem} → {t₁ : BinTree} → (t₂ : BinTree) → e ∈ t₁ → e ∈ (t₁ ∪ t₂)
+    e∈t₁⇒e∈t₁∪t₂ {e}  {branch l₁ _ _} nilT (inj₁ e∈l₁) = inj₁ e∈l₁
+    e∈t₁⇒e∈t₁∪t₂ {.e} {branch _ e _} nilT (inj₂ (inj₁ refl)) = inj₂ (inj₁ refl)
+    e∈t₁⇒e∈t₁∪t₂ {e}  {branch _ _ r₁} nilT (inj₂ (inj₂ e∈r₁)) = inj₂ (inj₂ e∈r₁)
+    e∈t₁⇒e∈t₁∪t₂ {e}  {branch l₁ f₁ r₁} (branch l₂ f₂ r₂) (inj₁ e∈l₁) with <-cmp (# f₁) (# f₂)
+    … | tri< _ _ _ = e∈t₁⇒e∈t₁∪t₂ l₂ (insert-preserves-∈ (inj₁ e∈l₁) f₂)
+    … | tri≈ _ _ _ = inj₁ (e∈t₁⇒e∈t₁∪t₂ l₂ e∈l₁)
+    … | tri> _ _ _ = e∈t₁⇒e∈t₁∪t₂ r₂ (insert-preserves-∈ (inj₁ (e∈t₁⇒e∈t₁∪t₂ l₂ e∈l₁)) f₂)
+    e∈t₁⇒e∈t₁∪t₂ {e} {branch l₁ .e r₁} (branch l₂ f₂ r₂) (inj₂ (inj₁ refl)) with <-cmp (# e) (# f₂)
+    … | tri< _ _ _ = e∈t₁⇒e∈t₁∪t₂ l₂ (insert-preserves-∈ (inj₂ (inj₁ refl)) f₂)
+    … | tri≈ _ _ _ = inj₂ (inj₁ refl)
+    … | tri> _ _ _ = e∈t₁⇒e∈t₁∪t₂ r₂ (insert-preserves-∈ (inj₂ (inj₁ refl)) f₂)
+    e∈t₁⇒e∈t₁∪t₂ {e} {branch l₁ f₁ r₁} (branch l₂ f₂ r₂) (inj₂ (inj₂ e∈r₁)) with <-cmp (# f₁) (# f₂)
+    … | tri< _ _ _ = e∈t₁⇒e∈t₁∪t₂ l₂ (insert-preserves-∈ (inj₂ (inj₂ (e∈t₁⇒e∈t₁∪t₂ r₂ e∈r₁))) f₂)
+    … | tri≈ _ _ _ = inj₂ (inj₂ (e∈t₁⇒e∈t₁∪t₂ r₂ e∈r₁))
+    … | tri> _ _ _ = e∈t₁⇒e∈t₁∪t₂ r₂ (insert-preserves-∈ (inj₂ (inj₂ e∈r₁)) f₂)
+#+end_src
+
+All recursive calls in our union function
+are made on subtrees, and a sensible decreasing value
+is the height of the tree.
+#+begin_src agda2
   height : BinTree → ℕ
   height nilT = 0
   height (branch t₁ _ t₂) = suc (height t₁ ⊔ height t₂)
+#+end_src
 
+We quickly prove some lemmas regarding ~<′~, for convenience.
+#+begin_src agda2
   open import Data.Nat.Properties using (n≤m⊔n ; m≤m⊔n)
   
   n<′suc[m⊔n] : {m n : ℕ} → n <′ suc (m ⊔ n)
@@ -350,7 +434,9 @@ module BinTree₁ (Elem : Set) (# : Elem → ℕ) where
 
   m<′suc[m⊔n] : {m n : ℕ} → m <′ suc (m ⊔ n)
   m<′suc[m⊔n] = ≤⇒≤′ (s≤s (m≤m⊔n _ _))
-
+#+end_src
+And then we are ready to explicitely prove that ~union′~ is terminating.
+#+begin_src agda2
   union′ : (t₁ t₂ : BinTree) → Acc _<′_ (height t₂) → BinTree
   union′ nilT t _ = t
   union′ (branch l₁ e₁ r₁) (branch l₂ e₂ r₂) (acc rs) =
@@ -373,16 +459,21 @@ module BinTree₁ (Elem : Set) (# : Elem → ℕ) where
                    (rs _ n<′suc[m⊔n])
         } 
   union′ t@(branch _ _ _) nilT _ = t
-
+#+end_src
+And define a clean version of union.
+#+begin_src agda2
   _∪_ : (t₁ t₂ : BinTree) → BinTree
   t₁ ∪ t₂ = union′ t₁ t₂ (<′-wellFounded (height t₂))
 #+end_src
 
-Test it out:
+We could again prove this is the union;
+I believe it should be only a little more tedious.
+Instead of repeating the proof though,
+we settle for some quick unit tests.
 #+begin_src agda2
 module Test where
 
-  open BinTree₁ ℕ (λ x → x)
+  open BinTree₁ ℕ (λ x → x) (λ x≡x → x≡x)
 
   tree₁ : BinTree
   tree₁ = branch (branch (branch nilT
@@ -454,52 +545,92 @@ module Test where
   _ = refl
 #+end_src
 
-* Problem 2
+* Problem 2 – Tree balancing
+  :PROPERTIES:
+  :CUSTOM_ID: Problem-2-–-Tree-balancing
+  :END:
 
+As in the above problem about union,
+consider a simple (unbalanced, unordered) binary tree type.
 #+begin_src agda2
 module BinTree (Elem : Set) (# : Elem → ℕ) where
 
   data BinTree : Set where
     nilT : BinTree
     branch : BinTree → Elem → BinTree → BinTree
+#+end_src
 
---  [_] : Elem → BinTree
---  [ e ] = branch nilT e nilT
+Once again, define some basic operations on these trees.
+#+begin_src agda2
+  [_] : Elem → BinTree
+  [ e ] = branch nilT e nilT
 
---  insert : Elem → BinTree → BinTree
---  insert e nilT = [ e ]
---  insert e (branch t₁ x t₂) = case <-cmp (# e) (# x) of λ
---    { (tri< e<x ¬e≡x ¬e>x) → branch (insert e t₁) x t₂
---    ; (tri≈ ¬e<x e≡x ¬e>x) → branch t₁ e t₂
---    ; (tri> ¬e<x ¬e≡x e>x) → branch t₁ x (insert e t₂)
---    }
+  insert : Elem → BinTree → BinTree
+  insert e nilT = [ e ]
+  insert e (branch t₁ x t₂) = case <-cmp (# e) (# x) of λ
+    { (tri< e<x ¬e≡x ¬e>x) → branch (insert e t₁) x t₂
+    ; (tri≈ ¬e<x e≡x ¬e>x) → branch t₁ e t₂
+    ; (tri> ¬e<x ¬e≡x e>x) → branch t₁ x (insert e t₂)
+    }
+#+end_src
 
+Our goal here will be to create a balancing function
+which uses pivots, rather than a balancing insert routine which creates
+“a brand new tree”.
+
+To talk about balanced trees, we need a height function.
+#+begin_src agda2
   height : BinTree → ℕ
   height nilT = zero
   height (branch t₁ _ t₂) = suc (height t₁ ⊔ height t₂)
+#+end_src
 
+We also need to know /how/ a tree is unbalanced;
+we talk about a tree /leaning/ to the left or right
+by a certain /disparity/ (difference in height).
+Note that a disparity of 0 (~left 0~ or ~right 0~) means
+the heights are off by just 1.
+Trees with such a disparity still count as balanced.
+#+begin_src agda2
   data Lean : Set where
     left : ℕ → Lean
     right : ℕ → Lean
     none : Lean
 
-  -- Note that a lean of 0 means the heights are off by just one.
+  open import Data.Nat using (pred)
+  open import Relation.Binary.Definitions using (Tri)
+
+  -- Originally a pattern matching lambda, but extracted
+  -- to help with proofs lower down.
+  disparity : (t₁ t₂ : BinTree) → Tri (height t₁ < height t₂) (height t₁ ≡ height t₂) (height t₂ < height t₁) → Lean
+  disparity t₁ t₂ (tri< _ _ _) = right (pred (height t₂ ∸ height t₁))
+  disparity t₁ t₂ (tri≈ _ _ _) = none
+  disparity t₁ t₂ (tri> _ _ _) = left (pred (height t₁ ∸ height t₂))
+
   lean : BinTree → Lean
   lean nilT = none
-  lean (branch t₁ _ t₂) = case <-cmp (height t₁) (height t₂) of λ
-    { (tri< _ _ _) → right (height t₂ ∸ height t₁)
-    ; (tri≈ _ _ _) → none
-    ; (tri> _ _ _) → left (height t₁ ∸ height t₂)
-    }
+  lean (branch t₁ _ t₂) = disparity t₁ t₂ (<-cmp (height t₁) (height t₂))
+#+end_src
 
+The definition of “balanced” I am striving for requires not only
+the root of the tree to be balanced; all subtrees must also be balanced.
+But first we must define the notion of the root being balanced.
+#+begin_src agda2
   rootBalanced : BinTree → Set
-  rootBalanced t = lean t ≡ none ⊎ {!lean t ≡ left 0 ⊎ lean t ≡ right 0!}
-
+  rootBalanced t =
+    (lean t ≡ none) ⊎ (lean t ≡ left 0) ⊎ (lean t ≡ right 0)
+#+end_src
+Then we apply that predicate to all subtrees to check if the tree is balanced.
+#+begin_src agda2
   balanced : BinTree → Set
   balanced nilT = ⊤
   balanced t@(branch t₁ _ t₂) =
     balanced t₁ × rootBalanced t × balanced t₂ 
+#+end_src
 
+With the notion of ~balanced~ defined, we can turn to our balancing algorithm.
+As mentioned above, we will use /pivots/ to balance the tree.
+#+begin_src agda2
   pivotLeft : BinTree → BinTree
   pivotLeft (branch l root (branch rl root′ rr)) =
     branch (branch l root rl) root′ rr
@@ -511,31 +642,73 @@ module BinTree (Elem : Set) (# : Elem → ℕ) where
     branch ll root′ (branch lr root r)
   {-# CATCHALL #-}
   pivotRight t = t
+#+end_src
 
-  -- The balance factor is zero if the left and right subtrees are the same height,
-  -- or if they are off by at most one (lean of 0).
+Now we need to decide in what order we apply pivots.
+In order to assist with this, we define the notion of a /balance factor/,
+in order to find the “worst part” of the tree.
+The balance factor is zero if the left and right subtrees are the same height,
+or if they are off by at most one (lean of 0).
+#+begin_src agda2
+  leanAmount : Lean → ℕ
+  leanAmount (left factor) = factor
+  leanAmount (right factor) = factor
+  leanAmount none = zero
+
   rootBalanceFactor : BinTree → ℕ
   rootBalanceFactor nilT = zero
-  rootBalanceFactor t@(branch t₁ _ t₂) = case lean t of λ
-    { (left  factor) → factor
-    ; (right factor) → factor
-    ; none           → zero
-    }
+  rootBalanceFactor t@(branch t₁ _ t₂) = leanAmount (lean t)
+#+end_src
 
+For the balance algorithm, we need to check if there is
+any unbalanced node in a subtree. Checking for the maximum imbalance
+suffices.
+#+begin_src agda2
   open import Data.Nat using (_⊓_)
 
-  -- For the balance algorithm, we need to check if there is
-  -- any unbalanced node in a subtree. Checking for the maximum imbalance
-  -- suffices.
   maxImbalance : BinTree → ℕ
   maxImbalance nilT = zero
   maxImbalance t@(branch t₁ _ t₂) =
     maxImbalance t₁ ⊓ rootBalanceFactor t ⊓ maxImbalance t₂
+#+end_src
+
+Now we can define our naive, not obviously terminating balance function.
+It starts by balancing the left subtree, then the right,
+then applying one pivot to the root and starting again.
+To avoid nested pattern matching lambdas, we use a number
+of mutually defined functions.
+#+begin_src agda2
+  BinTreeNE : Set
+  BinTreeNE = BinTree × Elem × BinTree
 
   module Bad where
-  
+
     {-# TERMINATING #-}
-    balance : BinTree → BinTree
+    balance      : BinTree          → BinTree
+    balanceLeft  : BinTreeNE → ℕ    → BinTree
+    balanceRight : BinTreeNE → ℕ    → BinTree
+    balanceRoot  : BinTreeNE → Lean → BinTree
+
+    balanceLeft   (t₁ , e , t₂) (suc _) = balance (branch (balance t₁) e t₂)
+    balanceLeft t@(t₁ , e , t₂) zero    = balanceRight t (maxImbalance t₂)
+
+    balanceRight   (t₁ , e , t₂) (suc _) = balance (branch t₁ e (balance t₂))
+    balanceRight t@(t₁ , e , t₂) zero    = balanceRoot t (lean (branch t₁ e t₂))
+
+    balanceRoot (t₁ , e , t₂) (left (suc _))  = balance (pivotRight (branch t₁ e t₂))
+    balanceRoot (t₁ , e , t₂) (right (suc _)) = balance (pivotLeft  (branch t₁ e t₂))
+    balanceRoot (t₁ , e , t₂) none         = branch t₁ e t₂
+    balanceRoot (t₁ , e , t₂) (left zero)  = branch t₁ e t₂
+    balanceRoot (t₁ , e , t₂) (right zero) = branch t₁ e t₂
+
+    balance nilT = nilT
+    balance (branch t₁ e t₂) = balanceLeft (t₁ , e , t₂) (maxImbalance t₁)
+#+end_src
+
+Here's the version using pattern matching lambdas,
+which may be easier to read.
+#+begin_example agda2
+    {-# TERMINATING #-}
     balance nilT = nilT
     balance t@(branch t₁ e t₂) = case maxImbalance t₁ of λ
       { (suc _) → balance (branch (balance t₁) e t₂)
@@ -550,45 +723,147 @@ module BinTree (Elem : Set) (# : Elem → ℕ) where
                               }
                   }
       }
-#+end_src
+#+end_example
 
+Now what is the decreasing value here we can use
+for well-founded recursion?
+There's no guarantee that the /maximum/ imbalance
+decreases at each step.
+But after most steps of our algorithm, the /sum/ of the balance factors
+should have decreased, because we've reduced the imbalance of
+one subtree, without making any others worse.
 #+begin_src agda2
-  -- There's no guarantee with our algorithm that the maximum imbalance
-  -- decreases at each step. But the /sum/ of the imbalances
-  -- should decrease, because we always make one subtree “better”.
-
   totalImbalance : BinTree → ℕ
   totalImbalance nilT = 0
   totalImbalance t@(branch t₁ _ t₂) =
     totalImbalance t₁ + rootBalanceFactor t + totalImbalance t₂
+#+end_src
+And we only fail to decrease the sum of the balance factors
+is when the recursive calls are on structurally smaller arguments
+(specifically, in the calls of the form ~balance t₁~ and ~balance t₂~).
 
-  _≺_ : BinTree → BinTree → Set
-  t₁ ≺ t₂ = (height t₁ <′ height t₂ × totalImbalance t₁ ≤ totalImbalance t₂)
-          ⊎ (height t₁ ≤ height t₂  × totalImbalance t₁ <′ totalImbalance t₂)
+So we define a new less than relation that accounts for two cases.
+1. the height of the first tree is strictly less than that of the second, or
+2. the total imbalance of the first tree is strictly less than that of the second.
+In each case, we must ensure the other metric does not increase.
+#+begin_src agda2
+  _⪡ʰ_ : BinTree → BinTree → Set
+  t₁ ⪡ʰ t₂ = height t₁ <′ height t₂ × totalImbalance t₁ ≤ totalImbalance t₂ 
 
-  balance′ : (t : BinTree) → Acc _≺_ t  → BinTree
-  balance′ nilT _ = nilT
-  balance′ t@(branch t₁ e t₂) (acc rs) = case maxImbalance t₁ of λ
-    { (suc _) → balance′ (branch (balance′ t₁ {!!}) e t₂) (rs _ {!!})
-    ; zero    → {!!}
-    }
+  _⪡ⁱ_ : BinTree → BinTree → Set
+  t₁ ⪡ⁱ t₂ = height t₁ ≤ height t₂  × totalImbalance t₁ <′ totalImbalance t₂
 
-  open import Induction.WellFounded using (WellFounded)
-
-  ≺-acc : {x y : BinTree} → y ≺ x → Acc _≺_ y
-  ≺-acc {branch _ _ _} {y} (inj₁ (fst , snd)) = acc {!!}
-  ≺-acc {branch _ _ _} {y} (inj₂ (fst , snd)) = {!!}
-
-  ≺-WellFounded : WellFounded _≺_
-  -- No trees less than the empty tree, in either sense.
-  ≺-WellFounded nilT = acc (λ { _ (inj₁ ())
-                              ; _ (inj₂ ()) })
-  -- …
-  ≺-WellFounded (branch _ _ _) = acc (λ { y (inj₁ (fst , snd)) → acc {!!}
-                                        ; y (inj₂ (fst , snd)) → acc (λ y₁ x₃ → {!≺-WellFounded ?!}) } )
+  _⪡_ : BinTree → BinTree → Set
+  t₁ ⪡ t₂ = (t₁ ⪡ʰ t₂) ⊎ (t₁ ⪡ⁱ t₂)
 #+end_src
 
+We prove that subtrees precede their “super” tree.
 #+begin_src agda2
+  open import Data.Nat.Properties using (m≤m⊔n ; n≤m⊔n ; m≤m+n ; m≤n+m ; ≤-stepsʳ)
+
+  branch-⪡ˡ : (t₁ : BinTree) (e : Elem) (t₂ : BinTree) → t₁ ⪡ branch t₁ e t₂
+  branch-⪡ˡ t₁ _ t₂ = inj₁ (≤⇒≤′ (s≤s (m≤m⊔n (height t₁) (height t₂)))
+                          , ≤-stepsʳ (totalImbalance t₂)
+                                     (m≤m+n (totalImbalance t₁)
+                                            (leanAmount (disparity t₁ t₂ (<-cmp (height t₁) (height t₂))))))
+
+  branch-⪡ʳ : (t₁ : BinTree) (e : Elem) (t₂ : BinTree) → t₂ ⪡ branch t₁ e t₂
+  branch-⪡ʳ t₁ _ t₂ = inj₁ (≤⇒≤′ (s≤s (n≤m⊔n (height t₁) (height t₂)))
+                          , m≤n+m (totalImbalance t₂)
+                                  (  totalImbalance t₁
+                                   + leanAmount (disparity t₁ t₂ (<-cmp (height t₁) (height t₂)))))
+#+end_src
+
+:TODO: Temporary import location.
+#+begin_src agda2
+  open import Data.Nat.Properties using (+-monoˡ-≤ ; +-mono-< ; ⊔-monoˡ-≤ ; ≤′⇒≤ ; <⇒≤)
+#+end_src
+
+Here's the state of things as I left them in April.
+Seems like the first ~thing~ cannot be proven to me now.
+In particular, ~t₁~ and ~t₁′~ seem reversed.
+I'll start from scratch after tackling the accessibility
+and well-foundedness proofs.
+#+begin_example agda2
+  thing : (t₁′ t₁ t₂ : BinTree)
+        → t₁′ ⪡ⁱ t₁
+        →  (leanAmount (disparity t₁′ t₂ (<-cmp (height t₁′) (height t₂)))
+          < leanAmount (disparity t₁  t₂ (<-cmp (height t₁)  (height t₂))))
+  thing nilT (branch nilT           _ (branch _ _ _)) nilT            _ = s≤s z≤n
+  thing nilT (branch (branch _ _ _) _ nilT)           nilT            _ = s≤s z≤n
+  thing nilT (branch (branch _ _ _) _ (branch _ _ _)) nilT            _ = s≤s z≤n
+  thing nilT (branch nilT x₁ (branch t₄ x₂ t₅)) (branch t₂ x t₃) _ = ???
+  thing nilT (branch (branch t₁ x₂ t₅) x₁ nilT) (branch t₂ x t₃) _ = ???
+  thing nilT (branch (branch t₁ x₂ t₅) x₁ (branch t₄ x₃ t₆)) (branch t₂ x t₃) _ = ???
+  thing (branch t₁′ x t₁′₁) (branch t₁ x₁ t₃) t₂ _ = ???
+
+  lemma : (t₁′ t₁ : BinTree) (e : Elem) (t₂ : BinTree)
+        → t₁′ ⪡ⁱ t₁
+        → branch t₁′ e t₂ ⪡ⁱ branch t₁ e t₂
+  lemma t₁′ t₁ e t₂ (ht₁≤ht₁′ , mit₁<mit₁′) =
+      s≤s (⊔-monoˡ-≤ (height t₂) ht₁≤ht₁′)
+    , ≤⇒≤′ (+-monoˡ-≤ (totalImbalance t₂) (+-mono-< (≤′⇒≤ mit₁<mit₁′) (thing t₁′ t₁ t₂ ???)))
+  lemma′ : (t₁ : BinTree) (e : Elem) (t₂′ t₂ : BinTree)
+         → t₂′ ⪡ⁱ t₂
+         → branch t₁ e t₂′ ⪡ⁱ branch t₁ e t₂
+  lemma′ = ???
+
+  balance′ : (t : BinTree) → Acc _⪡_ t  → BinTree
+  balance′ nilT _ = nilT
+  balance′ t@(branch t₁ e t₂) (acc rs) = case maxImbalance t₁ of λ
+    { (suc _) → let t₁′ = balance′ t₁ (rs _ (branch-⪡ˡ t₁ e t₂)) in
+                balance′ (branch t₁′ e t₂) (rs _ (inj₂ (lemma t₁′ t₁ e t₂ ???)))
+    ; zero    → case maxImbalance t₂ of λ
+                { (suc _) → let t₂′ = balance′ t₂ (rs _ (branch-⪡ʳ t₁ e t₂)) in
+                            balance′ (branch t₁ e t₂′) (rs _ (inj₂ (lemma′ t₁ e t₂′ t₂ ???)))
+                 ; zero    → case lean t of λ
+                             { (left (suc _))  → balance′ (pivotRight t) (rs _ ???)
+                             ; (right (suc _)) → balance′ (pivotLeft t) (rs _ ???)
+                             ; none            → t
+                             ; (left zero)     → t
+                             ; (right zero)    → t
+                             }
+                 }
+    }
+#+end_example
+
+#+begin_src agda2
+  open import Induction.WellFounded using (WellFounded)
+
+  ⪡ʰ-acc : {x y : BinTree} → y ⪡ʰ x → Acc _⪡ʰ_ y
+  ⪡ʰ-WellFounded : WellFounded _⪡ʰ_
+
+  ⪡ʰ-acc {branch x x₁ x₂} {nilT} (fst , z≤n) = ⪡ʰ-WellFounded nilT
+  ⪡ʰ-acc {branch x x₁ x₂} {branch y x₃ y₁} (fst , snd) = {!!}
+  ⪡ʰ-WellFounded nilT = acc λ { _ () }
+  ⪡ʰ-WellFounded (branch t x t₁) = acc λ y x₁ → ⪡ʰ-acc {{!!}} {{!!}} x₁
+
+  ⪡ⁱ-acc : {x y : BinTree} → y ⪡ⁱ x → Acc _⪡ⁱ_ y
+  ⪡ⁱ-WellFounded : WellFounded _⪡ⁱ_
+
+  ⪡ⁱ-acc = {!!}
+  ⪡ⁱ-WellFounded = {!!}
+
+  ⪡-acc : {x y : BinTree} → y ⪡ x → Acc _⪡_ y
+  ⪡-WellFounded : WellFounded _⪡_
+  
+  ⪡-acc {branch _ _ _} {nilT} (inj₁ _) = ⪡-WellFounded nilT
+  ⪡-acc {branch _ _ _} {nilT} (inj₂ _) = ⪡-WellFounded  nilT
+  ⪡-acc {branch _ _ _} {branch _ _ _} (inj₁ (fst , snd)) = {!!}
+  ⪡-acc {branch _ _ _} {branch _ _ _} (inj₂ (fst , snd)) = {!!}
+
+  -- No trees less than the empty tree, in either sense.
+  ⪡-WellFounded nilT = acc (λ { _ (inj₁ ())
+                              ; _ (inj₂ ()) })
+  -- …
+  ⪡-WellFounded (branch _ _ _) = acc {!⪡-acc!}
+
+--(λ { y (inj₁ (fst , snd)) → acc {!!}
+--   ; y (inj₂ (fst , snd)) → acc (λ y₁ x₃ → {!⪡-WellFounded ?!}) } )
+#+end_src
+
+These were some tests on the bad version.
+#+begin_example agda2
 module BadBalanceTest where
 
   open BinTree ℕ (λ x → x)
@@ -622,4 +897,4 @@ module BadBalanceTest where
 
   _ : badBalance tree ≡ branch (branch nilT 1 nilT) 2 (branch nilT 3 nilT)
   _ = refl
-#+end_src
+#+end_example

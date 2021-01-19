@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-04-01 Wed 18:50 -->
+<!-- 2020-08-13 Thu 17:51 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>An exploration of well-founded recursion</title>
 <meta name="generator" content="Org mode" />
-<meta name="author" content="Mark Armstrong" />
+<meta name="author" content="[[https://armkeh.github.io][Mark Armstrong]] [[file:./../images/markarmstrong.jpg]]" />
 <meta name="description" content="Exploring definitions using well-founded recursion in Agda."
  />
 <style type="text/css">
@@ -264,11 +264,13 @@ for the JavaScript code in this tag.
 <li><a href="#Solution-version-2-–-Using-the-standard-library's-definitions">3.3. Solution version 2 – Using the standard library's definitions</a></li>
 </ul>
 </li>
+<li><a href="#Problem-2-Draft-1-–-Bintree's-with-union">4. Problem 2 Draft 1 – Bintree's with union</a></li>
+<li><a href="#Problem-2-–-Tree-balancing">5. Problem 2 – Tree balancing</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5edeaeb" class="outline-2">
+<div id="outline-container-orgcec4706" class="outline-2">
 <h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-Introduction">
 <p>
@@ -281,12 +283,13 @@ This post attempts to rectify that.
 <p>
 First, I must give credit to the example code posted
 by <a href="https://github.com/sergei-romanenko/agda-samples/blob/master/08-WellFounded.agda">Sergei Romanenko</a>,
-which explores the technique using a <code>log₂</code> algorithm.
+which explores the technique using a <code>log₂</code> algorithm;
+my own developments were written by using that as an example.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org9d85fba" class="outline-2">
+<div id="outline-container-org2e8004e" class="outline-2">
 <h2 id="Agda-header"><span class="section-number-2">2</span> Agda header</h2>
 <div class="outline-text-2" id="text-Agda-header">
 <p>
@@ -296,30 +299,35 @@ regarding <code>&lt;</code> and <code>≤</code> (from which <code>&lt;</code> i
 <div class="org-src-container">
 <pre class="src src-agda2">module WellFoundedRecursion where
 
+open import Data.Empty using <span style="color: #00cd68;">(</span>&#8869;<span style="color: #00cd68;">)</span>
+open import Data.Unit using <span style="color: #00cd68;">(</span>&#8868;<span style="color: #00cd68;">)</span>
 open import Data.Nat
-  using <span style="color: #90d800;">(</span> &#8469; ; zero ; suc
+  using <span style="color: #00cd68;">(</span> &#8469; ; zero ; suc
         ; _+_ ; _&#8760;_ ; _&#8852;_
         ; _&#8804;_ ; _&lt;_ ; z&#8804;n ; s&#8804;s
-        ; _&#8804;&#8242;_ ; _&lt;&#8242;_ ; &#8804;&#8242;-refl ; &#8804;&#8242;-step<span style="color: #90d800;">)</span>
+        ; _&#8804;&#8242;_ ; _&lt;&#8242;_ ; &#8804;&#8242;-refl ; &#8804;&#8242;-step<span style="color: #00cd68;">)</span>
 open import Data.Nat.Properties
-  using <span style="color: #90d800;">(</span> &lt;-cmp ; &#8804;-step ; &#8804;-refl ; &lt;-trans&#737; ; &#8804;&#8658;&#8804;&#8242;
-        ; m&#8760;n&#8804;m<span style="color: #90d800;">)</span>
+  using <span style="color: #00cd68;">(</span> &lt;-cmp ; &#8804;-step ; &#8804;-refl ; &lt;-trans&#737; ; &#8804;&#8658;&#8804;&#8242;
+        ; m&#8760;n&#8804;m
+        ; m&lt;n&#8658;m&lt;n&#8852;o ; m&lt;n&#8658;m&lt;o&#8852;n ; &#8852;-pres-&lt;m<span style="color: #00cd68;">)</span>
+open import Data.Product using <span style="color: #00cd68;">(</span>_&#215;_ ; _,_<span style="color: #00cd68;">)</span>
+open import Data.Sum using <span style="color: #00cd68;">(</span>_&#8846;_ ; inj&#8321; ; inj&#8322;<span style="color: #00cd68;">)</span>
 
-open import Relation.Binary.Definitions using <span style="color: #90d800;">(</span>tri&lt; ; tri&#8776; ; tri&gt;<span style="color: #90d800;">)</span>
-open import Relation.Binary.PropositionalEquality using <span style="color: #90d800;">(</span>_&#8801;_ ; refl<span style="color: #90d800;">)</span>
+open import Relation.Binary.Definitions using <span style="color: #00cd68;">(</span>tri&lt; ; tri&#8776; ; tri&gt;<span style="color: #00cd68;">)</span>
+open import Relation.Binary.PropositionalEquality using <span style="color: #00cd68;">(</span>_&#8801;_ ; refl ; sym<span style="color: #00cd68;">)</span>
 
-open import Function using <span style="color: #90d800;">(</span>case_of_<span style="color: #90d800;">)</span>
+open import Function using <span style="color: #00cd68;">(</span>case_of_<span style="color: #00cd68;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgaa76f9c" class="outline-2">
+<div id="outline-container-org953f5b5" class="outline-2">
 <h2 id="Problem-1-–-The-Euclidean-algorithm"><span class="section-number-2">3</span> Problem 1 – The Euclidean algorithm</h2>
 <div class="outline-text-2" id="text-Problem-1-–-The-Euclidean-algorithm">
 </div>
 
-<div id="outline-container-org5564f80" class="outline-3">
+<div id="outline-container-org70c15fc" class="outline-3">
 <h3 id="Preamble"><span class="section-number-3">3.1</span> Preamble</h3>
 <div class="outline-text-3" id="text-Preamble">
 <p>
@@ -340,13 +348,13 @@ we can easily transcribe this algorithm into Agda.
   <span style="color: #a8a8a8;">{-# TERMINATING #-}</span>
   EuclidGCD : &#8469; &#8594; &#8469; &#8594; &#8469;
   EuclidGCD zero      m         = m
-  EuclidGCD n@<span style="color: #90d800;">(</span>suc _<span style="color: #90d800;">)</span> zero      = n
-  EuclidGCD n@<span style="color: #90d800;">(</span>suc _<span style="color: #90d800;">)</span> m@<span style="color: #90d800;">(</span>suc _<span style="color: #90d800;">)</span> =
+  EuclidGCD n@<span style="color: #00cd68;">(</span>suc _<span style="color: #00cd68;">)</span> zero      = n
+  EuclidGCD n@<span style="color: #00cd68;">(</span>suc _<span style="color: #00cd68;">)</span> m@<span style="color: #00cd68;">(</span>suc _<span style="color: #00cd68;">)</span> =
     case &lt;-cmp n m of
-      &#955; <span style="color: #90d800;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; EuclidGCD n <span style="color: #b6a0ff;">(</span>m &#8760; n<span style="color: #b6a0ff;">)</span>
+      &#955; <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; EuclidGCD n <span style="color: #b6a0ff;">(</span>m &#8760; n<span style="color: #b6a0ff;">)</span>
         ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; m
         ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; EuclidGCD <span style="color: #b6a0ff;">(</span>n &#8760; m<span style="color: #b6a0ff;">)</span> m
-        <span style="color: #90d800;">}</span>
+        <span style="color: #00cd68;">}</span>
 </pre>
 </div>
 <p>
@@ -395,8 +403,8 @@ the proof of which is in the standard library and is very close
 to our attempted proof above for <code>_&lt;_</code>.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">Sm&#8760;Sn&lt;Sm : <span style="color: #90d800;">(</span>m n : &#8469;<span style="color: #90d800;">)</span> &#8594; suc m &#8760; suc n &lt; suc m
-Sm&#8760;Sn&lt;Sm m n = s&#8804;s <span style="color: #90d800;">(</span>m&#8760;n&#8804;m m n<span style="color: #90d800;">)</span>
+<pre class="src src-agda2">Sm&#8760;Sn&lt;Sm : <span style="color: #00cd68;">(</span>m n : &#8469;<span style="color: #00cd68;">)</span> &#8594; suc m &#8760; suc n &lt; suc m
+Sm&#8760;Sn&lt;Sm m n = s&#8804;s <span style="color: #00cd68;">(</span>m&#8760;n&#8804;m m n<span style="color: #00cd68;">)</span>
 </pre>
 </div>
 
@@ -409,7 +417,7 @@ then we will utilise the (level-agnostic) versions from the standard library.
 </div>
 </div>
 
-<div id="outline-container-orgcf4be0a" class="outline-3">
+<div id="outline-container-org9b4aa55" class="outline-3">
 <h3 id="Solution-version-1-–-Defining-our-own-notion-of-well-foundedness"><span class="section-number-3">3.2</span> Solution version 1 – Defining our own notion of well-foundedness</h3>
 <div class="outline-text-3" id="text-Solution-version-1-–-Defining-our-own-notion-of-well-foundedness">
 <div class="org-src-container">
@@ -422,8 +430,8 @@ We begin with the concept of <i>accessibility</i>. An element <code>x</code> of 
 accessible by relation <code>_&lt;_</code> iff every <code>y</code> such that <code>y &lt; x</code> is accessible.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">    data Acc <span style="color: #90d800;">{</span>A : Set<span style="color: #90d800;">}</span> <span style="color: #90d800;">(</span>_&lt;_ : A &#8594; A &#8594; Set<span style="color: #90d800;">)</span> <span style="color: #90d800;">(</span>x : A<span style="color: #90d800;">)</span> : Set where
-      acc : <span style="color: #90d800;">(</span>rs : <span style="color: #b6a0ff;">(</span>y : A<span style="color: #b6a0ff;">)</span> &#8594; y &lt; x &#8594; Acc _&lt;_ y<span style="color: #90d800;">)</span> &#8594; Acc _&lt;_ x
+<pre class="src src-agda2">    data Acc <span style="color: #00cd68;">{</span>A : Set<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>_&lt;_ : A &#8594; A &#8594; Set<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>x : A<span style="color: #00cd68;">)</span> : Set where
+      acc : <span style="color: #00cd68;">(</span>rs : <span style="color: #b6a0ff;">(</span>y : A<span style="color: #b6a0ff;">)</span> &#8594; y &lt; x &#8594; Acc _&lt;_ y<span style="color: #00cd68;">)</span> &#8594; Acc _&lt;_ x
 </pre>
 </div>
 <p>
@@ -445,16 +453,16 @@ The standard library “extracts” that type. It is the type of
 “well-founded recursion”; we do the same here.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">  WfRec : <span style="color: #90d800;">{</span>A : Set<span style="color: #90d800;">}</span> &#8594; <span style="color: #90d800;">(</span>A &#8594; A &#8594; Set<span style="color: #90d800;">)</span> &#8594; <span style="color: #90d800;">(</span>A &#8594; Set<span style="color: #90d800;">)</span> &#8594; A &#8594; Set
-  WfRec <span style="color: #90d800;">{</span>A<span style="color: #90d800;">}</span> _&lt;_ P x = <span style="color: #90d800;">{</span>y : A<span style="color: #90d800;">}</span> &#8594; y &lt; x &#8594; P y
+<pre class="src src-agda2">  WfRec : <span style="color: #00cd68;">{</span>A : Set<span style="color: #00cd68;">}</span> &#8594; <span style="color: #00cd68;">(</span>A &#8594; A &#8594; Set<span style="color: #00cd68;">)</span> &#8594; <span style="color: #00cd68;">(</span>A &#8594; Set<span style="color: #00cd68;">)</span> &#8594; A &#8594; Set
+  WfRec <span style="color: #00cd68;">{</span>A<span style="color: #00cd68;">}</span> _&lt;_ P x = <span style="color: #00cd68;">{</span>y : A<span style="color: #00cd68;">}</span> &#8594; y &lt; x &#8594; P y
 </pre>
 </div>
 <p>
 Then the above definition is shortened to
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">  data Acc <span style="color: #90d800;">{</span>A : Set<span style="color: #90d800;">}</span> <span style="color: #90d800;">(</span>_&lt;_ : A &#8594; A &#8594; Set<span style="color: #90d800;">)</span> <span style="color: #90d800;">(</span>x : A<span style="color: #90d800;">)</span> : Set where
-    acc : <span style="color: #90d800;">(</span>rs : WfRec _&lt;_ <span style="color: #b6a0ff;">(</span>Acc _&lt;_<span style="color: #b6a0ff;">)</span> x<span style="color: #90d800;">)</span> &#8594; Acc _&lt;_ x
+<pre class="src src-agda2">  data Acc <span style="color: #00cd68;">{</span>A : Set<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>_&lt;_ : A &#8594; A &#8594; Set<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>x : A<span style="color: #00cd68;">)</span> : Set where
+    acc : <span style="color: #00cd68;">(</span>rs : WfRec _&lt;_ <span style="color: #b6a0ff;">(</span>Acc _&lt;_<span style="color: #b6a0ff;">)</span> x<span style="color: #00cd68;">)</span> &#8594; Acc _&lt;_ x
 </pre>
 </div>
 
@@ -466,8 +474,8 @@ every <code>y &lt; x</code> is accessible to
 be able to call <code>_&lt;_</code> well founded.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">  Well-founded : <span style="color: #90d800;">{</span>A : Set<span style="color: #90d800;">}</span> &#8594; <span style="color: #90d800;">(</span>A &#8594; A &#8594; Set<span style="color: #90d800;">)</span> &#8594; Set
-  Well-founded <span style="color: #90d800;">{</span>A<span style="color: #90d800;">}</span> _&lt;_ = <span style="color: #90d800;">(</span>x : A<span style="color: #90d800;">)</span> &#8594; Acc _&lt;_ x
+<pre class="src src-agda2">  Well-founded : <span style="color: #00cd68;">{</span>A : Set<span style="color: #00cd68;">}</span> &#8594; <span style="color: #00cd68;">(</span>A &#8594; A &#8594; Set<span style="color: #00cd68;">)</span> &#8594; Set
+  Well-founded <span style="color: #00cd68;">{</span>A<span style="color: #00cd68;">}</span> _&lt;_ = <span style="color: #00cd68;">(</span>x : A<span style="color: #00cd68;">)</span> &#8594; Acc _&lt;_ x
 </pre>
 </div>
 
@@ -487,9 +495,9 @@ I did not manage to complete the proof using <code>_&lt;_</code> before turning
 to this <code>_&lt;′_</code>.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">  &lt;&#8242;-acc : <span style="color: #90d800;">{</span>x y : &#8469;<span style="color: #90d800;">}</span> &#8594; y &lt;&#8242; x &#8594; Acc _&lt;&#8242;_ y
-  &lt;&#8242;-acc .<span style="color: #90d800;">{</span>suc y<span style="color: #90d800;">}</span> <span style="color: #90d800;">{</span>y<span style="color: #90d800;">}</span> &#8804;&#8242;-refl = acc &lt;&#8242;-acc
-  &lt;&#8242;-acc <span style="color: #90d800;">(</span>&#8804;&#8242;-step <span style="color: #b6a0ff;">{</span>_<span style="color: #b6a0ff;">}</span> y&lt;&#8242;x<span style="color: #90d800;">)</span> = &lt;&#8242;-acc y&lt;&#8242;x
+<pre class="src src-agda2">  &lt;&#8242;-acc : <span style="color: #00cd68;">{</span>x y : &#8469;<span style="color: #00cd68;">}</span> &#8594; y &lt;&#8242; x &#8594; Acc _&lt;&#8242;_ y
+  &lt;&#8242;-acc .<span style="color: #00cd68;">{</span>suc y<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>y<span style="color: #00cd68;">}</span> &#8804;&#8242;-refl = acc &lt;&#8242;-acc
+  &lt;&#8242;-acc <span style="color: #00cd68;">(</span>&#8804;&#8242;-step <span style="color: #b6a0ff;">{</span>_<span style="color: #b6a0ff;">}</span> y&lt;&#8242;x<span style="color: #00cd68;">)</span> = &lt;&#8242;-acc y&lt;&#8242;x
 
   &lt;&#8242;-well-founded : Well-founded _&lt;&#8242;_
   &lt;&#8242;-well-founded n = acc &lt;&#8242;-acc
@@ -516,24 +524,21 @@ from the greater of the two arguments at each call.
 This does require some lemmas regarding <code>_⊔_</code>.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">  open import Data.Nat.Properties
-    using <span style="color: #90d800;">(</span>m&lt;n&#8658;m&lt;n&#8852;o ; m&lt;n&#8658;m&lt;o&#8852;n ; &#8852;-pres-&lt;m<span style="color: #90d800;">)</span>
-
-  EuclidGCD&#8242; : <span style="color: #90d800;">(</span>m n : &#8469;<span style="color: #90d800;">)</span> &#8594; Acc _&lt;&#8242;_ <span style="color: #90d800;">(</span>m &#8852; n<span style="color: #90d800;">)</span> &#8594; &#8469;
+<pre class="src src-agda2">  EuclidGCD&#8242; : <span style="color: #00cd68;">(</span>m n : &#8469;<span style="color: #00cd68;">)</span> &#8594; Acc _&lt;&#8242;_ <span style="color: #00cd68;">(</span>m &#8852; n<span style="color: #00cd68;">)</span> &#8594; &#8469;
   EuclidGCD&#8242; zero m _ = m
-  EuclidGCD&#8242; n@<span style="color: #90d800;">(</span>suc _<span style="color: #90d800;">)</span> zero _ = n
-  EuclidGCD&#8242; m@<span style="color: #90d800;">(</span>suc m&#8320;<span style="color: #90d800;">)</span> n@<span style="color: #90d800;">(</span>suc n&#8320;<span style="color: #90d800;">)</span> <span style="color: #90d800;">(</span>acc rs<span style="color: #90d800;">)</span> =
+  EuclidGCD&#8242; n@<span style="color: #00cd68;">(</span>suc _<span style="color: #00cd68;">)</span> zero _ = n
+  EuclidGCD&#8242; m@<span style="color: #00cd68;">(</span>suc m&#8320;<span style="color: #00cd68;">)</span> n@<span style="color: #00cd68;">(</span>suc n&#8320;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>acc rs<span style="color: #00cd68;">)</span> =
     case &lt;-cmp m n of
-      &#955; <span style="color: #90d800;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; m&lt;n _ _<span style="color: #b6a0ff;">)</span> &#8594;
+      &#955; <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; m&lt;n _ _<span style="color: #b6a0ff;">)</span> &#8594;
           EuclidGCD&#8242; m <span style="color: #b6a0ff;">(</span>n &#8760; m<span style="color: #b6a0ff;">)</span>
                      <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">{</span>suc m&#8320; &#8852; <span style="color: #f0ce43;">(</span>n&#8320; &#8760; m&#8320;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">}</span>
-                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;o&#8852;n m <span style="color: #00baf4;">(</span>&#8852;-pres-&lt;m m&lt;n <span style="color: #58dd13;">(</span>Sm&#8760;Sn&lt;Sm n&#8320; m&#8320;<span style="color: #58dd13;">)</span><span style="color: #00baf4;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;o&#8852;n m <span style="color: #00bdfa;">(</span>&#8852;-pres-&lt;m m&lt;n <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm n&#8320; m&#8320;<span style="color: #80d200;">)</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
         ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span>   &#8594; m
         ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ n&lt;m<span style="color: #b6a0ff;">)</span> &#8594;
           EuclidGCD&#8242; <span style="color: #b6a0ff;">(</span>m &#8760; n<span style="color: #b6a0ff;">)</span> n
                      <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">{</span>m&#8320; &#8760; n&#8320; &#8852; suc n&#8320;<span style="color: #6ae4b9;">}</span>
-                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;n&#8852;o n <span style="color: #00baf4;">(</span>&#8852;-pres-&lt;m <span style="color: #58dd13;">(</span>Sm&#8760;Sn&lt;Sm m&#8320; n&#8320;<span style="color: #58dd13;">)</span> n&lt;m<span style="color: #00baf4;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
-        <span style="color: #90d800;">}</span>
+                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;n&#8852;o n <span style="color: #00bdfa;">(</span>&#8852;-pres-&lt;m <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm m&#8320; n&#8320;<span style="color: #80d200;">)</span> n&lt;m<span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+        <span style="color: #00cd68;">}</span>
 </pre>
 </div>
 <p>
@@ -553,29 +558,759 @@ Now, we can define a “clean” version of the Euclidean algorithm function
 by utilising our proof that <code>_&lt;′_</code> is well-founded.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">  EuclidGCD : <span style="color: #90d800;">(</span>m n : &#8469;<span style="color: #90d800;">)</span> &#8594; &#8469;
-  EuclidGCD m n = EuclidGCD&#8242; m n <span style="color: #90d800;">(</span>&lt;&#8242;-well-founded <span style="color: #b6a0ff;">(</span>m &#8852; n<span style="color: #b6a0ff;">)</span><span style="color: #90d800;">)</span>
+<pre class="src src-agda2">  EuclidGCD : <span style="color: #00cd68;">(</span>m n : &#8469;<span style="color: #00cd68;">)</span> &#8594; &#8469;
+  EuclidGCD m n = EuclidGCD&#8242; m n <span style="color: #00cd68;">(</span>&lt;&#8242;-well-founded <span style="color: #b6a0ff;">(</span>m &#8852; n<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgf6467e5" class="outline-3">
+<div id="outline-container-org49dffcc" class="outline-3">
 <h3 id="Solution-version-2-–-Using-the-standard-library's-definitions"><span class="section-number-3">3.3</span> Solution version 2 – Using the standard library's definitions</h3>
 <div class="outline-text-3" id="text-Solution-version-2-–-Using-the-standard-library's-definitions">
 <p>
-:TODO:
+The standard library defines its notions of well-foundedness
+and accessibility in <code>Induction.WellFounded</code>,
+and proves that <code>_&lt;′_</code> is well-founded
+in <code>Data.Nat.Induction</code> —previously it was <code>Induction.Nat</code>,
+which does still exist, but is deprecated.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">open import Data.Nat.Induction using <span style="color: #00cd68;">(</span>&lt;&#8242;-wellFounded<span style="color: #00cd68;">)</span>
+open import Induction.WellFounded using <span style="color: #00cd68;">(</span>Acc ; acc<span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+Aside from the fact that <code>rs</code> takes an explicit argument
+where we used an implicit one, and a slightly different name
+for the well-foundedness of <code>_&lt;′_</code>, we are able
+to echo our definitions above using the standard library.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">EuclidGCD&#8242; : <span style="color: #00cd68;">(</span>m n : &#8469;<span style="color: #00cd68;">)</span> &#8594; Acc _&lt;&#8242;_ <span style="color: #00cd68;">(</span>m &#8852; n<span style="color: #00cd68;">)</span> &#8594; &#8469;
+EuclidGCD&#8242; zero m _ = m
+EuclidGCD&#8242; n@<span style="color: #00cd68;">(</span>suc _<span style="color: #00cd68;">)</span> zero _ = n
+EuclidGCD&#8242; m@<span style="color: #00cd68;">(</span>suc m&#8320;<span style="color: #00cd68;">)</span> n@<span style="color: #00cd68;">(</span>suc n&#8320;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>acc rs<span style="color: #00cd68;">)</span> =
+  case &lt;-cmp m n of
+    &#955; <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; m&lt;n _ _<span style="color: #b6a0ff;">)</span> &#8594;
+        EuclidGCD&#8242; m <span style="color: #b6a0ff;">(</span>n &#8760; m<span style="color: #b6a0ff;">)</span>
+                   <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">(</span>suc m&#8320; &#8852; <span style="color: #f0ce43;">(</span>n&#8320; &#8760; m&#8320;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span>
+                       <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;o&#8852;n m <span style="color: #00bdfa;">(</span>&#8852;-pres-&lt;m m&lt;n <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm n&#8320; m&#8320;<span style="color: #80d200;">)</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+      ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span>   &#8594; m
+      ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ n&lt;m<span style="color: #b6a0ff;">)</span> &#8594;
+        EuclidGCD&#8242; <span style="color: #b6a0ff;">(</span>m &#8760; n<span style="color: #b6a0ff;">)</span> n
+                   <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">(</span>m&#8320; &#8760; n&#8320; &#8852; suc n&#8320;<span style="color: #6ae4b9;">)</span>
+                       <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;n&#8852;o n <span style="color: #00bdfa;">(</span>&#8852;-pres-&lt;m <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm m&#8320; n&#8320;<span style="color: #80d200;">)</span> n&lt;m<span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+      <span style="color: #00cd68;">}</span>
+
+EuclidGCD : <span style="color: #00cd68;">(</span>m n : &#8469;<span style="color: #00cd68;">)</span> &#8594; &#8469;
+EuclidGCD m n = EuclidGCD&#8242; m n <span style="color: #00cd68;">(</span>&lt;&#8242;-wellFounded <span style="color: #b6a0ff;">(</span>m &#8852; n<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+As a next step, let's move on to a more complicated domain than
+the natural numbers.
 </p>
 </div>
 </div>
 </div>
+
+<div id="outline-container-orge879ec4" class="outline-2">
+<h2 id="Problem-2-Draft-1-–-Bintree's-with-union"><span class="section-number-2">4</span> Problem 2 Draft 1 – Bintree's with union</h2>
+<div class="outline-text-2" id="text-Problem-2-Draft-1-–-Bintree's-with-union">
+<p>
+At the time I began writing this post,
+I had been considering implementations of
+order-preserving functions on unordered binary trees in Agda
+as I was following along with the course
+<a href="https://www.cas.mcmaster.ca/~kahl/DepTyp/2020/">CAS 763, Certified Programming with Dependent Types</a>.
+</p>
+
+<p>
+Specifically, when I began writing this, I had been working on
+the union function.
+At first, I thought a direct approach
+was not obviously terminating to Agda.
+I had seen an implementation using in-order traversals
+of the two trees in the course.
+But it turned out my direct algorithm was obviously terminating,
+just a bit tricker to define
+(I had made a mistake which made it non-terminating).
+</p>
+
+<p>
+I've preserved the code here, for documentation.
+For an actual problem on well-founded recursion, skip to the next section,
+<a href="#Problem-2-–-Tree-balancing">on tree balancing</a>.
+</p>
+
+<p>
+We start with a definition of (not necessarily ordered)
+binary trees.
+We require an ordering on the <code>Elem</code> set
+by way of a injective function from <code>Elem</code> to <code>ℕ</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">module BinTree&#8321; <span style="color: #00cd68;">(</span>Elem : Set<span style="color: #00cd68;">)</span>
+                <span style="color: #00cd68;">(</span># : Elem &#8594; &#8469;<span style="color: #00cd68;">)</span>
+                <span style="color: #00cd68;">(</span>#-injective : <span style="color: #b6a0ff;">{</span>e&#8321; e&#8322; : Elem<span style="color: #b6a0ff;">}</span> &#8594; # e&#8321; &#8801; # e&#8322; &#8594; e&#8321; &#8801; e&#8322;<span style="color: #00cd68;">)</span>
+              where
+
+  data BinTree : Set where
+    nilT : BinTree
+    branch : BinTree &#8594; Elem &#8594; BinTree &#8594; BinTree
+</pre>
+</div>
+<p>
+along with some basic operations.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  <span style="color: #00cd68;">[</span>_<span style="color: #00cd68;">]</span> : Elem &#8594; BinTree
+  <span style="color: #00cd68;">[</span> e <span style="color: #00cd68;">]</span> = branch nilT e nilT
+
+  insert : Elem &#8594; BinTree &#8594; BinTree
+  insert e nilT = <span style="color: #00cd68;">[</span> e <span style="color: #00cd68;">]</span>
+  insert e <span style="color: #00cd68;">(</span>branch t&#8321; x t&#8322;<span style="color: #00cd68;">)</span> = case &lt;-cmp <span style="color: #00cd68;">(</span># e<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># x<span style="color: #00cd68;">)</span> of &#955;
+    <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; e&lt;x &#172;e&#8801;x &#172;e&gt;x<span style="color: #b6a0ff;">)</span> &#8594; branch <span style="color: #b6a0ff;">(</span>insert e t&#8321;<span style="color: #b6a0ff;">)</span> x t&#8322;
+    ; <span style="color: #b6a0ff;">(</span>tri&#8776; &#172;e&lt;x e&#8801;x &#172;e&gt;x<span style="color: #b6a0ff;">)</span> &#8594; branch t&#8321; e t&#8322;
+    ; <span style="color: #b6a0ff;">(</span>tri&gt; &#172;e&lt;x &#172;e&#8801;x e&gt;x<span style="color: #b6a0ff;">)</span> &#8594; branch t&#8321; x <span style="color: #b6a0ff;">(</span>insert e t&#8322;<span style="color: #b6a0ff;">)</span>
+    <span style="color: #00cd68;">}</span>
+
+  _&#8712;_ : Elem &#8594; BinTree &#8594; Set
+  e &#8712; nilT = &#8869;
+  e &#8712; branch t&#8321; f t&#8322; = e &#8712; t&#8321;  &#8846;  e &#8801; f  &#8846;  e &#8712; t&#8322;
+</pre>
+</div>
+
+<p>
+This union operation seemed at my first attempt to be
+not obviously terminating; however, that was due to a mistake.
+We must be careful all the <code>₁</code>'s and <code>₂</code>'s are correct!
+This correct code does in fact terminate.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  module DirectUnion where
+
+    _&#8746;_ : BinTree &#8594; BinTree &#8594; BinTree
+    nilT &#8746; t = t
+    <span style="color: #00cd68;">(</span>branch l&#8321; e&#8321; r&#8321;<span style="color: #00cd68;">)</span> &#8746; <span style="color: #00cd68;">(</span>branch l&#8322; e&#8322; r&#8322;<span style="color: #00cd68;">)</span> =
+      case &lt;-cmp <span style="color: #00cd68;">(</span># e&#8321;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># e&#8322;<span style="color: #00cd68;">)</span> of &#955;
+        <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; <span style="color: #b6a0ff;">(</span>insert e&#8322; <span style="color: #6ae4b9;">(</span>branch l&#8321; e&#8321; <span style="color: #f0ce43;">(</span>r&#8321; &#8746; r&#8322;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span> &#8746; l&#8322;
+        ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; branch <span style="color: #b6a0ff;">(</span>l&#8321; &#8746; l&#8322;<span style="color: #b6a0ff;">)</span> e&#8321; <span style="color: #b6a0ff;">(</span>r&#8321; &#8746; r&#8322;<span style="color: #b6a0ff;">)</span>
+        ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; <span style="color: #b6a0ff;">(</span>insert e&#8322; <span style="color: #6ae4b9;">(</span>branch <span style="color: #f0ce43;">(</span>l&#8321; &#8746; l&#8322;<span style="color: #f0ce43;">)</span> e&#8321; r&#8321;<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span> &#8746; r&#8322;
+        <span style="color: #00cd68;">}</span>
+    t@<span style="color: #00cd68;">(</span>branch _ _ _<span style="color: #00cd68;">)</span> &#8746; nilT = t
+</pre>
+</div>
+
+<p>
+We can prove that this is the union of the two trees.
+We first need a lemma about <code>_∈_</code> and <code>insert</code>.
+In both the lemma and the theorem we must
+split on a call to <code>&lt;-cmp</code>, since both <code>insert</code> and <code>&lt;-cmp</code> are
+defined based on a call to <code>&lt;-cmp</code>.
+This does result in a large number of cases,
+but they are all trivial.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">    insert-preserves-&#8712; : <span style="color: #00cd68;">{</span>a : Elem<span style="color: #00cd68;">}</span> &#8594; <span style="color: #00cd68;">{</span>t : BinTree<span style="color: #00cd68;">}</span> &#8594; a &#8712; t &#8594; <span style="color: #00cd68;">(</span>e : Elem<span style="color: #00cd68;">)</span> &#8594; a &#8712; <span style="color: #00cd68;">(</span>insert e t<span style="color: #00cd68;">)</span>
+    insert-preserves-&#8712; <span style="color: #00cd68;">{</span>a<span style="color: #00cd68;">}</span> t@<span style="color: #00cd68;">{</span>branch l x _<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>inj&#8321; a&#8712;l<span style="color: #00cd68;">)</span> e with &lt;-cmp <span style="color: #00cd68;">(</span># e<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># x<span style="color: #00cd68;">)</span>
+    &#8230; | tri&lt; _ _ _ = inj&#8321; <span style="color: #00cd68;">(</span>insert-preserves-&#8712; a&#8712;l e<span style="color: #00cd68;">)</span>
+    &#8230; | tri&#8776; _ _ _ = inj&#8321; a&#8712;l
+    &#8230; | tri&gt; _ _ _ = inj&#8321; a&#8712;l
+    insert-preserves-&#8712; <span style="color: #00cd68;">{</span>a<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>branch _ .a _<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>inj&#8322; <span style="color: #b6a0ff;">(</span>inj&#8321; refl<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> e with &lt;-cmp <span style="color: #00cd68;">(</span># e<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># a<span style="color: #00cd68;">)</span>
+    &#8230; | tri&lt; _ _ _ = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8321; refl<span style="color: #00cd68;">)</span>
+    &#8230; | tri&#8776; _ #e&#8801;#a _ = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8321; <span style="color: #b6a0ff;">(</span>#-injective <span style="color: #6ae4b9;">(</span>sym #e&#8801;#a<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+    &#8230; | tri&gt; _ _ _ = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8321; refl<span style="color: #00cd68;">)</span>
+    insert-preserves-&#8712; <span style="color: #00cd68;">{</span>a<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>branch _ x r<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>inj&#8322; <span style="color: #b6a0ff;">(</span>inj&#8322; a&#8712;r<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> e with &lt;-cmp <span style="color: #00cd68;">(</span># e<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># x<span style="color: #00cd68;">)</span>
+    &#8230; | tri&lt; _ _ _ = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8322; a&#8712;r<span style="color: #00cd68;">)</span>
+    &#8230; | tri&#8776; _ _ _ = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8322; a&#8712;r<span style="color: #00cd68;">)</span>
+    &#8230; | tri&gt; _ _ _ = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8322; <span style="color: #b6a0ff;">(</span>insert-preserves-&#8712; a&#8712;r e<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+
+    e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; : <span style="color: #00cd68;">{</span>e : Elem<span style="color: #00cd68;">}</span> &#8594; <span style="color: #00cd68;">{</span>t&#8321; : BinTree<span style="color: #00cd68;">}</span> &#8594; <span style="color: #00cd68;">(</span>t&#8322; : BinTree<span style="color: #00cd68;">)</span> &#8594; e &#8712; t&#8321; &#8594; e &#8712; <span style="color: #00cd68;">(</span>t&#8321; &#8746; t&#8322;<span style="color: #00cd68;">)</span>
+    e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; <span style="color: #00cd68;">{</span>e<span style="color: #00cd68;">}</span>  <span style="color: #00cd68;">{</span>branch l&#8321; _ _<span style="color: #00cd68;">}</span> nilT <span style="color: #00cd68;">(</span>inj&#8321; e&#8712;l&#8321;<span style="color: #00cd68;">)</span> = inj&#8321; e&#8712;l&#8321;
+    e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; <span style="color: #00cd68;">{</span>.e<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>branch _ e _<span style="color: #00cd68;">}</span> nilT <span style="color: #00cd68;">(</span>inj&#8322; <span style="color: #b6a0ff;">(</span>inj&#8321; refl<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8321; refl<span style="color: #00cd68;">)</span>
+    e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; <span style="color: #00cd68;">{</span>e<span style="color: #00cd68;">}</span>  <span style="color: #00cd68;">{</span>branch _ _ r&#8321;<span style="color: #00cd68;">}</span> nilT <span style="color: #00cd68;">(</span>inj&#8322; <span style="color: #b6a0ff;">(</span>inj&#8322; e&#8712;r&#8321;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8322; e&#8712;r&#8321;<span style="color: #00cd68;">)</span>
+    e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; <span style="color: #00cd68;">{</span>e<span style="color: #00cd68;">}</span>  <span style="color: #00cd68;">{</span>branch l&#8321; f&#8321; r&#8321;<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>branch l&#8322; f&#8322; r&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>inj&#8321; e&#8712;l&#8321;<span style="color: #00cd68;">)</span> with &lt;-cmp <span style="color: #00cd68;">(</span># f&#8321;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># f&#8322;<span style="color: #00cd68;">)</span>
+    &#8230; | tri&lt; _ _ _ = e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; l&#8322; <span style="color: #00cd68;">(</span>insert-preserves-&#8712; <span style="color: #b6a0ff;">(</span>inj&#8321; e&#8712;l&#8321;<span style="color: #b6a0ff;">)</span> f&#8322;<span style="color: #00cd68;">)</span>
+    &#8230; | tri&#8776; _ _ _ = inj&#8321; <span style="color: #00cd68;">(</span>e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; l&#8322; e&#8712;l&#8321;<span style="color: #00cd68;">)</span>
+    &#8230; | tri&gt; _ _ _ = e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; r&#8322; <span style="color: #00cd68;">(</span>insert-preserves-&#8712; <span style="color: #b6a0ff;">(</span>inj&#8321; <span style="color: #6ae4b9;">(</span>e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; l&#8322; e&#8712;l&#8321;<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span> f&#8322;<span style="color: #00cd68;">)</span>
+    e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; <span style="color: #00cd68;">{</span>e<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>branch l&#8321; .e r&#8321;<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>branch l&#8322; f&#8322; r&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>inj&#8322; <span style="color: #b6a0ff;">(</span>inj&#8321; refl<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> with &lt;-cmp <span style="color: #00cd68;">(</span># e<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># f&#8322;<span style="color: #00cd68;">)</span>
+    &#8230; | tri&lt; _ _ _ = e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; l&#8322; <span style="color: #00cd68;">(</span>insert-preserves-&#8712; <span style="color: #b6a0ff;">(</span>inj&#8322; <span style="color: #6ae4b9;">(</span>inj&#8321; refl<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span> f&#8322;<span style="color: #00cd68;">)</span>
+    &#8230; | tri&#8776; _ _ _ = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8321; refl<span style="color: #00cd68;">)</span>
+    &#8230; | tri&gt; _ _ _ = e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; r&#8322; <span style="color: #00cd68;">(</span>insert-preserves-&#8712; <span style="color: #b6a0ff;">(</span>inj&#8322; <span style="color: #6ae4b9;">(</span>inj&#8321; refl<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span> f&#8322;<span style="color: #00cd68;">)</span>
+    e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; <span style="color: #00cd68;">{</span>e<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>branch l&#8321; f&#8321; r&#8321;<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>branch l&#8322; f&#8322; r&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>inj&#8322; <span style="color: #b6a0ff;">(</span>inj&#8322; e&#8712;r&#8321;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> with &lt;-cmp <span style="color: #00cd68;">(</span># f&#8321;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># f&#8322;<span style="color: #00cd68;">)</span>
+    &#8230; | tri&lt; _ _ _ = e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; l&#8322; <span style="color: #00cd68;">(</span>insert-preserves-&#8712; <span style="color: #b6a0ff;">(</span>inj&#8322; <span style="color: #6ae4b9;">(</span>inj&#8322; <span style="color: #f0ce43;">(</span>e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; r&#8322; e&#8712;r&#8321;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span> f&#8322;<span style="color: #00cd68;">)</span>
+    &#8230; | tri&#8776; _ _ _ = inj&#8322; <span style="color: #00cd68;">(</span>inj&#8322; <span style="color: #b6a0ff;">(</span>e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; r&#8322; e&#8712;r&#8321;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+    &#8230; | tri&gt; _ _ _ = e&#8712;t&#8321;&#8658;e&#8712;t&#8321;&#8746;t&#8322; r&#8322; <span style="color: #00cd68;">(</span>insert-preserves-&#8712; <span style="color: #b6a0ff;">(</span>inj&#8322; <span style="color: #6ae4b9;">(</span>inj&#8322; e&#8712;r&#8321;<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span> f&#8322;<span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+All recursive calls in our union function
+are made on subtrees, and a sensible decreasing value
+is the height of the tree.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  height : BinTree &#8594; &#8469;
+  height nilT = 0
+  height <span style="color: #00cd68;">(</span>branch t&#8321; _ t&#8322;<span style="color: #00cd68;">)</span> = suc <span style="color: #00cd68;">(</span>height t&#8321; &#8852; height t&#8322;<span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+We quickly prove some lemmas regarding <code>&lt;′</code>, for convenience.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  open import Data.Nat.Properties using <span style="color: #00cd68;">(</span>n&#8804;m&#8852;n ; m&#8804;m&#8852;n<span style="color: #00cd68;">)</span>
+  
+  n&lt;&#8242;suc<span style="color: #00cd68;">[</span>m&#8852;n<span style="color: #00cd68;">]</span> : <span style="color: #00cd68;">{</span>m n : &#8469;<span style="color: #00cd68;">}</span> &#8594; n &lt;&#8242; suc <span style="color: #00cd68;">(</span>m &#8852; n<span style="color: #00cd68;">)</span>
+  n&lt;&#8242;suc<span style="color: #00cd68;">[</span>m&#8852;n<span style="color: #00cd68;">]</span> = &#8804;&#8658;&#8804;&#8242; <span style="color: #00cd68;">(</span>s&#8804;s <span style="color: #b6a0ff;">(</span>n&#8804;m&#8852;n _ _<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+
+  m&lt;&#8242;suc<span style="color: #00cd68;">[</span>m&#8852;n<span style="color: #00cd68;">]</span> : <span style="color: #00cd68;">{</span>m n : &#8469;<span style="color: #00cd68;">}</span> &#8594; m &lt;&#8242; suc <span style="color: #00cd68;">(</span>m &#8852; n<span style="color: #00cd68;">)</span>
+  m&lt;&#8242;suc<span style="color: #00cd68;">[</span>m&#8852;n<span style="color: #00cd68;">]</span> = &#8804;&#8658;&#8804;&#8242; <span style="color: #00cd68;">(</span>s&#8804;s <span style="color: #b6a0ff;">(</span>m&#8804;m&#8852;n _ _<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+</pre>
+</div>
+<p>
+And then we are ready to explicitely prove that <code>union′</code> is terminating.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  union&#8242; : <span style="color: #00cd68;">(</span>t&#8321; t&#8322; : BinTree<span style="color: #00cd68;">)</span> &#8594; Acc _&lt;&#8242;_ <span style="color: #00cd68;">(</span>height t&#8322;<span style="color: #00cd68;">)</span> &#8594; BinTree
+  union&#8242; nilT t _ = t
+  union&#8242; <span style="color: #00cd68;">(</span>branch l&#8321; e&#8321; r&#8321;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>branch l&#8322; e&#8322; r&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>acc rs<span style="color: #00cd68;">)</span> =
+    let h&#691;&#8321; = height r&#8321;
+        h&#691;&#8322; = height r&#8322;
+        h&#737;&#8321; = height l&#8321;
+        h&#737;&#8322; = height l&#8322;
+    in
+    case &lt;-cmp <span style="color: #00cd68;">(</span># e&#8321;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># e&#8322;<span style="color: #00cd68;">)</span> of &#955;
+        <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594;
+            union&#8242; <span style="color: #b6a0ff;">(</span>insert e&#8322; <span style="color: #6ae4b9;">(</span>branch l&#8321; e&#8321; <span style="color: #f0ce43;">(</span>union&#8242; r&#8321; r&#8322; <span style="color: #00bdfa;">(</span>rs _ n&lt;&#8242;suc<span style="color: #80d200;">[</span>m&#8852;n<span style="color: #80d200;">]</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                   l&#8322;
+                   <span style="color: #b6a0ff;">(</span>rs _ m&lt;&#8242;suc<span style="color: #6ae4b9;">[</span>m&#8852;n<span style="color: #6ae4b9;">]</span><span style="color: #b6a0ff;">)</span>
+        ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; branch <span style="color: #b6a0ff;">(</span>union&#8242; l&#8321; l&#8322; <span style="color: #6ae4b9;">(</span>rs _ m&lt;&#8242;suc<span style="color: #f0ce43;">[</span>m&#8852;n<span style="color: #f0ce43;">]</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                                e&#8321;
+                                <span style="color: #b6a0ff;">(</span>union&#8242; r&#8321; r&#8322; <span style="color: #6ae4b9;">(</span>rs _ n&lt;&#8242;suc<span style="color: #f0ce43;">[</span>m&#8852;n<span style="color: #f0ce43;">]</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+        ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594;
+            union&#8242; <span style="color: #b6a0ff;">(</span>insert e&#8322; <span style="color: #6ae4b9;">(</span>branch <span style="color: #f0ce43;">(</span>union&#8242; l&#8321; l&#8322; <span style="color: #00bdfa;">(</span>rs _ m&lt;&#8242;suc<span style="color: #80d200;">[</span>m&#8852;n<span style="color: #80d200;">]</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span> e&#8321; r&#8321;<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                   r&#8322;
+                   <span style="color: #b6a0ff;">(</span>rs _ n&lt;&#8242;suc<span style="color: #6ae4b9;">[</span>m&#8852;n<span style="color: #6ae4b9;">]</span><span style="color: #b6a0ff;">)</span>
+        <span style="color: #00cd68;">}</span> 
+  union&#8242; t@<span style="color: #00cd68;">(</span>branch _ _ _<span style="color: #00cd68;">)</span> nilT _ = t
+</pre>
+</div>
+<p>
+And define a clean version of union.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  _&#8746;_ : <span style="color: #00cd68;">(</span>t&#8321; t&#8322; : BinTree<span style="color: #00cd68;">)</span> &#8594; BinTree
+  t&#8321; &#8746; t&#8322; = union&#8242; t&#8321; t&#8322; <span style="color: #00cd68;">(</span>&lt;&#8242;-wellFounded <span style="color: #b6a0ff;">(</span>height t&#8322;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+We could again prove this is the union;
+I believe it should be only a little more tedious.
+Instead of repeating the proof though,
+we settle for some quick unit tests.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">module Test where
+
+  open BinTree&#8321; &#8469; <span style="color: #00cd68;">(</span>&#955; x &#8594; x<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>&#955; x&#8801;x &#8594; x&#8801;x<span style="color: #00cd68;">)</span>
+
+  tree&#8321; : BinTree
+  tree&#8321; = branch <span style="color: #00cd68;">(</span>branch <span style="color: #b6a0ff;">(</span>branch nilT
+                                 1
+                                 nilT<span style="color: #b6a0ff;">)</span>
+                         3
+                         nilT<span style="color: #00cd68;">)</span>
+                 5
+                 <span style="color: #00cd68;">(</span>branch <span style="color: #b6a0ff;">(</span>branch nilT
+                                 7
+                                 nilT<span style="color: #b6a0ff;">)</span>
+                         8
+                         nilT<span style="color: #00cd68;">)</span>
+
+  tree&#8322; : BinTree
+  tree&#8322; = branch <span style="color: #00cd68;">(</span>branch nilT
+                         2
+                         nilT<span style="color: #00cd68;">)</span>
+                 4 <span style="color: #00cd68;">(</span>branch <span style="color: #b6a0ff;">(</span>branch nilT
+                                   5
+                                   nilT<span style="color: #b6a0ff;">)</span>
+                           6
+                           <span style="color: #b6a0ff;">(</span>branch nilT
+                                   9
+                                   nilT<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+
+  _ : tree&#8321; &#8746; tree&#8322; &#8801;
+      branch <span style="color: #00cd68;">(</span>branch <span style="color: #b6a0ff;">(</span>branch nilT
+                             1
+                             <span style="color: #6ae4b9;">(</span>branch nilT
+                                     2
+                                     nilT<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                     3
+                     <span style="color: #b6a0ff;">(</span>branch nilT
+                             4
+                             nilT<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+             5
+             <span style="color: #00cd68;">(</span>branch <span style="color: #b6a0ff;">(</span>branch <span style="color: #6ae4b9;">(</span>branch nilT
+                                     6
+                                     nilT<span style="color: #6ae4b9;">)</span>
+                             7
+                             nilT<span style="color: #b6a0ff;">)</span>
+                     8
+                     <span style="color: #b6a0ff;">(</span>branch nilT
+                             9
+                             nilT<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+  _ = refl
+
+  _ : tree&#8322; &#8746; tree&#8321; &#8801;
+      branch <span style="color: #00cd68;">(</span>branch <span style="color: #b6a0ff;">(</span>branch nilT
+                             1
+                             nilT<span style="color: #b6a0ff;">)</span>
+                     2
+                     <span style="color: #b6a0ff;">(</span>branch nilT
+                             3
+                             nilT<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+             4
+             <span style="color: #00cd68;">(</span>branch <span style="color: #b6a0ff;">(</span>branch nilT
+                             5
+                             nilT<span style="color: #b6a0ff;">)</span>
+                     6
+                     <span style="color: #b6a0ff;">(</span>branch <span style="color: #6ae4b9;">(</span>branch <span style="color: #f0ce43;">(</span>branch nilT
+                                             7
+                                             nilT<span style="color: #f0ce43;">)</span>
+                                     8
+                                     nilT<span style="color: #6ae4b9;">)</span>
+                             9
+                             nilT<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+  _ = refl
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3fa3497" class="outline-2">
+<h2 id="Problem-2-–-Tree-balancing"><span class="section-number-2">5</span> Problem 2 – Tree balancing</h2>
+<div class="outline-text-2" id="text-Problem-2-–-Tree-balancing">
+<p>
+As in the above problem about union,
+consider a simple (unbalanced, unordered) binary tree type.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">module BinTree <span style="color: #00cd68;">(</span>Elem : Set<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># : Elem &#8594; &#8469;<span style="color: #00cd68;">)</span> where
+
+  data BinTree : Set where
+    nilT : BinTree
+    branch : BinTree &#8594; Elem &#8594; BinTree &#8594; BinTree
+</pre>
+</div>
+
+<p>
+Once again, define some basic operations on these trees.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  <span style="color: #00cd68;">[</span>_<span style="color: #00cd68;">]</span> : Elem &#8594; BinTree
+  <span style="color: #00cd68;">[</span> e <span style="color: #00cd68;">]</span> = branch nilT e nilT
+
+  insert : Elem &#8594; BinTree &#8594; BinTree
+  insert e nilT = <span style="color: #00cd68;">[</span> e <span style="color: #00cd68;">]</span>
+  insert e <span style="color: #00cd68;">(</span>branch t&#8321; x t&#8322;<span style="color: #00cd68;">)</span> = case &lt;-cmp <span style="color: #00cd68;">(</span># e<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># x<span style="color: #00cd68;">)</span> of &#955;
+    <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; e&lt;x &#172;e&#8801;x &#172;e&gt;x<span style="color: #b6a0ff;">)</span> &#8594; branch <span style="color: #b6a0ff;">(</span>insert e t&#8321;<span style="color: #b6a0ff;">)</span> x t&#8322;
+    ; <span style="color: #b6a0ff;">(</span>tri&#8776; &#172;e&lt;x e&#8801;x &#172;e&gt;x<span style="color: #b6a0ff;">)</span> &#8594; branch t&#8321; e t&#8322;
+    ; <span style="color: #b6a0ff;">(</span>tri&gt; &#172;e&lt;x &#172;e&#8801;x e&gt;x<span style="color: #b6a0ff;">)</span> &#8594; branch t&#8321; x <span style="color: #b6a0ff;">(</span>insert e t&#8322;<span style="color: #b6a0ff;">)</span>
+    <span style="color: #00cd68;">}</span>
+</pre>
+</div>
+
+<p>
+Our goal here will be to create a balancing function
+which uses pivots, rather than a balancing insert routine which creates
+“a brand new tree”.
+</p>
+
+<p>
+To talk about balanced trees, we need a height function.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  height : BinTree &#8594; &#8469;
+  height nilT = zero
+  height <span style="color: #00cd68;">(</span>branch t&#8321; _ t&#8322;<span style="color: #00cd68;">)</span> = suc <span style="color: #00cd68;">(</span>height t&#8321; &#8852; height t&#8322;<span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+We also need to know <i>how</i> a tree is unbalanced;
+we talk about a tree <i>leaning</i> to the left or right
+by a certain <i>disparity</i> (difference in height).
+Note that a disparity of 0 (<code>left 0</code> or <code>right 0</code>) means
+the heights are off by just 1.
+Trees with such a disparity still count as balanced.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  data Lean : Set where
+    left : &#8469; &#8594; Lean
+    right : &#8469; &#8594; Lean
+    none : Lean
+
+  open import Data.Nat using <span style="color: #00cd68;">(</span>pred<span style="color: #00cd68;">)</span>
+  open import Relation.Binary.Definitions using <span style="color: #00cd68;">(</span>Tri<span style="color: #00cd68;">)</span>
+
+  <span style="color: #a8a8a8;">-- Originally a pattern matching lambda, but extracted</span>
+  <span style="color: #a8a8a8;">-- to help with proofs lower down.</span>
+  disparity : <span style="color: #00cd68;">(</span>t&#8321; t&#8322; : BinTree<span style="color: #00cd68;">)</span> &#8594; Tri <span style="color: #00cd68;">(</span>height t&#8321; &lt; height t&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>height t&#8321; &#8801; height t&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>height t&#8322; &lt; height t&#8321;<span style="color: #00cd68;">)</span> &#8594; Lean
+  disparity t&#8321; t&#8322; <span style="color: #00cd68;">(</span>tri&lt; _ _ _<span style="color: #00cd68;">)</span> = right <span style="color: #00cd68;">(</span>pred <span style="color: #b6a0ff;">(</span>height t&#8322; &#8760; height t&#8321;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+  disparity t&#8321; t&#8322; <span style="color: #00cd68;">(</span>tri&#8776; _ _ _<span style="color: #00cd68;">)</span> = none
+  disparity t&#8321; t&#8322; <span style="color: #00cd68;">(</span>tri&gt; _ _ _<span style="color: #00cd68;">)</span> = left <span style="color: #00cd68;">(</span>pred <span style="color: #b6a0ff;">(</span>height t&#8321; &#8760; height t&#8322;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+
+  lean : BinTree &#8594; Lean
+  lean nilT = none
+  lean <span style="color: #00cd68;">(</span>branch t&#8321; _ t&#8322;<span style="color: #00cd68;">)</span> = disparity t&#8321; t&#8322; <span style="color: #00cd68;">(</span>&lt;-cmp <span style="color: #b6a0ff;">(</span>height t&#8321;<span style="color: #b6a0ff;">)</span> <span style="color: #b6a0ff;">(</span>height t&#8322;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+The definition of “balanced” I am striving for requires not only
+the root of the tree to be balanced; all subtrees must also be balanced.
+But first we must define the notion of the root being balanced.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  rootBalanced : BinTree &#8594; Set
+  rootBalanced t =
+    <span style="color: #00cd68;">(</span>lean t &#8801; none<span style="color: #00cd68;">)</span> &#8846; <span style="color: #00cd68;">(</span>lean t &#8801; left 0<span style="color: #00cd68;">)</span> &#8846; <span style="color: #00cd68;">(</span>lean t &#8801; right 0<span style="color: #00cd68;">)</span>
+</pre>
+</div>
+<p>
+Then we apply that predicate to all subtrees to check if the tree is balanced.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  balanced : BinTree &#8594; Set
+  balanced nilT = &#8868;
+  balanced t@<span style="color: #00cd68;">(</span>branch t&#8321; _ t&#8322;<span style="color: #00cd68;">)</span> =
+    balanced t&#8321; &#215; rootBalanced t &#215; balanced t&#8322; 
+</pre>
+</div>
+
+<p>
+With the notion of <code>balanced</code> defined, we can turn to our balancing algorithm.
+As mentioned above, we will use <i>pivots</i> to balance the tree.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  pivotLeft : BinTree &#8594; BinTree
+  pivotLeft <span style="color: #00cd68;">(</span>branch l root <span style="color: #b6a0ff;">(</span>branch rl root&#8242; rr<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> =
+    branch <span style="color: #00cd68;">(</span>branch l root rl<span style="color: #00cd68;">)</span> root&#8242; rr
+  <span style="color: #a8a8a8;">{-# CATCHALL #-}</span>
+  pivotLeft t = t
+
+  pivotRight : BinTree &#8594; BinTree
+  pivotRight <span style="color: #00cd68;">(</span>branch <span style="color: #b6a0ff;">(</span>branch ll root&#8242; lr<span style="color: #b6a0ff;">)</span> root r<span style="color: #00cd68;">)</span> =
+    branch ll root&#8242; <span style="color: #00cd68;">(</span>branch lr root r<span style="color: #00cd68;">)</span>
+  <span style="color: #a8a8a8;">{-# CATCHALL #-}</span>
+  pivotRight t = t
+</pre>
+</div>
+
+<p>
+Now we need to decide in what order we apply pivots.
+In order to assist with this, we define the notion of a <i>balance factor</i>,
+in order to find the “worst part” of the tree.
+The balance factor is zero if the left and right subtrees are the same height,
+or if they are off by at most one (lean of 0).
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  leanAmount : Lean &#8594; &#8469;
+  leanAmount <span style="color: #00cd68;">(</span>left factor<span style="color: #00cd68;">)</span> = factor
+  leanAmount <span style="color: #00cd68;">(</span>right factor<span style="color: #00cd68;">)</span> = factor
+  leanAmount none = zero
+
+  rootBalanceFactor : BinTree &#8594; &#8469;
+  rootBalanceFactor nilT = zero
+  rootBalanceFactor t@<span style="color: #00cd68;">(</span>branch t&#8321; _ t&#8322;<span style="color: #00cd68;">)</span> = leanAmount <span style="color: #00cd68;">(</span>lean t<span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+For the balance algorithm, we need to check if there is
+any unbalanced node in a subtree. Checking for the maximum imbalance
+suffices.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  open import Data.Nat using <span style="color: #00cd68;">(</span>_&#8851;_<span style="color: #00cd68;">)</span>
+
+  maxImbalance : BinTree &#8594; &#8469;
+  maxImbalance nilT = zero
+  maxImbalance t@<span style="color: #00cd68;">(</span>branch t&#8321; _ t&#8322;<span style="color: #00cd68;">)</span> =
+    maxImbalance t&#8321; &#8851; rootBalanceFactor t &#8851; maxImbalance t&#8322;
+</pre>
+</div>
+
+<p>
+Now we can define our naive, not obviously terminating balance function.
+It starts by balancing the left subtree, then the right,
+then applying one pivot to the root and starting again.
+To avoid nested pattern matching lambdas, we use a number
+of mutually defined functions.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  BinTreeNE : Set
+  BinTreeNE = BinTree &#215; Elem &#215; BinTree
+
+  module Bad where
+
+    <span style="color: #a8a8a8;">{-# TERMINATING #-}</span>
+    balance      : BinTree          &#8594; BinTree
+    balanceLeft  : BinTreeNE &#8594; &#8469;    &#8594; BinTree
+    balanceRight : BinTreeNE &#8594; &#8469;    &#8594; BinTree
+    balanceRoot  : BinTreeNE &#8594; Lean &#8594; BinTree
+
+    balanceLeft   <span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>suc _<span style="color: #00cd68;">)</span> = balance <span style="color: #00cd68;">(</span>branch <span style="color: #b6a0ff;">(</span>balance t&#8321;<span style="color: #b6a0ff;">)</span> e t&#8322;<span style="color: #00cd68;">)</span>
+    balanceLeft t@<span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> zero    = balanceRight t <span style="color: #00cd68;">(</span>maxImbalance t&#8322;<span style="color: #00cd68;">)</span>
+
+    balanceRight   <span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>suc _<span style="color: #00cd68;">)</span> = balance <span style="color: #00cd68;">(</span>branch t&#8321; e <span style="color: #b6a0ff;">(</span>balance t&#8322;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+    balanceRight t@<span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> zero    = balanceRoot t <span style="color: #00cd68;">(</span>lean <span style="color: #b6a0ff;">(</span>branch t&#8321; e t&#8322;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+
+    balanceRoot <span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>left <span style="color: #b6a0ff;">(</span>suc _<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>  = balance <span style="color: #00cd68;">(</span>pivotRight <span style="color: #b6a0ff;">(</span>branch t&#8321; e t&#8322;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+    balanceRoot <span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>right <span style="color: #b6a0ff;">(</span>suc _<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> = balance <span style="color: #00cd68;">(</span>pivotLeft  <span style="color: #b6a0ff;">(</span>branch t&#8321; e t&#8322;<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+    balanceRoot <span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> none         = branch t&#8321; e t&#8322;
+    balanceRoot <span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>left zero<span style="color: #00cd68;">)</span>  = branch t&#8321; e t&#8322;
+    balanceRoot <span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>right zero<span style="color: #00cd68;">)</span> = branch t&#8321; e t&#8322;
+
+    balance nilT = nilT
+    balance <span style="color: #00cd68;">(</span>branch t&#8321; e t&#8322;<span style="color: #00cd68;">)</span> = balanceLeft <span style="color: #00cd68;">(</span>t&#8321; , e , t&#8322;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>maxImbalance t&#8321;<span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+Here's the version using pattern matching lambdas,
+which may be easier to read.
+</p>
+<pre class="example">
+    {-# TERMINATING #-}
+    balance nilT = nilT
+    balance t@(branch t₁ e t₂) = case maxImbalance t₁ of λ
+      { (suc _) → balance (branch (balance t₁) e t₂)
+      ; zero    → case maxImbalance t₂ of λ
+                  { (suc _) → balance (branch t₁ e (balance t₂))
+                  ; zero    → case lean t of λ
+                              { (left (suc _))  → balance (pivotRight t)
+                              ; (right (suc _)) → balance (pivotLeft t)
+                              ; none            → t
+                              ; (left zero)     → t
+                              ; (right zero)    → t
+                              }
+                  }
+      }
+</pre>
+
+<p>
+Now what is the decreasing value here we can use
+for well-founded recursion?
+There's no guarantee that the <i>maximum</i> imbalance
+decreases at each step.
+But after most steps of our algorithm, the <i>sum</i> of the balance factors
+should have decreased, because we've reduced the imbalance of
+one subtree, without making any others worse.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  totalImbalance : BinTree &#8594; &#8469;
+  totalImbalance nilT = 0
+  totalImbalance t@<span style="color: #00cd68;">(</span>branch t&#8321; _ t&#8322;<span style="color: #00cd68;">)</span> =
+    totalImbalance t&#8321; + rootBalanceFactor t + totalImbalance t&#8322;
+</pre>
+</div>
+<p>
+And we only fail to decrease the sum of the balance factors
+is when the recursive calls are on structurally smaller arguments
+(specifically, in the calls of the form <code>balance t₁</code> and <code>balance t₂</code>).
+</p>
+
+<p>
+So we define a new less than relation that accounts for two cases.
+</p>
+<ol class="org-ol">
+<li>the height of the first tree is strictly less than that of the second, or</li>
+<li>the total imbalance of the first tree is strictly less than that of the second.</li>
+</ol>
+<p>
+In each case, we must ensure the other metric does not increase.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  _&#10913;&#688;_ : BinTree &#8594; BinTree &#8594; Set
+  t&#8321; &#10913;&#688; t&#8322; = height t&#8321; &lt;&#8242; height t&#8322; &#215; totalImbalance t&#8321; &#8804; totalImbalance t&#8322; 
+
+  _&#10913;&#8305;_ : BinTree &#8594; BinTree &#8594; Set
+  t&#8321; &#10913;&#8305; t&#8322; = height t&#8321; &#8804; height t&#8322;  &#215; totalImbalance t&#8321; &lt;&#8242; totalImbalance t&#8322;
+
+  _&#10913;_ : BinTree &#8594; BinTree &#8594; Set
+  t&#8321; &#10913; t&#8322; = <span style="color: #00cd68;">(</span>t&#8321; &#10913;&#688; t&#8322;<span style="color: #00cd68;">)</span> &#8846; <span style="color: #00cd68;">(</span>t&#8321; &#10913;&#8305; t&#8322;<span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+We prove that subtrees precede their “super” tree.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  open import Data.Nat.Properties using <span style="color: #00cd68;">(</span>m&#8804;m&#8852;n ; n&#8804;m&#8852;n ; m&#8804;m+n ; m&#8804;n+m ; &#8804;-steps&#691;<span style="color: #00cd68;">)</span>
+
+  branch-&#10913;&#737; : <span style="color: #00cd68;">(</span>t&#8321; : BinTree<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>e : Elem<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>t&#8322; : BinTree<span style="color: #00cd68;">)</span> &#8594; t&#8321; &#10913; branch t&#8321; e t&#8322;
+  branch-&#10913;&#737; t&#8321; _ t&#8322; = inj&#8321; <span style="color: #00cd68;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #b6a0ff;">(</span>s&#8804;s <span style="color: #6ae4b9;">(</span>m&#8804;m&#8852;n <span style="color: #f0ce43;">(</span>height t&#8321;<span style="color: #f0ce43;">)</span> <span style="color: #f0ce43;">(</span>height t&#8322;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                          , &#8804;-steps&#691; <span style="color: #b6a0ff;">(</span>totalImbalance t&#8322;<span style="color: #b6a0ff;">)</span>
+                                     <span style="color: #b6a0ff;">(</span>m&#8804;m+n <span style="color: #6ae4b9;">(</span>totalImbalance t&#8321;<span style="color: #6ae4b9;">)</span>
+                                            <span style="color: #6ae4b9;">(</span>leanAmount <span style="color: #f0ce43;">(</span>disparity t&#8321; t&#8322; <span style="color: #00bdfa;">(</span>&lt;-cmp <span style="color: #80d200;">(</span>height t&#8321;<span style="color: #80d200;">)</span> <span style="color: #80d200;">(</span>height t&#8322;<span style="color: #80d200;">)</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+
+  branch-&#10913;&#691; : <span style="color: #00cd68;">(</span>t&#8321; : BinTree<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>e : Elem<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>t&#8322; : BinTree<span style="color: #00cd68;">)</span> &#8594; t&#8322; &#10913; branch t&#8321; e t&#8322;
+  branch-&#10913;&#691; t&#8321; _ t&#8322; = inj&#8321; <span style="color: #00cd68;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #b6a0ff;">(</span>s&#8804;s <span style="color: #6ae4b9;">(</span>n&#8804;m&#8852;n <span style="color: #f0ce43;">(</span>height t&#8321;<span style="color: #f0ce43;">)</span> <span style="color: #f0ce43;">(</span>height t&#8322;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                          , m&#8804;n+m <span style="color: #b6a0ff;">(</span>totalImbalance t&#8322;<span style="color: #b6a0ff;">)</span>
+                                  <span style="color: #b6a0ff;">(</span>  totalImbalance t&#8321;
+                                   + leanAmount <span style="color: #6ae4b9;">(</span>disparity t&#8321; t&#8322; <span style="color: #f0ce43;">(</span>&lt;-cmp <span style="color: #00bdfa;">(</span>height t&#8321;<span style="color: #00bdfa;">)</span> <span style="color: #00bdfa;">(</span>height t&#8322;<span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+:TODO: Temporary import location.
+</p>
+<div class="org-src-container">
+<pre class="src src-agda2">  open import Data.Nat.Properties using <span style="color: #00cd68;">(</span>+-mono&#737;-&#8804; ; +-mono-&lt; ; &#8852;-mono&#737;-&#8804; ; &#8804;&#8242;&#8658;&#8804; ; &lt;&#8658;&#8804;<span style="color: #00cd68;">)</span>
+</pre>
+</div>
+
+<p>
+Here's the state of things as I left them in April.
+Seems like the first <code>thing</code> cannot be proven to me now.
+In particular, <code>t₁</code> and <code>t₁′</code> seem reversed.
+I'll start from scratch after tackling the accessibility
+and well-foundedness proofs.
+</p>
+<pre class="example">
+  thing : (t₁′ t₁ t₂ : BinTree)
+        → t₁′ ⪡ⁱ t₁
+        →  (leanAmount (disparity t₁′ t₂ (&lt;-cmp (height t₁′) (height t₂)))
+          &lt; leanAmount (disparity t₁  t₂ (&lt;-cmp (height t₁)  (height t₂))))
+  thing nilT (branch nilT           _ (branch _ _ _)) nilT            _ = s≤s z≤n
+  thing nilT (branch (branch _ _ _) _ nilT)           nilT            _ = s≤s z≤n
+  thing nilT (branch (branch _ _ _) _ (branch _ _ _)) nilT            _ = s≤s z≤n
+  thing nilT (branch nilT x₁ (branch t₄ x₂ t₅)) (branch t₂ x t₃) _ = ???
+  thing nilT (branch (branch t₁ x₂ t₅) x₁ nilT) (branch t₂ x t₃) _ = ???
+  thing nilT (branch (branch t₁ x₂ t₅) x₁ (branch t₄ x₃ t₆)) (branch t₂ x t₃) _ = ???
+  thing (branch t₁′ x t₁′₁) (branch t₁ x₁ t₃) t₂ _ = ???
+
+  lemma : (t₁′ t₁ : BinTree) (e : Elem) (t₂ : BinTree)
+        → t₁′ ⪡ⁱ t₁
+        → branch t₁′ e t₂ ⪡ⁱ branch t₁ e t₂
+  lemma t₁′ t₁ e t₂ (ht₁≤ht₁′ , mit₁&lt;mit₁′) =
+      s≤s (⊔-monoˡ-≤ (height t₂) ht₁≤ht₁′)
+    , ≤⇒≤′ (+-monoˡ-≤ (totalImbalance t₂) (+-mono-&lt; (≤′⇒≤ mit₁&lt;mit₁′) (thing t₁′ t₁ t₂ ???)))
+  lemma′ : (t₁ : BinTree) (e : Elem) (t₂′ t₂ : BinTree)
+         → t₂′ ⪡ⁱ t₂
+         → branch t₁ e t₂′ ⪡ⁱ branch t₁ e t₂
+  lemma′ = ???
+
+  balance′ : (t : BinTree) → Acc _⪡_ t  → BinTree
+  balance′ nilT _ = nilT
+  balance′ t@(branch t₁ e t₂) (acc rs) = case maxImbalance t₁ of λ
+    { (suc _) → let t₁′ = balance′ t₁ (rs _ (branch-⪡ˡ t₁ e t₂)) in
+                balance′ (branch t₁′ e t₂) (rs _ (inj₂ (lemma t₁′ t₁ e t₂ ???)))
+    ; zero    → case maxImbalance t₂ of λ
+                { (suc _) → let t₂′ = balance′ t₂ (rs _ (branch-⪡ʳ t₁ e t₂)) in
+                            balance′ (branch t₁ e t₂′) (rs _ (inj₂ (lemma′ t₁ e t₂′ t₂ ???)))
+                 ; zero    → case lean t of λ
+                             { (left (suc _))  → balance′ (pivotRight t) (rs _ ???)
+                             ; (right (suc _)) → balance′ (pivotLeft t) (rs _ ???)
+                             ; none            → t
+                             ; (left zero)     → t
+                             ; (right zero)    → t
+                             }
+                 }
+    }
+</pre>
+
+<div class="org-src-container">
+<pre class="src src-agda2">  open import Induction.WellFounded using <span style="color: #00cd68;">(</span>WellFounded<span style="color: #00cd68;">)</span>
+
+  &#10913;&#688;-acc : <span style="color: #00cd68;">{</span>x y : BinTree<span style="color: #00cd68;">}</span> &#8594; y &#10913;&#688; x &#8594; Acc _&#10913;&#688;_ y
+  &#10913;&#688;-WellFounded : WellFounded _&#10913;&#688;_
+
+  &#10913;&#688;-acc <span style="color: #00cd68;">{</span>branch x x&#8321; x&#8322;<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>nilT<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>fst , z&#8804;n<span style="color: #00cd68;">)</span> = &#10913;&#688;-WellFounded nilT
+  &#10913;&#688;-acc <span style="color: #00cd68;">{</span>branch x x&#8321; x&#8322;<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>branch y x&#8323; y&#8321;<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>fst , snd<span style="color: #00cd68;">)</span> = <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
+  &#10913;&#688;-WellFounded nilT = acc &#955; y x &#8594; <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
+  &#10913;&#688;-WellFounded <span style="color: #00cd68;">(</span>branch t x t&#8321;<span style="color: #00cd68;">)</span> = <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
+
+  &#10913;&#8305;-acc : <span style="color: #00cd68;">{</span>x y : BinTree<span style="color: #00cd68;">}</span> &#8594; y &#10913;&#8305; x &#8594; Acc _&#10913;&#8305;_ y
+  &#10913;&#8305;-WellFounded : WellFounded _&#10913;&#8305;_
+
+  &#10913;&#8305;-acc = <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
+  &#10913;&#8305;-WellFounded = <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
+
+  &#10913;-acc : <span style="color: #00cd68;">{</span>x y : BinTree<span style="color: #00cd68;">}</span> &#8594; y &#10913; x &#8594; Acc _&#10913;_ y
+  &#10913;-WellFounded : WellFounded _&#10913;_
+  
+  &#10913;-acc <span style="color: #00cd68;">{</span>branch _ _ _<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>nilT<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>inj&#8321; _<span style="color: #00cd68;">)</span> = &#10913;-WellFounded nilT
+  &#10913;-acc <span style="color: #00cd68;">{</span>branch _ _ _<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>nilT<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>inj&#8322; _<span style="color: #00cd68;">)</span> = &#10913;-WellFounded  nilT
+  &#10913;-acc <span style="color: #00cd68;">{</span>branch _ _ _<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>branch _ _ _<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>inj&#8321; <span style="color: #b6a0ff;">(</span>fst , snd<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> = <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
+  &#10913;-acc <span style="color: #00cd68;">{</span>branch _ _ _<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>branch _ _ _<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>inj&#8322; <span style="color: #b6a0ff;">(</span>fst , snd<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> = <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
+
+  <span style="color: #a8a8a8;">-- No trees less than the empty tree, in either sense.</span>
+  &#10913;-WellFounded nilT = acc <span style="color: #00cd68;">(</span>&#955; <span style="color: #b6a0ff;">{</span> _ <span style="color: #6ae4b9;">(</span>inj&#8321; <span style="color: #f0ce43;">()</span><span style="color: #6ae4b9;">)</span>
+                              ; _ <span style="color: #6ae4b9;">(</span>inj&#8322; <span style="color: #f0ce43;">()</span><span style="color: #6ae4b9;">)</span> <span style="color: #b6a0ff;">}</span><span style="color: #00cd68;">)</span>
+  <span style="color: #a8a8a8;">-- &#8230;</span>
+  &#10913;-WellFounded <span style="color: #00cd68;">(</span>branch _ _ _<span style="color: #00cd68;">)</span> = acc <span style="color: #00cd68;">{</span>!&#10913;-acc!<span style="color: #00cd68;">}</span>
+
+<span style="color: #a8a8a8;">--(&#955; { y (inj&#8321; (fst , snd)) &#8594; acc {!!}</span>
+<span style="color: #a8a8a8;">--   ; y (inj&#8322; (fst , snd)) &#8594; acc (&#955; y&#8321; x&#8323; &#8594; {!&#10913;-WellFounded ?!}) } )</span>
+</pre>
+</div>
+
+<p>
+These were some tests on the bad version.
+</p>
+<pre class="example">
+module BadBalanceTest where
+
+  open BinTree ℕ (λ x → x)
+  open Bad renaming (balance to badBalance)
+
+  t₂′ : BinTree
+  t₂′ = branch nilT 3 nilT
+
+  t₂ : BinTree
+  t₂ = branch nilT 2 t₂′
+
+  tree : BinTree
+  tree = branch nilT 1 t₂
+
+  {- Walk through the algorithm manually
+  _ : balanceFactor t₂ ≡ 0
+  _ = refl
+
+  _ : balanceFactor nilT ≡ 0
+  _ = refl
+
+  _ : lean tree ≡ right 2
+  _ = refl
+
+  tree′ : BinTree
+  tree′ = pivotLeft tree
+
+  _ : tree′ ≡ {!nilT!}
+  _ = refl
+  -}
+
+  _ : badBalance tree ≡ branch (branch nilT 1 nilT) 2 (branch nilT 3 nilT)
+  _ = refl
+</pre>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<p class="author">Author: Mark Armstrong</p>
-     <p class="author">Contact: <a href="mailto:markparmstrong@gmail.com">markparmstrong@gmail.com</a></p>
+<p class="author">Author: <a href="https://armkeh.github.io">Mark Armstrong</a> <img src="./../images/markarmstrong.jpg" alt="markarmstrong.jpg" /></p>
+     <p class="author">Contact: <a href="mailto:armstmp@mcmaster.ca">armstmp@mcmaster.ca</a></p>
      <p class="date">Original date: April 1st, 2020</p>
-     <p class="date">Last updated: 2020-04-01 Wed 18:49</p>
-     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.3.6)</p>
+     <p class="date">Last updated: 2020-08-13 Thu 17:50</p>
+     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
      <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
