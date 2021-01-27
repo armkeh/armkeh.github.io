@@ -2,7 +2,7 @@
 #+Subtitle: PhD candidate & sessional lecturer, McMaster University
 #+Author: Mark Armstrong
 #+Description: My github.io home page.
-#+Setupfile: ./theme-bigblow.setup
+#+Setupfile: ./org-html-themes/org/theme-bigblow-local.setup
  
 * HTML settings                                 :noexport:
 

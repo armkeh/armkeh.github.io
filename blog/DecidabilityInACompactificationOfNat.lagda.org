@@ -4,7 +4,7 @@
 #+Description: An Agda implementation of a decider for arbitrary predicates
 #+Description: on the one-point compactification of ℕ.
 #+Startup: noindent
-#+Setupfile: ./../theme-readtheorg.setup
+#+Setupfile: ./../org-html-themes/org/theme-readtheorg-local.setup
 #+Export_file_name: DecidabilityInACompactificationOfNat
 #+Property: header-args:agda2 :tangle src/DecidabilityInACompactificationOfNat.agda
 

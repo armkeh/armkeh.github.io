@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-13 Thu 17:51 -->
+<!-- 2021-01-27 Wed 02:12 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>An exploration of well-founded recursion</title>
@@ -42,7 +42,7 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -54,7 +54,7 @@
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -195,57 +195,34 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css"/>
-<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css"/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/styles/lib/js/jquery.stickytableheaders.min.js"></script>
-<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/styles/readtheorg/js/readtheorg.js"></script>
+<link rel="stylesheet" type="text/css" href="styles/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="styles/readtheorg_theme/css/readtheorg.css"/>
+<script type="text/javascript" src="styles/lib/js/jquery.min.js"></script>
+<script type="text/javascript" src="styles/lib/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="styles/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="styles/readtheorg_theme/js/readtheorg.js"></script>
+<style>pre.src{background:#000000;color:white;} </style>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -270,7 +247,7 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgcec4706" class="outline-2">
+<div id="outline-container-Introduction" class="outline-2">
 <h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-Introduction">
 <p>
@@ -289,7 +266,7 @@ my own developments were written by using that as an example.
 </div>
 </div>
 
-<div id="outline-container-org2e8004e" class="outline-2">
+<div id="outline-container-Agda-header" class="outline-2">
 <h2 id="Agda-header"><span class="section-number-2">2</span> Agda header</h2>
 <div class="outline-text-2" id="text-Agda-header">
 <p>
@@ -322,12 +299,12 @@ open import Function using <span style="color: #00cd68;">(</span>case_of_<span s
 </div>
 </div>
 
-<div id="outline-container-org953f5b5" class="outline-2">
+<div id="outline-container-Problem-1-–-The-Euclidean-algorithm" class="outline-2">
 <h2 id="Problem-1-–-The-Euclidean-algorithm"><span class="section-number-2">3</span> Problem 1 – The Euclidean algorithm</h2>
 <div class="outline-text-2" id="text-Problem-1-–-The-Euclidean-algorithm">
 </div>
 
-<div id="outline-container-org70c15fc" class="outline-3">
+<div id="outline-container-Preamble" class="outline-3">
 <h3 id="Preamble"><span class="section-number-3">3.1</span> Preamble</h3>
 <div class="outline-text-3" id="text-Preamble">
 <p>
@@ -359,7 +336,7 @@ we can easily transcribe this algorithm into Agda.
 </div>
 <p>
 But Agda will not believe this is terminating, because it fails to see
-in the recursive case that <code>m ∸ n</code>/~n ∸ m~ are
+in the recursive case that <code>m ∸ n~/~n ∸ m</code> are
 structurally smaller than <code>m</code> or <code>n</code>.
 </p>
 
@@ -385,7 +362,7 @@ of <code>m &lt; n</code> or <code>n &lt; m</code> in order to establish those fa
 If we try to state that using <code>_&lt;_</code>, we get stuck in the base cases
 during the proof.
 </p>
-<pre class="example">
+<pre class="example" id="org5fbd088">
 m∸n&lt;m : {m n : ℕ} → m ∸ n &lt; m
 m∸n&lt;m {m} {zero} = ??? -- Stuck; m ≮ n
 m∸n&lt;m {zero} {suc n} = ??? -- Stuck ; zero ≮ zero
@@ -417,7 +394,7 @@ then we will utilise the (level-agnostic) versions from the standard library.
 </div>
 </div>
 
-<div id="outline-container-org9b4aa55" class="outline-3">
+<div id="outline-container-Solution-version-1-–-Defining-our-own-notion-of-well-foundedness" class="outline-3">
 <h3 id="Solution-version-1-–-Defining-our-own-notion-of-well-foundedness"><span class="section-number-3">3.2</span> Solution version 1 – Defining our own notion of well-foundedness</h3>
 <div class="outline-text-3" id="text-Solution-version-1-–-Defining-our-own-notion-of-well-foundedness">
 <div class="org-src-container">
@@ -532,19 +509,19 @@ This does require some lemmas regarding <code>_⊔_</code>.
       &#955; <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; m&lt;n _ _<span style="color: #b6a0ff;">)</span> &#8594;
           EuclidGCD&#8242; m <span style="color: #b6a0ff;">(</span>n &#8760; m<span style="color: #b6a0ff;">)</span>
                      <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">{</span>suc m&#8320; &#8852; <span style="color: #f0ce43;">(</span>n&#8320; &#8760; m&#8320;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">}</span>
-                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;o&#8852;n m <span style="color: #00bdfa;">(</span>&#8852;-pres-&lt;m m&lt;n <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm n&#8320; m&#8320;<span style="color: #80d200;">)</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;o&#8852;n m <span style="color: #00bcff;">(</span>&#8852;-pres-&lt;m m&lt;n <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm n&#8320; m&#8320;<span style="color: #80d200;">)</span><span style="color: #00bcff;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
         ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span>   &#8594; m
         ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ n&lt;m<span style="color: #b6a0ff;">)</span> &#8594;
           EuclidGCD&#8242; <span style="color: #b6a0ff;">(</span>m &#8760; n<span style="color: #b6a0ff;">)</span> n
                      <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">{</span>m&#8320; &#8760; n&#8320; &#8852; suc n&#8320;<span style="color: #6ae4b9;">}</span>
-                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;n&#8852;o n <span style="color: #00bdfa;">(</span>&#8852;-pres-&lt;m <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm m&#8320; n&#8320;<span style="color: #80d200;">)</span> n&lt;m<span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                         <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;n&#8852;o n <span style="color: #00bcff;">(</span>&#8852;-pres-&lt;m <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm m&#8320; n&#8320;<span style="color: #80d200;">)</span> n&lt;m<span style="color: #00bcff;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
         <span style="color: #00cd68;">}</span>
 </pre>
 </div>
 <p>
 In the recursive cases, <code>rs</code> has the type
 </p>
-<pre class="example">
+<pre class="example" id="org6577c87">
 {y : ℕ} → suc y ≤′ suc (m₀ ⊔ n₀) → Acc (λ m₁ n₁ → suc m₁ ≤′ n₁) y
 </pre>
 <p>
@@ -565,7 +542,7 @@ by utilising our proof that <code>_&lt;′_</code> is well-founded.
 </div>
 </div>
 
-<div id="outline-container-org49dffcc" class="outline-3">
+<div id="outline-container-Solution-version-2-–-Using-the-standard-library's-definitions" class="outline-3">
 <h3 id="Solution-version-2-–-Using-the-standard-library's-definitions"><span class="section-number-3">3.3</span> Solution version 2 – Using the standard library's definitions</h3>
 <div class="outline-text-3" id="text-Solution-version-2-–-Using-the-standard-library's-definitions">
 <p>
@@ -596,12 +573,12 @@ EuclidGCD&#8242; m@<span style="color: #00cd68;">(</span>suc m&#8320;<span style
     &#955; <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; m&lt;n _ _<span style="color: #b6a0ff;">)</span> &#8594;
         EuclidGCD&#8242; m <span style="color: #b6a0ff;">(</span>n &#8760; m<span style="color: #b6a0ff;">)</span>
                    <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">(</span>suc m&#8320; &#8852; <span style="color: #f0ce43;">(</span>n&#8320; &#8760; m&#8320;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span>
-                       <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;o&#8852;n m <span style="color: #00bdfa;">(</span>&#8852;-pres-&lt;m m&lt;n <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm n&#8320; m&#8320;<span style="color: #80d200;">)</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                       <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;o&#8852;n m <span style="color: #00bcff;">(</span>&#8852;-pres-&lt;m m&lt;n <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm n&#8320; m&#8320;<span style="color: #80d200;">)</span><span style="color: #00bcff;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
       ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span>   &#8594; m
       ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ n&lt;m<span style="color: #b6a0ff;">)</span> &#8594;
         EuclidGCD&#8242; <span style="color: #b6a0ff;">(</span>m &#8760; n<span style="color: #b6a0ff;">)</span> n
                    <span style="color: #b6a0ff;">(</span>rs <span style="color: #6ae4b9;">(</span>m&#8320; &#8760; n&#8320; &#8852; suc n&#8320;<span style="color: #6ae4b9;">)</span>
-                       <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;n&#8852;o n <span style="color: #00bdfa;">(</span>&#8852;-pres-&lt;m <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm m&#8320; n&#8320;<span style="color: #80d200;">)</span> n&lt;m<span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+                       <span style="color: #6ae4b9;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #f0ce43;">(</span>m&lt;n&#8658;m&lt;n&#8852;o n <span style="color: #00bcff;">(</span>&#8852;-pres-&lt;m <span style="color: #80d200;">(</span>Sm&#8760;Sn&lt;Sm m&#8320; n&#8320;<span style="color: #80d200;">)</span> n&lt;m<span style="color: #00bcff;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
       <span style="color: #00cd68;">}</span>
 
 EuclidGCD : <span style="color: #00cd68;">(</span>m n : &#8469;<span style="color: #00cd68;">)</span> &#8594; &#8469;
@@ -617,7 +594,7 @@ the natural numbers.
 </div>
 </div>
 
-<div id="outline-container-orge879ec4" class="outline-2">
+<div id="outline-container-Problem-2-Draft-1-–-Bintree's-with-union" class="outline-2">
 <h2 id="Problem-2-Draft-1-–-Bintree's-with-union"><span class="section-number-2">4</span> Problem 2 Draft 1 – Bintree's with union</h2>
 <div class="outline-text-2" id="text-Problem-2-Draft-1-–-Bintree's-with-union">
 <p>
@@ -787,14 +764,14 @@ And then we are ready to explicitely prove that <code>union′</code> is termina
     in
     case &lt;-cmp <span style="color: #00cd68;">(</span># e&#8321;<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span># e&#8322;<span style="color: #00cd68;">)</span> of &#955;
         <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>tri&lt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594;
-            union&#8242; <span style="color: #b6a0ff;">(</span>insert e&#8322; <span style="color: #6ae4b9;">(</span>branch l&#8321; e&#8321; <span style="color: #f0ce43;">(</span>union&#8242; r&#8321; r&#8322; <span style="color: #00bdfa;">(</span>rs _ n&lt;&#8242;suc<span style="color: #80d200;">[</span>m&#8852;n<span style="color: #80d200;">]</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+            union&#8242; <span style="color: #b6a0ff;">(</span>insert e&#8322; <span style="color: #6ae4b9;">(</span>branch l&#8321; e&#8321; <span style="color: #f0ce43;">(</span>union&#8242; r&#8321; r&#8322; <span style="color: #00bcff;">(</span>rs _ n&lt;&#8242;suc<span style="color: #80d200;">[</span>m&#8852;n<span style="color: #80d200;">]</span><span style="color: #00bcff;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
                    l&#8322;
                    <span style="color: #b6a0ff;">(</span>rs _ m&lt;&#8242;suc<span style="color: #6ae4b9;">[</span>m&#8852;n<span style="color: #6ae4b9;">]</span><span style="color: #b6a0ff;">)</span>
         ; <span style="color: #b6a0ff;">(</span>tri&#8776; _ _ _<span style="color: #b6a0ff;">)</span> &#8594; branch <span style="color: #b6a0ff;">(</span>union&#8242; l&#8321; l&#8322; <span style="color: #6ae4b9;">(</span>rs _ m&lt;&#8242;suc<span style="color: #f0ce43;">[</span>m&#8852;n<span style="color: #f0ce43;">]</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
                                 e&#8321;
                                 <span style="color: #b6a0ff;">(</span>union&#8242; r&#8321; r&#8322; <span style="color: #6ae4b9;">(</span>rs _ n&lt;&#8242;suc<span style="color: #f0ce43;">[</span>m&#8852;n<span style="color: #f0ce43;">]</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
         ; <span style="color: #b6a0ff;">(</span>tri&gt; _ _ _<span style="color: #b6a0ff;">)</span> &#8594;
-            union&#8242; <span style="color: #b6a0ff;">(</span>insert e&#8322; <span style="color: #6ae4b9;">(</span>branch <span style="color: #f0ce43;">(</span>union&#8242; l&#8321; l&#8322; <span style="color: #00bdfa;">(</span>rs _ m&lt;&#8242;suc<span style="color: #80d200;">[</span>m&#8852;n<span style="color: #80d200;">]</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span> e&#8321; r&#8321;<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
+            union&#8242; <span style="color: #b6a0ff;">(</span>insert e&#8322; <span style="color: #6ae4b9;">(</span>branch <span style="color: #f0ce43;">(</span>union&#8242; l&#8321; l&#8322; <span style="color: #00bcff;">(</span>rs _ m&lt;&#8242;suc<span style="color: #80d200;">[</span>m&#8852;n<span style="color: #80d200;">]</span><span style="color: #00bcff;">)</span><span style="color: #f0ce43;">)</span> e&#8321; r&#8321;<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
                    r&#8322;
                    <span style="color: #b6a0ff;">(</span>rs _ n&lt;&#8242;suc<span style="color: #6ae4b9;">[</span>m&#8852;n<span style="color: #6ae4b9;">]</span><span style="color: #b6a0ff;">)</span>
         <span style="color: #00cd68;">}</span> 
@@ -894,7 +871,7 @@ we settle for some quick unit tests.
 </div>
 </div>
 
-<div id="outline-container-org3fa3497" class="outline-2">
+<div id="outline-container-Problem-2-–-Tree-balancing" class="outline-2">
 <h2 id="Problem-2-–-Tree-balancing"><span class="section-number-2">5</span> Problem 2 – Tree balancing</h2>
 <div class="outline-text-2" id="text-Problem-2-–-Tree-balancing">
 <p>
@@ -1088,7 +1065,7 @@ of mutually defined functions.
 Here's the version using pattern matching lambdas,
 which may be easier to read.
 </p>
-<pre class="example">
+<pre class="example" id="orgae81281">
     {-# TERMINATING #-}
     balance nilT = nilT
     balance t@(branch t₁ e t₂) = case maxImbalance t₁ of λ
@@ -1160,13 +1137,13 @@ We prove that subtrees precede their “super” tree.
   branch-&#10913;&#737; t&#8321; _ t&#8322; = inj&#8321; <span style="color: #00cd68;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #b6a0ff;">(</span>s&#8804;s <span style="color: #6ae4b9;">(</span>m&#8804;m&#8852;n <span style="color: #f0ce43;">(</span>height t&#8321;<span style="color: #f0ce43;">)</span> <span style="color: #f0ce43;">(</span>height t&#8322;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
                           , &#8804;-steps&#691; <span style="color: #b6a0ff;">(</span>totalImbalance t&#8322;<span style="color: #b6a0ff;">)</span>
                                      <span style="color: #b6a0ff;">(</span>m&#8804;m+n <span style="color: #6ae4b9;">(</span>totalImbalance t&#8321;<span style="color: #6ae4b9;">)</span>
-                                            <span style="color: #6ae4b9;">(</span>leanAmount <span style="color: #f0ce43;">(</span>disparity t&#8321; t&#8322; <span style="color: #00bdfa;">(</span>&lt;-cmp <span style="color: #80d200;">(</span>height t&#8321;<span style="color: #80d200;">)</span> <span style="color: #80d200;">(</span>height t&#8322;<span style="color: #80d200;">)</span><span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+                                            <span style="color: #6ae4b9;">(</span>leanAmount <span style="color: #f0ce43;">(</span>disparity t&#8321; t&#8322; <span style="color: #00bcff;">(</span>&lt;-cmp <span style="color: #80d200;">(</span>height t&#8321;<span style="color: #80d200;">)</span> <span style="color: #80d200;">(</span>height t&#8322;<span style="color: #80d200;">)</span><span style="color: #00bcff;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
 
   branch-&#10913;&#691; : <span style="color: #00cd68;">(</span>t&#8321; : BinTree<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>e : Elem<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>t&#8322; : BinTree<span style="color: #00cd68;">)</span> &#8594; t&#8322; &#10913; branch t&#8321; e t&#8322;
   branch-&#10913;&#691; t&#8321; _ t&#8322; = inj&#8321; <span style="color: #00cd68;">(</span>&#8804;&#8658;&#8804;&#8242; <span style="color: #b6a0ff;">(</span>s&#8804;s <span style="color: #6ae4b9;">(</span>n&#8804;m&#8852;n <span style="color: #f0ce43;">(</span>height t&#8321;<span style="color: #f0ce43;">)</span> <span style="color: #f0ce43;">(</span>height t&#8322;<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span>
                           , m&#8804;n+m <span style="color: #b6a0ff;">(</span>totalImbalance t&#8322;<span style="color: #b6a0ff;">)</span>
                                   <span style="color: #b6a0ff;">(</span>  totalImbalance t&#8321;
-                                   + leanAmount <span style="color: #6ae4b9;">(</span>disparity t&#8321; t&#8322; <span style="color: #f0ce43;">(</span>&lt;-cmp <span style="color: #00bdfa;">(</span>height t&#8321;<span style="color: #00bdfa;">)</span> <span style="color: #00bdfa;">(</span>height t&#8322;<span style="color: #00bdfa;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+                                   + leanAmount <span style="color: #6ae4b9;">(</span>disparity t&#8321; t&#8322; <span style="color: #f0ce43;">(</span>&lt;-cmp <span style="color: #00bcff;">(</span>height t&#8321;<span style="color: #00bcff;">)</span> <span style="color: #00bcff;">(</span>height t&#8322;<span style="color: #00bcff;">)</span><span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
 </pre>
 </div>
 
@@ -1185,7 +1162,7 @@ In particular, <code>t₁</code> and <code>t₁′</code> seem reversed.
 I'll start from scratch after tackling the accessibility
 and well-foundedness proofs.
 </p>
-<pre class="example">
+<pre class="example" id="orgff5b40f">
   thing : (t₁′ t₁ t₂ : BinTree)
         → t₁′ ⪡ⁱ t₁
         →  (leanAmount (disparity t₁′ t₂ (&lt;-cmp (height t₁′) (height t₂)))
@@ -1236,8 +1213,8 @@ and well-foundedness proofs.
 
   &#10913;&#688;-acc <span style="color: #00cd68;">{</span>branch x x&#8321; x&#8322;<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>nilT<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>fst , z&#8804;n<span style="color: #00cd68;">)</span> = &#10913;&#688;-WellFounded nilT
   &#10913;&#688;-acc <span style="color: #00cd68;">{</span>branch x x&#8321; x&#8322;<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span>branch y x&#8323; y&#8321;<span style="color: #00cd68;">}</span> <span style="color: #00cd68;">(</span>fst , snd<span style="color: #00cd68;">)</span> = <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
-  &#10913;&#688;-WellFounded nilT = acc &#955; y x &#8594; <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
-  &#10913;&#688;-WellFounded <span style="color: #00cd68;">(</span>branch t x t&#8321;<span style="color: #00cd68;">)</span> = <span style="color: #00cd68;">{</span>!!<span style="color: #00cd68;">}</span>
+  &#10913;&#688;-WellFounded nilT = acc &#955; <span style="color: #00cd68;">{</span> _ <span style="color: #b6a0ff;">()</span> <span style="color: #00cd68;">}</span>
+  &#10913;&#688;-WellFounded <span style="color: #00cd68;">(</span>branch t x t&#8321;<span style="color: #00cd68;">)</span> = acc &#955; y x&#8321; &#8594; &#10913;&#688;-acc <span style="color: #00cd68;">{</span><span style="color: #b6a0ff;">{</span>!!<span style="color: #b6a0ff;">}</span><span style="color: #00cd68;">}</span> <span style="color: #00cd68;">{</span><span style="color: #b6a0ff;">{</span>!!<span style="color: #b6a0ff;">}</span><span style="color: #00cd68;">}</span> x&#8321;
 
   &#10913;&#8305;-acc : <span style="color: #00cd68;">{</span>x y : BinTree<span style="color: #00cd68;">}</span> &#8594; y &#10913;&#8305; x &#8594; Acc _&#10913;&#8305;_ y
   &#10913;&#8305;-WellFounded : WellFounded _&#10913;&#8305;_
@@ -1267,7 +1244,7 @@ and well-foundedness proofs.
 <p>
 These were some tests on the bad version.
 </p>
-<pre class="example">
+<pre class="example" id="orgb7b6927">
 module BadBalanceTest where
 
   open BinTree ℕ (λ x → x)
@@ -1307,11 +1284,11 @@ module BadBalanceTest where
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: <a href="https://armkeh.github.io">Mark Armstrong</a> <img src="./../images/markarmstrong.jpg" alt="markarmstrong.jpg" /></p>
-     <p class="author">Contact: <a href="mailto:armstmp@mcmaster.ca">armstmp@mcmaster.ca</a></p>
+     <p class="author">Contact: <a href="mailto:markparmstrong@gmail.com">markparmstrong@gmail.com</a></p>
      <p class="date">Original date: April 1st, 2020</p>
-     <p class="date">Last updated: 2020-08-13 Thu 17:50</p>
-     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
-     <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+     <p class="date">Last updated: 2021-01-27 Wed 02:12</p>
+     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+     <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

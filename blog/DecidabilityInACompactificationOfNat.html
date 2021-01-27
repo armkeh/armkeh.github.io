@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-08-25 Tue 13:27 -->
+<!-- 2021-01-27 Wed 02:14 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Decidability in the One-Point Compactification of ℕ</title>
@@ -43,7 +43,7 @@ on the one-point compactification of ℕ."
   }
   pre.src {
     position: relative;
-    overflow: visible;
+    overflow: auto;
     padding-top: 1.2em;
   }
   pre.src:before {
@@ -55,7 +55,7 @@ on the one-point compactification of ℕ."
     padding: 3px;
     border: 1px solid black;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
@@ -196,57 +196,34 @@ on the one-point compactification of ℕ."
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css"/>
-<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css"/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/styles/lib/js/jquery.stickytableheaders.min.js"></script>
-<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/styles/readtheorg/js/readtheorg.js"></script>
+<link rel="stylesheet" type="text/css" href="styles/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="styles/readtheorg_theme/css/readtheorg.css"/>
+<script type="text/javascript" src="styles/lib/js/jquery.min.js"></script>
+<script type="text/javascript" src="styles/lib/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="styles/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="styles/readtheorg_theme/js/readtheorg.js"></script>
+<style>pre.src{background:#000000;color:white;} </style>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -267,7 +244,7 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orga37fbf0" class="outline-2">
+<div id="outline-container-Introduction" class="outline-2">
 <h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-Introduction">
 <p>
@@ -320,7 +297,7 @@ But it does exist with ℕ∞.
 </div>
 </div>
 
-<div id="outline-container-org0d43bf4" class="outline-2">
+<div id="outline-container-Some-small-extensions-to-the-standard-library" class="outline-2">
 <h2 id="Some-small-extensions-to-the-standard-library"><span class="section-number-2">2</span> Some small extensions to the standard library</h2>
 <div class="outline-text-2" id="text-Some-small-extensions-to-the-standard-library">
 <p>
@@ -345,13 +322,13 @@ Is-just? <span style="color: #00cd68;">(</span>just _<span style="color: #00cd68
 </div>
 </div>
 
-<div id="outline-container-org8c9df9c" class="outline-2">
+<div id="outline-container-The-one-point-compactification-of-ℕ" class="outline-2">
 <h2 id="The-one-point-compactification-of-ℕ"><span class="section-number-2">3</span> The one-point compactification of ℕ</h2>
 <div class="outline-text-2" id="text-The-one-point-compactification-of-ℕ">
 <p>
 First, let us use the name <code>ℕ*</code>, rather than <code>ℕ∞</code>.
 This leads us to naturally append <code>*</code> to the standard names for
-elements of or functions on <code>ℕ</code>, which is far more readable
+elements of or functions on <code>ℕ*</code>, which is far more readable
 than appending <code>∞</code> everywhere.
 We will still call the “new point” of <code>ℕ*</code> <code>∞</code>.
 </p>
@@ -398,7 +375,7 @@ c-&#8776; <span style="color: #00cd68;">(</span>&#8776;-trans m&#8776;n n&#8776;
 </div>
 </div>
 
-<div id="outline-container-orgd5f5716" class="outline-2">
+<div id="outline-container-Naming-some-elements-of-~ℕ*~" class="outline-2">
 <h2 id="Naming-some-elements-of-~ℕ*~"><span class="section-number-2">4</span> Naming some elements of ℕ*</h2>
 <div class="outline-text-2" id="text-Naming-some-elements-of-~ℕ*~">
 <p>
@@ -459,7 +436,7 @@ c-&#8776; <span style="color: #00cd68;">(</span>suc*-injective m&#8776;n<span st
 </div>
 </div>
 
-<div id="outline-container-orge259751" class="outline-2">
+<div id="outline-container-The-embedding-of-~ℕ~-into-~ℕ*~" class="outline-2">
 <h2 id="The-embedding-of-~ℕ~-into-~ℕ*~"><span class="section-number-2">5</span> The embedding of ℕ into ℕ*</h2>
 <div class="outline-text-2" id="text-The-embedding-of-~ℕ~-into-~ℕ*~">
 <p>
@@ -487,7 +464,7 @@ There is no way that we can obtain the fix-point infinity by embedding.
 </div>
 </div>
 
-<div id="outline-container-org240bef0" class="outline-2">
+<div id="outline-container-Decidable-case-checks-on-~ℕ*~" class="outline-2">
 <h2 id="Decidable-case-checks-on-~ℕ*~"><span class="section-number-2">6</span> Decidable case checks on ℕ*</h2>
 <div class="outline-text-2" id="text-Decidable-case-checks-on-~ℕ*~">
 <p>
@@ -568,7 +545,7 @@ Is-suc*? m = case Is-zero*? m of
 </div>
 </div>
 
-<div id="outline-container-orgfeef8a6" class="outline-2">
+<div id="outline-container-Decidability-of-arbitrary-predicates-on-~ℕ*~" class="outline-2">
 <h2 id="Decidability-of-arbitrary-predicates-on-~ℕ*~"><span class="section-number-2">7</span> Decidability of arbitrary predicates on ℕ*</h2>
 <div class="outline-text-2" id="text-Decidability-of-arbitrary-predicates-on-~ℕ*~">
 <p>
@@ -609,11 +586,11 @@ so we provide a direct proof.</p></div></div>
 </div></div>
 <div id="postamble" class="status">
 <p class="author">Author: <a href="https://armkeh.github.io">Mark Armstrong</a> <img src="./../images/markarmstrong.jpg" alt="markarmstrong.jpg" /></p>
-     <p class="author">Contact: <a href="mailto:armstmp@mcmaster.ca">armstmp@mcmaster.ca</a></p>
+     <p class="author">Contact: <a href="mailto:markparmstrong@gmail.com">markparmstrong@gmail.com</a></p>
      <p class="date">Original date: August 25, 2020</p>
-     <p class="date">Last updated: 2020-08-25 Tue 13:26</p>
-     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.3.7)</p>
-     <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+     <p class="date">Last updated: 2021-01-27 Wed 02:14</p>
+     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+     <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

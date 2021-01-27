@@ -4,7 +4,7 @@
 #+Description: Answering a question; when can we say two functions
 #+Description: are equal in Agda?
 #+Startup: noindent
-#+Setupfile: ./../theme-readtheorg.setup
+#+Setupfile: ./../org-html-themes/org/theme-readtheorg-local.setup
 #+Export_file_name: EqualityOfFunctions
 #+Property: header-args:agda2 :tangle src/EqualityOfFunctions.agda
 

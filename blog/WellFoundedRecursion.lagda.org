@@ -3,7 +3,7 @@
 #+Date: April 1st, 2020
 #+Description: Exploring definitions using well-founded recursion in Agda.
 #+Startup: noindent
-#+Setupfile: ./../theme-readtheorg.setup
+#+Setupfile: ./../org-html-themes/org/theme-readtheorg-local.setup
 #+Export_file_name: WellFoundedRecursion
 #+Property: header-args:agda2 :tangle src/EqualityOfFunctions.agda
 
