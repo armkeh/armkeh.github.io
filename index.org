@@ -1,5 +1,5 @@
 #+Title: Mark Armstrong - Home Page
-#+Subtitle: PhD candidate & sessional lecturer, McMaster University
+#+Subtitle: Software engineer, [[https://www.indexexchange.com/][Index Exchange]]
 #+Author: Mark Armstrong
 #+Description: My github.io home page.
 #+Setupfile: ./org-html-themes/org/theme-bigblow-local.setup
@@ -27,7 +27,9 @@
 :CUSTOM_ID: About-me
 :END:
 
-I am a PhD candidate, sessional lecturer and teaching assistant
+I am a software engineer working at [[https://www.indexexchange.com/][Index Exchange]], developing backend APIs in Go.
+
+Formerly I was a PhD candidate, sessional lecturer and teaching assistant
 at McMaster University.
 
 I am an avid Emacs user
@@ -71,7 +73,7 @@ Agda and Org mode.
   - the [[file:./blog/InferenceRulesInOrg.org][Org source]].
 - [[file:./blog/EqualityOfFunctions.html][Equality of functions in Agda]]
 
-* Reading
+* COMMENT Reading
 :PROPERTIES:
 :CUSTOM_ID: Reading
 :END:
@@ -93,19 +95,13 @@ The page is also embedded here for convenience.
 :CUSTOM_ID: Teaching
 :END:
 
-** Current
-:PROPERTIES:
-:CUSTOM_ID: Current
-:END:
-
-- Fall 2020: CS 3MI3,
-  [[https://armkeh.github.io/principles-of-programming-languages/index.html][Principles of Programming Languages]]
-
 ** Previous
 :PROPERTIES:
 :CUSTOM_ID: Previous
 :END:
 
+- Fall 2020: CS 3MI3,
+  [[https://armkeh.github.io/principles-of-programming-languages/index.html][Principles of Programming Languages]]
 - Fall 2019: CS 3MI3,
   [[https://www.cas.mcmaster.ca/~armstmp/3mi3-2019/homepage.html][Principles of Programming Languages]]
 - Fall 2018: CS 3MI3,
@@ -120,6 +116,10 @@ The page is also embedded here for convenience.
 :CUSTOM_ID: Teaching-assistant-positions
 :END:
 
+- Winter 2021: CS 3AC3
+  Algorithms and Complexity
+- Fall 2020: CS 4TH3
+  Theory of Computation
 - Fall 2019: SE/CS 2DM3,
   Discrete Mathematics with Applications I
 - Fall 2019: CS 4TH3,
@@ -152,7 +152,7 @@ The page is also embedded here for convenience.
 :CUSTOM_ID: Research
 :END:
 
-My current research is on /formalisation/
+My PhD research was on /formalisation/
 of /generalised computability theory/.
 
 By /formalisation/, I mean /mechanisation/,
@@ -196,7 +196,7 @@ the pages must be on the same domain for this to work
 #+HTML:   onload="resizeIframe(this)">
 #+HTML: </iframe>
 
-* My kids
+* COMMENT My kids
 :PROPERTIES:
 :CUSTOM_ID: My-kids
 :END:
