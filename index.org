@@ -1,9 +1,18 @@
 #+Title: Mark Armstrong - Home Page
-#+Subtitle: Software engineer, [[https://www.indexexchange.com/][Index Exchange]]
+#+Subtitle: Software engineer at {{{indexexchange}}}
 #+Author: Mark Armstrong
 #+Description: My github.io home page.
 #+Setupfile: ./org-html-themes/org/theme-bigblow-local.setup
  
+* Macros                                        :noexport:
+:PROPERTIES:
+:CUSTOM_ID: org-anchor-Macros^1
+:END:
+
+Colour the link nicely, so it shows up nicely in the headline.
+Make the background Index Evergreen and the text Index Cyan.
+#+Macro: indexexchange @@html:<a style="background-color: #00291F; color: #43D3CC" href="https://www.indexexchange.com/">Index Exchange</a>@@
+
 * HTML settings                                 :noexport:
 
 #+HTML_head: <script>
