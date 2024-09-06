@@ -1,26 +1,9 @@
 #+Title: Mark Armstrong - Home Page
-#+Subtitle: Software engineer at {{{indexexchange}}}
+#+Subtitle: Software engineer
 #+Author: Mark Armstrong
 #+Description: My github.io home page.
 #+Setupfile: ./org-html-themes/org/theme-bigblow-local.setup
  
-* Macros                                        :noexport:
-:PROPERTIES:
-:CUSTOM_ID: org-anchor-Macros^1
-:END:
-
-Colour the link nicely, so it shows up nicely in the headline.
-Make the background Index Evergreen and the text Index Cyan.
-#+Macro: indexexchange @@html:<a style="background-color: #00291F; color: #43D3CC" href="https://www.indexexchange.com/">Index Exchange</a>@@
-
-* HTML settings                                 :noexport:
-
-#+HTML_head: <script>
-#+HTML_head:   function resizeIframe(obj) {
-#+HTML_head:     obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
-#+HTML_head:   }
-#+HTML_head: </script>
-
 * Personal photo                                                     :ignore:
 :PROPERTIES:
 :CUSTOM_ID: Personal-photo
@@ -36,10 +19,16 @@ Make the background Index Evergreen and the text Index Cyan.
 :CUSTOM_ID: About-me
 :END:
 
-I am a software engineer working at [[https://www.indexexchange.com/][Index Exchange]], developing backend APIs in Go.
+I am a software engineer most recently working at [[https://www.indexexchange.com/][Index Exchange]], where I
+- worked on the core application API team,
+- developing backend APIs in Go
+  - incorporating technologies including Ansible and Redis,
+- and practicing DevOps engineering using Docker, Kubernetes,
+  Helm and GitLab pipelines and ArgoCD.
 
 Formerly I was a PhD candidate, sessional lecturer and teaching assistant
-at McMaster University.
+at McMaster University,
+with a focus on functional programming and the theory of programming languages.
 
 I am an avid Emacs user
 (see my init [[https://github.com/armkeh/setup/tree/master/emacs][here]]).
