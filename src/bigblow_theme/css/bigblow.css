@@ -620,6 +620,7 @@ span.todo .selected {
     padding: 4px;
     position: fixed;
     width: auto;
+    white-space: pre;
 }
 
 #minitoc a {
@@ -748,6 +749,10 @@ p.verse {
 
 .copy-to-clipboard-button:hover {
     cursor: pointer;
+}
+
+.underline {
+  text-decoration:underline
 }
 
 /* This is for the sake of Emacs. */
