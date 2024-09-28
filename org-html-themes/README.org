@@ -1,4 +1,4 @@
-#+TITLE:     How to export Org mode files into awesome HTML in 2 minutes
+#+TITLE:     How to effortlessly transform your Org mode files into stunning HTML in just 2 minutes
 #+AUTHOR:    Fabrice Niessen
 #+EMAIL:     (concat "fniessen" at-sign "pirilampo.org")
 #+DESCRIPTION: Org-HTML export made simple.
@@ -7,7 +7,7 @@
 #+OPTIONS:   H:4 toc:t num:2
 
 #+PROPERTY:  header-args :padline no
-#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+SETUPFILE: ~/org/theme-readtheorg.setup
 
 #+html: <a href="http://opensource.org/licenses/GPL-3.0">
 #+html:   <img src="http://img.shields.io/:license-gpl-blue.svg" alt=":license-gpl-blue.svg" />
@@ -16,6 +16,33 @@
 #+html:   <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="btn_donate_LG.gif" />
 #+html: </a>
 
+* ADVERT: Elevate your Emacs skills in Paris, Utrecht, Leuven or Valencia!
+
+*Unlock the power of Emacs!  Join my next exclusive "Emacs Boost" course!*
+
+Ready to /supercharge your productivity/ and become an Emacs ninja?  Look no
+further!
+
+*What you'll learn:*
+- Master Emacs from the basics to advanced tricks.
+- /Boost your editing efficiency/ and streamline your workflow.
+- Customize Emacs to fit your unique needs.
+- And much more!
+
+*Audience:* Open to anyone interested in Emacs, from beginners to advanced
+users.
+
+*Why choose my course?*
+- Expert instructor with 25 years of Emacs experience.
+- /Hands-on exercises/ to reinforce your learning.
+- /Networking opportunities/ with like-minded Emacs enthusiasts.
+- Personalized attention.
+
+Don't miss this opportunity to take your Emacs skills to the next level! \\
+
+Visit https://emacsboost.com/en/ for more information, dates and locations, and
+to /reserve your seat/.
+
 * Overview
 
 ** Description
@@ -23,7 +50,7 @@
 Though you can easily override CSS stylesheets and add your own HTML themes, we
 can say (or write) that Org mode provides a /basic/ HTML support.
 
-*Org-HMTL themes* is an open source framework for providing you with a list of
+*Org-HTML themes* is an open source framework for providing you with a list of
 very nice (cross-browser) themes for all your Org documents.  Use them to *style
 your docs*, and your colleagues will come up to tell you that you are a genius!
 
@@ -46,7 +73,7 @@ If such a version is not bundled with your Emacs, install one from ELPA.
 :END:
 
 This is a list of available *HTML themes for Org mode*, which you can use right
-now!  Well, I hope to have more than one in a couple of weeks...
+now!
 
 ** Bigblow
 
@@ -147,9 +174,13 @@ available." \\
 "Extremely useful." \\
 -- /Thomas S. Dye/
 
+"This is amazing, I've been looking for something like this for a LONG time!
+I will share." \\
+-- /Edward H./
+
 * Demo
 
-I've written a [[file:org/org-mode-syntax-example.txt][demo page]] for the themes that provides a maximal working support
+I've written a [[file:tests/org-mode-syntax-example.org][demo page]] for the themes that provides a maximal working support
 of Org mode syntax.
 
 Please see the [[https://github.com/fniessen/refcard-org-mode][Org mode refcard]] page for full examples of headings, code,
@@ -173,7 +204,7 @@ Using a theme from the [[id:79e0ed21-c3b0-4f00-bdab-29fbff9dcad4][theme gallery]
 
    or, if you *cloned or downloaded* the Org-HTML themes project -- to get no
    dependency on an Internet connection --, use a (relative or absolute) path to
-   the local "setup file" and copy the "src" folder from the cloned folder
+   the /local/ "setup file" and copy the =src= folder from the cloned folder
    into the same folder as the file you want to export:
 
    #+begin_src org :exports code
@@ -189,7 +220,7 @@ You love those themes, but you still would like to override particular HTML
 tags?  Some examples do follow...
 
 Before doing that, though, if you think it really is an improvement that could
-server other persons as well, including me, you're invited to submit your
+serve other persons as well, including me, you're invited to submit your
 change...
 
 ** Change the background code blocks
@@ -211,33 +242,31 @@ Solution provided by Malcolm Cook:
 ,#+HTML_HEAD: <style> li{max-width:800px;}</style
 #+end_src
 
-* Contributing
+* Contribute to the project!
 
-** Issues
+** Report issues and enhancements
 
-Report issues and suggest features and improvements on the [[https://github.com/fniessen/org-html-themes/issues/new][GitHub issue tracker]].
+Found a bug or have an idea for a new feature?  Share your thoughts on the
+[[https://github.com/fniessen/org-html-themes/issues/new][GitHub issue tracker]].
 
-** Patches
+** Submit patches
 
-I love contributions!  Patches under any form are always welcome!
+I welcome contributions in any form!  Feel free to submit patches to enhance the
+project.
 
-** Donations
+** Support development with a donation!
 
-If you use the org-html-themes project (or any of [[https://github.com/fniessen/][my other projects]]) and feel it
-is making your life better and easier, you can show your appreciation and help
-support future development by making today a [[https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VCVAS6KPDQ4JC&lc=BE&item_number=org%2dhtml%2dthemes&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted][donation]] through PayPal.  Thank
-you!
+If you find the "org-html-themes" project (or any of [[https://github.com/fniessen/][my other projects]])
+enhancing your Emacs experience and simplifying your workflow, seize the
+opportunity to express your appreciation!  Help fuel future development by
+making a [[https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VCVAS6KPDQ4JC&lc=BE&item_number=org%2dhtml%2dthemes&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted][donation]] through PayPal. Your support is invaluable -- thank you!
 
-Regardless of the donations, org-html-themes will always be free both as in
-beer and as in speech.
-
-** Follow me
-
-I have an [[https://twitter.com/f_niessen][f_niessen]] account on Twitter.  You should follow it.
+Remember, regardless of donations, "org-html-themes" will always remain freely
+accessible, both as in Belgian beer and as in speech.
 
 * License
 
-Copyright (C) 2011-2020 Fabrice Niessen.
+Copyright (C) 2011-2024 Fabrice Niessen
 
 Author: Fabrice Niessen \\
 Keywords: org-mode html themes
