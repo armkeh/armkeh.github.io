@@ -6,15 +6,14 @@
 #+Startup: noindent
 #+Setupfile: ./../org-html-themes/org/theme-readtheorg-local.setup
 #+Export_file_name: EqualityOfFunctions
-#+Property: header-args:agda2 :tangle src/EqualityOfFunctions.agda
+#+Property: header-args:agda2 :tangle artifacts/EqualityOfFunctions.agda
 
 * Preamble                                      :ignore:
   :PROPERTIES:
   :CUSTOM_ID: Preamble
   :END:
 
-A raw Agda source file containing all the code below can be found
-[[file:src/EqualityOfFunctions.agda][here]].
+A raw Agda source file containing all the code below can be found [[file:artifacts/EqualityOfFunctions.agda][here]].
 
 * Introduction
   :PROPERTIES:
@@ -481,4 +480,3 @@ The original Org source code, with Agda code between
 the ~#+begin_src agda2~ and ~#+end_src~ blocks,
 can be found [[file:./EqualityOfFunctions.lagda.org][here]],
 along with the pure Agda code tangled from this file.
-

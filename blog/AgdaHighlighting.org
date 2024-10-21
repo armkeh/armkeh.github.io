@@ -3,7 +3,7 @@
 #+Date: Sunday, March 22nd 2020
 #+Description: Elisp code to change Agda's highlighting behaviour
 #+Setupfile: ./../org-html-themes/org/theme-readtheorg-local.setup
-#+Property: header-args:emacs-lisp :tangle src/AgdaHighlighting.el
+#+Property: header-args:emacs-lisp :tangle artifacts/AgdaHighlighting.el
 
 * Introduction
 :PROPERTIES:
@@ -13,8 +13,7 @@
 This code and the majority of the commentary come from
 [[https://github.com/armkeh/setup/blob/master/emacs/emacs-init.org][my Emacs initialisation file]].
 
-The code described below is collected into a
-[[file:src/AgdaHighlighting.el][raw Elisp code file]],
+The code described below is collected into a [[./artifacts/AgdaHighlighting.el][raw Elisp file]],
 from which the contents can be copied directly into your
 Emacs initialisation file, usually located at ~$HOME/.emacs~.
 

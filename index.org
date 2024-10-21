@@ -3,7 +3,7 @@
 #+Author: Mark Armstrong
 #+Description: My github.io home page.
 #+Setupfile: ./org-html-themes/org/theme-bigblow-local.setup
- 
+
 * HTML header                                   :noexport:
 
 ** Perfectly sized iframes
@@ -26,6 +26,11 @@ the pages must be on the same domain for this to work
 #+HTML_head:   }
 #+HTML_head: </script>
 
+** Social badges
+
+LinkedIn badge script.
+#+HTML_head: <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+
 * Personal photo                                                     :ignore:
 :PROPERTIES:
 :CUSTOM_ID: Personal-photo
@@ -35,6 +40,18 @@ the pages must be on the same domain for this to work
 #+attr_html: :width 200/250/300/400/500/600px
 #+attr_latex: :width 200px
 [[./images/markarmstrong.jpg]]
+
+# * COMMENT Social badges                         :ignore:
+
+# #+begin_export html
+# <div class="badge-base LI-profile-badge"
+#      data-locale="en_US" data-size="small" data-theme="dark" data-type="HORIZONTAL"
+#      data-vanity="mark-armstrong-0499575a" data-version="v1">
+#   <a class="badge-base__link LI-simple-link"
+#      href="https://ca.linkedin.com/in/mark-armstrong-0499575a?trk=profile-badge">
+#   </a>
+# </div>
+# #+end_export
 
 * About me
 :PROPERTIES:
@@ -89,7 +106,7 @@ Agda and Org mode.
 - [[file:./blog/WellFoundedRecursion.html][Well-founded recursion (in Agda)]]
 - [[file:./blog/AgdaHighlighting.html][Agda Highlighting]]
 - [[file:./blog/InferenceRulesInOrg.html][Inference rules in Org]]
-  - The [[file:./blog/InferenceRuleInOrg.pdf][generated PDF]], and
+  - The [[file:./blog/InferenceRulesInOrg.pdf][generated PDF]], and
   - the [[file:./blog/InferenceRulesInOrg.org][Org source]].
 - [[file:./blog/EqualityOfFunctions.html][Equality of functions in Agda]]
 

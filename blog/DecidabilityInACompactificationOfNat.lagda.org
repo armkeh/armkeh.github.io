@@ -6,7 +6,7 @@
 #+Startup: noindent
 #+Setupfile: ./../org-html-themes/org/theme-readtheorg-local.setup
 #+Export_file_name: DecidabilityInACompactificationOfNat
-#+Property: header-args:agda2 :tangle src/DecidabilityInACompactificationOfNat.agda
+#+Property: header-args:agda2 :tangle artifacts/DecidabilityInACompactificationOfNat.agda
 
 * Introduction
   :PROPERTIES:
@@ -267,7 +267,7 @@ Is-suc*? m = case Is-zero*? m of
     ; (no ¬Is-zero*-m) → yes (¬[Is-zero*-n]⇒Is-suc*-n m ¬Is-zero*-m)
     }
 #+end_src
- 
+
 * Decidability of arbitrary predicates on ℕ*
   :PROPERTIES:
   :CUSTOM_ID: Decidability-of-arbitrary-predicates-on-~ℕ*~

@@ -3,234 +3,29 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-01-27 Wed 02:15 -->
+<!-- 2024-10-20 Sun 23:33 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Customisations to Agda's highlighting</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="[[https://armkeh.github.io][Mark Armstrong]] [[file:./../images/markarmstrong.jpg]]" />
-<meta name="description" content="Elisp code to change Agda's highlighting behaviour"
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center;
-             margin-bottom: .2em; }
-  .subtitle { text-align: center;
-              font-size: medium;
-              font-weight: bold;
-              margin-top:0; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { font-family: monospace; color: green; }
-  .priority { font-family: monospace; color: orange; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: auto;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline; margin-top: 14px;}
-  /* Languages per Org manual */
-  pre.src-asymptote:before { content: 'Asymptote'; }
-  pre.src-awk:before { content: 'Awk'; }
-  pre.src-C:before { content: 'C'; }
-  /* pre.src-C++ doesn't work in CSS */
-  pre.src-clojure:before { content: 'Clojure'; }
-  pre.src-css:before { content: 'CSS'; }
-  pre.src-D:before { content: 'D'; }
-  pre.src-ditaa:before { content: 'ditaa'; }
-  pre.src-dot:before { content: 'Graphviz'; }
-  pre.src-calc:before { content: 'Emacs Calc'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-fortran:before { content: 'Fortran'; }
-  pre.src-gnuplot:before { content: 'gnuplot'; }
-  pre.src-haskell:before { content: 'Haskell'; }
-  pre.src-hledger:before { content: 'hledger'; }
-  pre.src-java:before { content: 'Java'; }
-  pre.src-js:before { content: 'Javascript'; }
-  pre.src-latex:before { content: 'LaTeX'; }
-  pre.src-ledger:before { content: 'Ledger'; }
-  pre.src-lisp:before { content: 'Lisp'; }
-  pre.src-lilypond:before { content: 'Lilypond'; }
-  pre.src-lua:before { content: 'Lua'; }
-  pre.src-matlab:before { content: 'MATLAB'; }
-  pre.src-mscgen:before { content: 'Mscgen'; }
-  pre.src-ocaml:before { content: 'Objective Caml'; }
-  pre.src-octave:before { content: 'Octave'; }
-  pre.src-org:before { content: 'Org mode'; }
-  pre.src-oz:before { content: 'OZ'; }
-  pre.src-plantuml:before { content: 'Plantuml'; }
-  pre.src-processing:before { content: 'Processing.js'; }
-  pre.src-python:before { content: 'Python'; }
-  pre.src-R:before { content: 'R'; }
-  pre.src-ruby:before { content: 'Ruby'; }
-  pre.src-sass:before { content: 'Sass'; }
-  pre.src-scheme:before { content: 'Scheme'; }
-  pre.src-screen:before { content: 'Gnu Screen'; }
-  pre.src-sed:before { content: 'Sed'; }
-  pre.src-sh:before { content: 'shell'; }
-  pre.src-sql:before { content: 'SQL'; }
-  pre.src-sqlite:before { content: 'SQLite'; }
-  /* additional languages in org.el's org-babel-load-languages alist */
-  pre.src-forth:before { content: 'Forth'; }
-  pre.src-io:before { content: 'IO'; }
-  pre.src-J:before { content: 'J'; }
-  pre.src-makefile:before { content: 'Makefile'; }
-  pre.src-maxima:before { content: 'Maxima'; }
-  pre.src-perl:before { content: 'Perl'; }
-  pre.src-picolisp:before { content: 'Pico Lisp'; }
-  pre.src-scala:before { content: 'Scala'; }
-  pre.src-shell:before { content: 'Shell Script'; }
-  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
-  /* additional language identifiers per "defun org-babel-execute"
-       in ob-*.el */
-  pre.src-cpp:before  { content: 'C++'; }
-  pre.src-abc:before  { content: 'ABC'; }
-  pre.src-coq:before  { content: 'Coq'; }
-  pre.src-groovy:before  { content: 'Groovy'; }
-  /* additional language identifiers from org-babel-shell-names in
-     ob-shell.el: ob-shell is the only babel language using a lambda to put
-     the execution function name together. */
-  pre.src-bash:before  { content: 'bash'; }
-  pre.src-csh:before  { content: 'csh'; }
-  pre.src-ash:before  { content: 'ash'; }
-  pre.src-dash:before  { content: 'dash'; }
-  pre.src-ksh:before  { content: 'ksh'; }
-  pre.src-mksh:before  { content: 'mksh'; }
-  pre.src-posh:before  { content: 'posh'; }
-  /* Additional Emacs modes also supported by the LaTeX listings package */
-  pre.src-ada:before { content: 'Ada'; }
-  pre.src-asm:before { content: 'Assembler'; }
-  pre.src-caml:before { content: 'Caml'; }
-  pre.src-delphi:before { content: 'Delphi'; }
-  pre.src-html:before { content: 'HTML'; }
-  pre.src-idl:before { content: 'IDL'; }
-  pre.src-mercury:before { content: 'Mercury'; }
-  pre.src-metapost:before { content: 'MetaPost'; }
-  pre.src-modula-2:before { content: 'Modula-2'; }
-  pre.src-pascal:before { content: 'Pascal'; }
-  pre.src-ps:before { content: 'PostScript'; }
-  pre.src-prolog:before { content: 'Prolog'; }
-  pre.src-simula:before { content: 'Simula'; }
-  pre.src-tcl:before { content: 'tcl'; }
-  pre.src-tex:before { content: 'TeX'; }
-  pre.src-plain-tex:before { content: 'Plain TeX'; }
-  pre.src-verilog:before { content: 'Verilog'; }
-  pre.src-vhdl:before { content: 'VHDL'; }
-  pre.src-xml:before { content: 'XML'; }
-  pre.src-nxml:before { content: 'XML'; }
-  /* add a generic configuration mode; LaTeX export needs an additional
-     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
-  pre.src-conf:before { content: 'Configuration File'; }
-
-  table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.org-right  { text-align: center;  }
-  th.org-left   { text-align: center;   }
-  th.org-center { text-align: center; }
-  td.org-right  { text-align: right;  }
-  td.org-left   { text-align: left;   }
-  td.org-center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara { display: inline; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .equation-container {
-    display: table;
-    text-align: center;
-    width: 100%;
-  }
-  .equation {
-    vertical-align: middle;
-  }
-  .equation-label {
-    display: table-cell;
-    text-align: right;
-    vertical-align: middle;
-  }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
-</style>
-<link rel="stylesheet" type="text/css" href="styles/readtheorg_theme/css/htmlize.css"/>
-<link rel="stylesheet" type="text/css" href="styles/readtheorg_theme/css/readtheorg.css"/>
-<script type="text/javascript" src="styles/lib/js/jquery.min.js"></script>
-<script type="text/javascript" src="styles/lib/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="styles/lib/js/jquery.stickytableheaders.min.js"></script>
-<script type="text/javascript" src="styles/readtheorg_theme/js/readtheorg.js"></script>
+<meta name="description" content="Elisp code to change Agda's highlighting behaviour" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="src/readtheorg_theme/css/readtheorg.css"/>
+<link rel="stylesheet" type="text/css" href="src/readtheorg_theme/css/search.css"/>
+<script type="text/javascript" src="src/lib/js/jquery.min.js"></script>
+<script type="text/javascript" src="src/lib/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="src/readtheorg_theme/js/search.js"></script>
+<script type="text/javascript" src="src/readtheorg_theme/js/readtheorg.js"></script>
 <style>pre.src{background:#000000;color:white;} </style>
-<script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
-<!--/*--><![CDATA[/*><!--*/
-     function CodeHighlightOn(elem, id)
-     {
-       var target = document.getElementById(id);
-       if(null != target) {
-         elem.classList.add("code-highlighted");
-         target.classList.add("code-highlighted");
-       }
-     }
-     function CodeHighlightOff(elem, id)
-     {
-       var target = document.getElementById(id);
-       if(null != target) {
-         elem.classList.remove("code-highlighted");
-         target.classList.remove("code-highlighted");
-       }
-     }
-    /*]]>*///-->
-// @license-end
-</script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Customisations to Agda's highlighting</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#Introduction">1. Introduction</a></li>
 <li><a href="#The-problem">2. The problem</a></li>
@@ -242,7 +37,7 @@
 </div>
 
 <div id="outline-container-Introduction" class="outline-2">
-<h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
+<h2 id="Introduction"><span class="section-number-2">1.</span> Introduction</h2>
 <div class="outline-text-2" id="text-Introduction">
 <p>
 This code and the majority of the commentary come from
@@ -259,7 +54,7 @@ Emacs initialisation file, usually located at <code>$HOME/.emacs</code>.
 </div>
 
 <div id="outline-container-The-problem" class="outline-2">
-<h2 id="The-problem"><span class="section-number-2">2</span> The problem</h2>
+<h2 id="The-problem"><span class="section-number-2">2.</span> The problem</h2>
 <div class="outline-text-2" id="text-The-problem">
 <p>
 I find the background colouring used by Agda for reporting
@@ -283,7 +78,7 @@ So I modify the faces Agda defines.
 </div>
 
 <div id="outline-container-The-modification" class="outline-2">
-<h2 id="The-modification"><span class="section-number-2">3</span> The modification</h2>
+<h2 id="The-modification"><span class="section-number-2">3.</span> The modification</h2>
 <div class="outline-text-2" id="text-The-modification">
 <p>
 In order to modify the faces when Emacs starts, we must load
@@ -292,7 +87,7 @@ until after an Agda file has been opened, but I am almost always
 working on Agda anyway, so there's not much point.
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #00cd68;">(</span><span style="color: #b6a0ff;">require</span> '<span style="color: #00bcff;">agda2-highlight</span><span style="color: #00cd68;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #ffffff;">(</span><span style="color: #b6a0ff;">require</span> '<span style="color: #00bcff;">agda2-highlight</span><span style="color: #ffffff;">)</span>
 </pre>
 </div>
 
@@ -305,13 +100,13 @@ Note that for many of these faces, the <code>:background</code> attribute
 is set to <code>'unspecified</code>, and so they are unaffected.
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">Change backgrounds to boxes.</span>
-<span style="color: #00cd68;">(</span><span style="color: #b6a0ff;">cl-loop</span> for <span style="color: #b6a0ff;">(</span>_ . face<span style="color: #b6a0ff;">)</span> in agda2-highlight-faces
-      do <span style="color: #b6a0ff;">(</span><span style="color: #b6a0ff;">if</span> <span style="color: #6ae4b9;">(</span>string-prefix-p <span style="color: #79a8ff;">"agda2-"</span> <span style="color: #f0ce43;">(</span>symbol-name face<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span> <span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">Some non-Agda faces are in the list; don't change them</span>
-             <span style="color: #6ae4b9;">(</span><span style="color: #b6a0ff;">unless</span> <span style="color: #f0ce43;">(</span>equal face 'agda2-highlight-incomplete-pattern-face<span style="color: #f0ce43;">)</span> <span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">Workaround; this face is not defined in recent versions?</span>
-             <span style="color: #f0ce43;">(</span>set-face-attribute face nil
-               <span style="color: #f78fe7;">:box</span> <span style="color: #00bcff;">(</span>face-attribute face <span style="color: #f78fe7;">:background</span><span style="color: #00bcff;">)</span>
-               <span style="color: #f78fe7;">:background</span> 'unspecified<span style="color: #f0ce43;">)</span><span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #989898;">;; </span><span style="color: #989898;">Change backgrounds to boxes.</span>
+<span style="color: #ffffff;">(</span><span style="color: #b6a0ff;">cl-loop</span> for <span style="color: #ff66ff;">(</span>_ . face<span style="color: #ff66ff;">)</span> in agda2-highlight-faces
+  <span style="color: #533253325332;"> </span> <span style="color: #533253325332;"> </span> do <span style="color: #ff66ff;">(</span><span style="color: #b6a0ff;">if</span> <span style="color: #00eff0;">(</span>string-prefix-p <span style="color: #79a8ff;">"agda2-"</span> <span style="color: #ff6b55;">(</span>symbol-name face<span style="color: #ff6b55;">)</span><span style="color: #00eff0;">)</span> <span style="color: #989898;">;; </span><span style="color: #989898;">Some non-Agda faces are in the list; don't change them</span>
+  <span style="color: #533253325332;"> </span> <span style="color: #533253325332;"> </span> <span style="color: #44843b0e29c3;"> </span> <span style="color: #44843b0e29c3;"> </span> <span style="color: #2a6a396c4cff;"> </span> <span style="color: #2a6a396c4cff;"> </span><span style="color: #00eff0;">(</span><span style="color: #b6a0ff;">unless</span> <span style="color: #ff6b55;">(</span>equal face 'agda2-highlight-incomplete-pattern-face<span style="color: #ff6b55;">)</span> <span style="color: #989898;">;; </span><span style="color: #989898;">Workaround; this face is not defined in recent versions?</span>
+  <span style="color: #533253325332;"> </span> <span style="color: #533253325332;"> </span> <span style="color: #44843b0e29c3;"> </span> <span style="color: #44843b0e29c3;"> </span> <span style="color: #2a6a396c4cff;"> </span> <span style="color: #2a6a396c4cff;"> </span><span style="color: #ff6b55;">(</span>set-face-attribute face nil
+  <span style="color: #533253325332;"> </span> <span style="color: #533253325332;"> </span> <span style="color: #44843b0e29c3;"> </span> <span style="color: #44843b0e29c3;"> </span> <span style="color: #2a6a396c4cff;"> </span> <span style="color: #2a6a396c4cff;"> </span> <span style="color: #52df381e43dd;"> </span><span style="color: #f78fe7;">:box</span> <span style="color: #efef00;">(</span>face-attribute face <span style="color: #f78fe7;">:background</span><span style="color: #efef00;">)</span>
+  <span style="color: #533253325332;"> </span> <span style="color: #533253325332;"> </span> <span style="color: #44843b0e29c3;"> </span> <span style="color: #44843b0e29c3;"> </span> <span style="color: #2a6a396c4cff;"> </span> <span style="color: #2a6a396c4cff;"> </span> <span style="color: #52df381e43dd;"> </span><span style="color: #f78fe7;">:background</span> 'unspecified<span style="color: #ff6b55;">)</span><span style="color: #00eff0;">)</span><span style="color: #ff66ff;">)</span><span style="color: #ffffff;">)</span>
 </pre>
 </div>
 
@@ -323,31 +118,31 @@ and which may overlap with other highlighting.
 So I modify those faces further as follows.
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"><span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">Coverage warnings highlight the whole function;</span>
-<span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">change the box to an underline to be less intrusive.</span>
-<span style="color: #00cd68;">(</span>set-face-attribute 'agda2-highlight-coverage-problem-face nil
-  <span style="color: #f78fe7;">:underline</span> <span style="color: #b6a0ff;">(</span>face-attribute 'agda2-highlight-coverage-problem-face <span style="color: #f78fe7;">:box</span><span style="color: #b6a0ff;">)</span>
-  <span style="color: #f78fe7;">:box</span> 'unspecified<span style="color: #00cd68;">)</span>
+<pre class="src src-emacs-lisp"><span style="color: #989898;">;; </span><span style="color: #989898;">Coverage warnings highlight the whole function;</span>
+<span style="color: #989898;">;; </span><span style="color: #989898;">change the box to an underline to be less intrusive.</span>
+<span style="color: #ffffff;">(</span>set-face-attribute 'agda2-highlight-coverage-problem-face nil
+  <span style="color: #f78fe7;">:underline</span> <span style="color: #ff66ff;">(</span>face-attribute 'agda2-highlight-coverage-problem-face <span style="color: #f78fe7;">:box</span><span style="color: #ff66ff;">)</span>
+  <span style="color: #f78fe7;">:box</span> 'unspecified<span style="color: #ffffff;">)</span>
 
-<span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">Deadcode warnings highlight the whole line;</span>
-<span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">change the box to a strikethrough to be less intrusive,</span>
-<span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">as well as thematically appropriate.</span>
-<span style="color: #00cd68;">(</span>set-face-attribute 'agda2-highlight-deadcode-face nil
-  <span style="color: #f78fe7;">:strike-through</span> <span style="color: #b6a0ff;">(</span>face-attribute 'agda2-highlight-deadcode-face <span style="color: #f78fe7;">:box</span><span style="color: #b6a0ff;">)</span>
-  <span style="color: #f78fe7;">:box</span> 'unspecified<span style="color: #00cd68;">)</span>
+<span style="color: #989898;">;; </span><span style="color: #989898;">Deadcode warnings highlight the whole line;</span>
+<span style="color: #989898;">;; </span><span style="color: #989898;">change the box to a strikethrough to be less intrusive,</span>
+<span style="color: #989898;">;; </span><span style="color: #989898;">as well as thematically appropriate.</span>
+<span style="color: #ffffff;">(</span>set-face-attribute 'agda2-highlight-deadcode-face nil
+  <span style="color: #f78fe7;">:strike-through</span> <span style="color: #ff66ff;">(</span>face-attribute 'agda2-highlight-deadcode-face <span style="color: #f78fe7;">:box</span><span style="color: #ff66ff;">)</span>
+  <span style="color: #f78fe7;">:box</span> 'unspecified<span style="color: #ffffff;">)</span>
 
-<span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">Non-definitional pattern matching may be ignored;</span>
-<span style="color: #a8a8a8;">;; </span><span style="color: #a8a8a8;">remove the colouring and just italicise it to be less intrusive.</span>
-<span style="color: #00cd68;">(</span>set-face-attribute 'agda2-highlight-catchall-clause-face nil
+<span style="color: #989898;">;; </span><span style="color: #989898;">Non-definitional pattern matching may be ignored;</span>
+<span style="color: #989898;">;; </span><span style="color: #989898;">remove the colouring and just italicise it to be less intrusive.</span>
+<span style="color: #ffffff;">(</span>set-face-attribute 'agda2-highlight-catchall-clause-face nil
   <span style="color: #f78fe7;">:box</span> 'unspecified
-  <span style="color: #f78fe7;">:slant</span> 'italic<span style="color: #00cd68;">)</span>
+  <span style="color: #f78fe7;">:slant</span> 'italic<span style="color: #ffffff;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-The-result" class="outline-2">
-<h2 id="The-result"><span class="section-number-2">4</span> The result</h2>
+<h2 id="The-result"><span class="section-number-2">4.</span> The result</h2>
 <div class="outline-text-2" id="text-The-result">
 <p>
 Now, the highlighting as shown above show as
@@ -360,43 +155,43 @@ with a dark theme.
 </div>
 
 <div id="outline-container-The-test-code" class="outline-2">
-<h2 id="The-test-code"><span class="section-number-2">5</span> The test code</h2>
+<h2 id="The-test-code"><span class="section-number-2">5.</span> The test code</h2>
 <div class="outline-text-2" id="text-The-test-code">
 <p>
 This is the Agda code used to test out the faces.
 </p>
 <div class="org-src-container">
 <pre class="src src-agda2">module HighlightTesting where
-  open import Data.Nat using <span style="color: #00cd68;">(</span>&#8469; ; zero ; suc<span style="color: #00cd68;">)</span>
+  open import Data.Nat using <span style="color: #ffffff;">(</span>&#8469; ; zero ; suc<span style="color: #ffffff;">)</span>
 
-  <span style="color: #a8a8a8;">-- Coverage problem, non-definitional pattern matching, dead code.</span>
+  <span style="color: #989898;">-- </span><span style="color: #989898;">Coverage problem, non-definitional pattern matching, dead code.</span>
   bad-pattern-matching : &#8469; &#8594; &#8469;
-<span style="color: #a8a8a8;">--bad-pattern-matching suc n   Missing case; other lines marked with coverage problem face</span>
+<span style="color: #989898;">--</span><span style="color: #989898;">bad-pattern-matching suc n   Missing case; other lines marked with coverage problem face</span>
   bad-pattern-matching 0 = 0
-  bad-pattern-matching <span style="color: #00cd68;">(</span>suc <span style="color: #b6a0ff;">(</span>suc 0<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> = 0
-  bad-pattern-matching <span style="color: #00cd68;">(</span>suc <span style="color: #b6a0ff;">(</span>suc n<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span> = 0 <span style="color: #a8a8a8;">-- Non-definitional case (maybe use CATCHALL pragma?).</span>
-  bad-pattern-matching 0 = 0 <span style="color: #a8a8a8;">-- Dead code.</span>
+  bad-pattern-matching <span style="color: #ffffff;">(</span>suc <span style="color: #ff66ff;">(</span>suc 0<span style="color: #ff66ff;">)</span><span style="color: #ffffff;">)</span> = 0
+  bad-pattern-matching <span style="color: #ffffff;">(</span>suc <span style="color: #ff66ff;">(</span>suc n<span style="color: #ff66ff;">)</span><span style="color: #ffffff;">)</span> = 0 <span style="color: #989898;">-- </span><span style="color: #989898;">Non-definitional case (maybe use CATCHALL pragma?).</span>
+  bad-pattern-matching 0 = 0 <span style="color: #989898;">-- </span><span style="color: #989898;">Dead code.</span>
 
-  <span style="color: #a8a8a8;">-- Non-terminating</span>
+  <span style="color: #989898;">-- </span><span style="color: #989898;">Non-terminating</span>
   &#8734;? : &#8469;
   &#8734;? = suc &#8734;?
 
-  <span style="color: #a8a8a8;">-- Unsolved meta warnings</span>
+  <span style="color: #989898;">-- </span><span style="color: #989898;">Unsolved meta warnings</span>
   fail-to-solve-meta : &#8469;
   fail-to-solve-meta = has-a-meta
     where
-      has-a-meta : <span style="color: #00cd68;">{</span>n : &#8469;<span style="color: #00cd68;">}</span> &#8594; &#8469;
-      has-a-meta = 0
-
-  <span style="color: #a8a8a8;">-- Shadowing in telescope</span>
-  shadowing-variable : <span style="color: #00cd68;">(</span>x : &#8469;<span style="color: #00cd68;">)</span> &#8594; <span style="color: #00cd68;">(</span>x : &#8469;<span style="color: #00cd68;">)</span> &#8594; &#8469;
+    <span style="color: #533253325332;"> </span> has-a-meta : <span style="color: #ffffff;">{</span>n : &#8469;<span style="color: #ffffff;">}</span> &#8594; &#8469;
+    <span style="color: #533253325332;"> </span> has-a-meta = 0
+     
+  <span style="color: #989898;">-- </span><span style="color: #989898;">Shadowing in telescope</span>
+  shadowing-variable : <span style="color: #ffffff;">(</span>x : &#8469;<span style="color: #ffffff;">)</span> &#8594; <span style="color: #ffffff;">(</span>x : &#8469;<span style="color: #ffffff;">)</span> &#8594; &#8469;
   shadowing-variable x y = x
 
-  <span style="color: #a8a8a8;">-- Missing function definition</span>
+  <span style="color: #989898;">-- </span><span style="color: #989898;">Missing function definition</span>
   has-no-definition : Set
 
   data unpositive-type : Set where
-    bad : <span style="color: #00cd68;">(</span>unpositive-type &#8594; &#8469;<span style="color: #00cd68;">)</span> &#8594; unpositive-type
+    bad : <span style="color: #ffffff;">(</span>unpositive-type &#8594; &#8469;<span style="color: #ffffff;">)</span> &#8594; unpositive-type
 </pre>
 </div>
 </div>
@@ -406,8 +201,8 @@ This is the Agda code used to test out the faces.
 <p class="author">Author: <a href="https://armkeh.github.io">Mark Armstrong</a> <img src="./../images/markarmstrong.jpg" alt="markarmstrong.jpg" /></p>
      <p class="author">Contact: <a href="mailto:markparmstrong@gmail.com">markparmstrong@gmail.com</a></p>
      <p class="date">Original date: Sunday, March 22nd 2020</p>
-     <p class="date">Last updated: 2021-01-27 Wed 02:15</p>
-     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+     <p class="date">Last updated: 2024-10-20 Sun 23:33</p>
+     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.4 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
      <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

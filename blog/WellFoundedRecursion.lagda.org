@@ -5,7 +5,7 @@
 #+Startup: noindent
 #+Setupfile: ./../org-html-themes/org/theme-readtheorg-local.setup
 #+Export_file_name: WellFoundedRecursion
-#+Property: header-args:agda2 :tangle src/EqualityOfFunctions.agda
+#+Property: header-args:agda2 :tangle artifacts/EqualityOfFunctions.agda
 
 * Introduction
   :PROPERTIES:
@@ -72,7 +72,7 @@ Making use of the three-way comparison function ~<-cmp~,
 we can easily transcribe this algorithm into Agda.
 #+begin_src agda2
 module WithoutWFR where
-  
+
   {-# TERMINATING #-}
   EuclidGCD : ℕ → ℕ → ℕ
   EuclidGCD zero      m         = m
@@ -154,7 +154,7 @@ the type of ~rs~:
 When using well-founded recursion you can recurse arbitrarily, as
 long as the arguments become smaller, and “smaller” is
 well-founded.
-#+end_quote 
+#+end_quote
 
 The standard library “extracts” that type. It is the type of
 “well-founded recursion”; we do the same here.
@@ -428,7 +428,7 @@ is the height of the tree.
 We quickly prove some lemmas regarding ~<′~, for convenience.
 #+begin_src agda2
   open import Data.Nat.Properties using (n≤m⊔n ; m≤m⊔n)
-  
+
   n<′suc[m⊔n] : {m n : ℕ} → n <′ suc (m ⊔ n)
   n<′suc[m⊔n] = ≤⇒≤′ (s≤s (n≤m⊔n _ _))
 
@@ -457,7 +457,7 @@ And then we are ready to explicitely prove that ~union′~ is terminating.
             union′ (insert e₂ (branch (union′ l₁ l₂ (rs _ m<′suc[m⊔n])) e₁ r₁))
                    r₂
                    (rs _ n<′suc[m⊔n])
-        } 
+        }
   union′ t@(branch _ _ _) nilT _ = t
 #+end_src
 And define a clean version of union.
@@ -625,7 +625,7 @@ Then we apply that predicate to all subtrees to check if the tree is balanced.
   balanced : BinTree → Set
   balanced nilT = ⊤
   balanced t@(branch t₁ _ t₂) =
-    balanced t₁ × rootBalanced t × balanced t₂ 
+    balanced t₁ × rootBalanced t × balanced t₂
 #+end_src
 
 With the notion of ~balanced~ defined, we can turn to our balancing algorithm.
@@ -748,7 +748,7 @@ So we define a new less than relation that accounts for two cases.
 In each case, we must ensure the other metric does not increase.
 #+begin_src agda2
   _⪡ʰ_ : BinTree → BinTree → Set
-  t₁ ⪡ʰ t₂ = height t₁ <′ height t₂ × totalImbalance t₁ ≤ totalImbalance t₂ 
+  t₁ ⪡ʰ t₂ = height t₁ <′ height t₂ × totalImbalance t₁ ≤ totalImbalance t₂
 
   _⪡ⁱ_ : BinTree → BinTree → Set
   t₁ ⪡ⁱ t₂ = height t₁ ≤ height t₂  × totalImbalance t₁ <′ totalImbalance t₂
@@ -846,7 +846,7 @@ and well-foundedness proofs.
 
   ⪡-acc : {x y : BinTree} → y ⪡ x → Acc _⪡_ y
   ⪡-WellFounded : WellFounded _⪡_
-  
+
   ⪡-acc {branch _ _ _} {nilT} (inj₁ _) = ⪡-WellFounded nilT
   ⪡-acc {branch _ _ _} {nilT} (inj₂ _) = ⪡-WellFounded  nilT
   ⪡-acc {branch _ _ _} {branch _ _ _} (inj₁ (fst , snd)) = {!!}

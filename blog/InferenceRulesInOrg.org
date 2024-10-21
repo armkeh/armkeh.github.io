@@ -1,7 +1,6 @@
 #+Title: Creating pretty “cross-format” inference rules in Org mode
 #+Author: [[https://armkeh.github.io][Mark Armstrong]] @@html:<br>@@@@latex:\\@@ [[file:./../images/markarmstrong.jpg]]
 #+Date: Tuesday, March 17th, 2020
-#+Description: 
 #+LaTeX_header: \usepackage{unicode}
 
 Disclaimer: this project of mine was left incomplete;
@@ -84,7 +83,7 @@ Although this simple tree looks perfect in Org and HTML,
 it is gibberish in the PDF export.
 #+begin_src text
  A     B
-———   ———  
+———   ———
  C     D     E
 ———————————————
        F
@@ -198,7 +197,7 @@ is to not use a proper horizontal rule. Instead, we'll have a cell
 containing a macro which creates rules in HTML and LaTeX.
 #+begin_src text
 #+Macro: bar1 @@latex:\hrulefill@@@@html:<hr>@@
-#+end_src 
+#+end_src
 #+Macro: bar1 @@latex:\hrulefill@@@@html:<hr>@@
 
 Applying this
@@ -233,7 +232,7 @@ negative amounts.
 We augment our macro
 #+begin_src text
 #+Macro: bar2 @@latex:\hrulefill\vspace{-0.3em}@@@@html:<hr>@@
-#+end_src 
+#+end_src
 #+Macro: bar2 @@latex:\hrulefill\vspace{-0.3em}@@@@html:<hr>@@
 and replace ~{{{bar1}}}~ with ~{{{bar2}}}~ to see
 that the gap above the rule is much improved,
@@ -246,9 +245,9 @@ but the space above the rule is more concerning.
 For dealing with that, we can introduce a macro to wrap the premises
 —for good measure, we also place the non-breaking spaces in there.
 #+begin_src text
-#+Macro: premise1 @@latex:\vspace{-0.7em}@@ $1   $2 
-#+end_src 
-#+Macro: premise1 @@latex:\vspace{-0.7em}@@ $1   $2 
+#+Macro: premise1 @@latex:\vspace{-0.7em}@@ $1   $2
+#+end_src
+#+Macro: premise1 @@latex:\vspace{-0.7em}@@ $1   $2
 and apply it to admire a perfect recreation of the spacing we had with
 a simple table.
 #+attr_HTML: :frame void :cellpadding 0 :class noboldheader
@@ -328,7 +327,7 @@ call_format-premises(wrapper="*%s*",
                      spacer=" , ",
                      premises='("hello" "world")) {{{results(=*hello* , *world*=)}}}
 
-Not quite right, actually. By default, the results are wrapped in 
+Not quite right, actually. By default, the results are wrapped in
 - verbatim emphasis delimiters, ~=~, and outside of those,
 - an invocation of the ~results~ macro, which as far as I can tell
   is simply used to demarcate the results, so that
@@ -421,7 +420,7 @@ If we place our macro into the table,
 |            /r/             |                |
 #+end_src
 we unfortunately notice on export that it just expands to the
-text of the ~call~. 
+text of the ~call~.
 #+attr_HTML: :frame void :cellpadding 0 :class noboldheader
 |            <c>             |                |
 | {{{premise2(/%s/,   ,p,q)}}} |                |
@@ -435,7 +434,7 @@ But there is a solution, which can make use of
 many of the pieces we constructed here;
 table formulas!
 
-** Approach 2.4 – Automating premises 2.0 – Stepping forward again 
+** Approach 2.4 – Automating premises 2.0 – Stepping forward again
 :PROPERTIES:
 :CUSTOM_ID: Solution!
 :END:
@@ -542,7 +541,7 @@ For reference, there are 10 dashes in the name,
 and they can easily be typed using ~C-u 10 -~.
 #+begin_src text
 #+Macro: inf---------------- @@latex:\hrulefill\vspace{-0.3em}@@@@html:<hr>@@
-#+end_src 
+#+end_src
 
 ** Approach 2 conclusion (for now)
 :PROPERTIES:
@@ -571,4 +570,3 @@ look rather unprofessional. A colleague noted they looked like they
 were made in Word; a true insult 😀.
 
 If I return to this project, I will generate examples.
-

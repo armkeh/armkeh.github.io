@@ -3,235 +3,30 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-01-27 Wed 02:14 -->
+<!-- 2024-10-20 Sun 23:33 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Decidability in the One-Point Compactification of ℕ</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="[[https://armkeh.github.io][Mark Armstrong]] [[file:./../images/markarmstrong.jpg]]" />
 <meta name="description" content="An Agda implementation of a decider for arbitrary predicates
-on the one-point compactification of ℕ."
- />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center;
-             margin-bottom: .2em; }
-  .subtitle { text-align: center;
-              font-size: medium;
-              font-weight: bold;
-              margin-top:0; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { font-family: monospace; color: green; }
-  .priority { font-family: monospace; color: orange; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: auto;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline; margin-top: 14px;}
-  /* Languages per Org manual */
-  pre.src-asymptote:before { content: 'Asymptote'; }
-  pre.src-awk:before { content: 'Awk'; }
-  pre.src-C:before { content: 'C'; }
-  /* pre.src-C++ doesn't work in CSS */
-  pre.src-clojure:before { content: 'Clojure'; }
-  pre.src-css:before { content: 'CSS'; }
-  pre.src-D:before { content: 'D'; }
-  pre.src-ditaa:before { content: 'ditaa'; }
-  pre.src-dot:before { content: 'Graphviz'; }
-  pre.src-calc:before { content: 'Emacs Calc'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-fortran:before { content: 'Fortran'; }
-  pre.src-gnuplot:before { content: 'gnuplot'; }
-  pre.src-haskell:before { content: 'Haskell'; }
-  pre.src-hledger:before { content: 'hledger'; }
-  pre.src-java:before { content: 'Java'; }
-  pre.src-js:before { content: 'Javascript'; }
-  pre.src-latex:before { content: 'LaTeX'; }
-  pre.src-ledger:before { content: 'Ledger'; }
-  pre.src-lisp:before { content: 'Lisp'; }
-  pre.src-lilypond:before { content: 'Lilypond'; }
-  pre.src-lua:before { content: 'Lua'; }
-  pre.src-matlab:before { content: 'MATLAB'; }
-  pre.src-mscgen:before { content: 'Mscgen'; }
-  pre.src-ocaml:before { content: 'Objective Caml'; }
-  pre.src-octave:before { content: 'Octave'; }
-  pre.src-org:before { content: 'Org mode'; }
-  pre.src-oz:before { content: 'OZ'; }
-  pre.src-plantuml:before { content: 'Plantuml'; }
-  pre.src-processing:before { content: 'Processing.js'; }
-  pre.src-python:before { content: 'Python'; }
-  pre.src-R:before { content: 'R'; }
-  pre.src-ruby:before { content: 'Ruby'; }
-  pre.src-sass:before { content: 'Sass'; }
-  pre.src-scheme:before { content: 'Scheme'; }
-  pre.src-screen:before { content: 'Gnu Screen'; }
-  pre.src-sed:before { content: 'Sed'; }
-  pre.src-sh:before { content: 'shell'; }
-  pre.src-sql:before { content: 'SQL'; }
-  pre.src-sqlite:before { content: 'SQLite'; }
-  /* additional languages in org.el's org-babel-load-languages alist */
-  pre.src-forth:before { content: 'Forth'; }
-  pre.src-io:before { content: 'IO'; }
-  pre.src-J:before { content: 'J'; }
-  pre.src-makefile:before { content: 'Makefile'; }
-  pre.src-maxima:before { content: 'Maxima'; }
-  pre.src-perl:before { content: 'Perl'; }
-  pre.src-picolisp:before { content: 'Pico Lisp'; }
-  pre.src-scala:before { content: 'Scala'; }
-  pre.src-shell:before { content: 'Shell Script'; }
-  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
-  /* additional language identifiers per "defun org-babel-execute"
-       in ob-*.el */
-  pre.src-cpp:before  { content: 'C++'; }
-  pre.src-abc:before  { content: 'ABC'; }
-  pre.src-coq:before  { content: 'Coq'; }
-  pre.src-groovy:before  { content: 'Groovy'; }
-  /* additional language identifiers from org-babel-shell-names in
-     ob-shell.el: ob-shell is the only babel language using a lambda to put
-     the execution function name together. */
-  pre.src-bash:before  { content: 'bash'; }
-  pre.src-csh:before  { content: 'csh'; }
-  pre.src-ash:before  { content: 'ash'; }
-  pre.src-dash:before  { content: 'dash'; }
-  pre.src-ksh:before  { content: 'ksh'; }
-  pre.src-mksh:before  { content: 'mksh'; }
-  pre.src-posh:before  { content: 'posh'; }
-  /* Additional Emacs modes also supported by the LaTeX listings package */
-  pre.src-ada:before { content: 'Ada'; }
-  pre.src-asm:before { content: 'Assembler'; }
-  pre.src-caml:before { content: 'Caml'; }
-  pre.src-delphi:before { content: 'Delphi'; }
-  pre.src-html:before { content: 'HTML'; }
-  pre.src-idl:before { content: 'IDL'; }
-  pre.src-mercury:before { content: 'Mercury'; }
-  pre.src-metapost:before { content: 'MetaPost'; }
-  pre.src-modula-2:before { content: 'Modula-2'; }
-  pre.src-pascal:before { content: 'Pascal'; }
-  pre.src-ps:before { content: 'PostScript'; }
-  pre.src-prolog:before { content: 'Prolog'; }
-  pre.src-simula:before { content: 'Simula'; }
-  pre.src-tcl:before { content: 'tcl'; }
-  pre.src-tex:before { content: 'TeX'; }
-  pre.src-plain-tex:before { content: 'Plain TeX'; }
-  pre.src-verilog:before { content: 'Verilog'; }
-  pre.src-vhdl:before { content: 'VHDL'; }
-  pre.src-xml:before { content: 'XML'; }
-  pre.src-nxml:before { content: 'XML'; }
-  /* add a generic configuration mode; LaTeX export needs an additional
-     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
-  pre.src-conf:before { content: 'Configuration File'; }
-
-  table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.org-right  { text-align: center;  }
-  th.org-left   { text-align: center;   }
-  th.org-center { text-align: center; }
-  td.org-right  { text-align: right;  }
-  td.org-left   { text-align: left;   }
-  td.org-center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara { display: inline; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .equation-container {
-    display: table;
-    text-align: center;
-    width: 100%;
-  }
-  .equation {
-    vertical-align: middle;
-  }
-  .equation-label {
-    display: table-cell;
-    text-align: right;
-    vertical-align: middle;
-  }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
-</style>
-<link rel="stylesheet" type="text/css" href="styles/readtheorg_theme/css/htmlize.css"/>
-<link rel="stylesheet" type="text/css" href="styles/readtheorg_theme/css/readtheorg.css"/>
-<script type="text/javascript" src="styles/lib/js/jquery.min.js"></script>
-<script type="text/javascript" src="styles/lib/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="styles/lib/js/jquery.stickytableheaders.min.js"></script>
-<script type="text/javascript" src="styles/readtheorg_theme/js/readtheorg.js"></script>
+on the one-point compactification of ℕ." />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="src/readtheorg_theme/css/readtheorg.css"/>
+<link rel="stylesheet" type="text/css" href="src/readtheorg_theme/css/search.css"/>
+<script type="text/javascript" src="src/lib/js/jquery.min.js"></script>
+<script type="text/javascript" src="src/lib/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="src/readtheorg_theme/js/search.js"></script>
+<script type="text/javascript" src="src/readtheorg_theme/js/readtheorg.js"></script>
 <style>pre.src{background:#000000;color:white;} </style>
-<script type="text/javascript">
-// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
-<!--/*--><![CDATA[/*><!--*/
-     function CodeHighlightOn(elem, id)
-     {
-       var target = document.getElementById(id);
-       if(null != target) {
-         elem.classList.add("code-highlighted");
-         target.classList.add("code-highlighted");
-       }
-     }
-     function CodeHighlightOff(elem, id)
-     {
-       var target = document.getElementById(id);
-       if(null != target) {
-         elem.classList.remove("code-highlighted");
-         target.classList.remove("code-highlighted");
-       }
-     }
-    /*]]>*///-->
-// @license-end
-</script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">Decidability in the One-Point Compactification of ℕ</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
 <li><a href="#Introduction">1. Introduction</a></li>
 <li><a href="#Some-small-extensions-to-the-standard-library">2. Some small extensions to the standard library</a></li>
@@ -245,7 +40,7 @@ on the one-point compactification of ℕ."
 </div>
 
 <div id="outline-container-Introduction" class="outline-2">
-<h2 id="Introduction"><span class="section-number-2">1</span> Introduction</h2>
+<h2 id="Introduction"><span class="section-number-2">1.</span> Introduction</h2>
 <div class="outline-text-2" id="text-Introduction">
 <p>
 :TODO: More narrative here.
@@ -298,7 +93,7 @@ But it does exist with ℕ∞.
 </div>
 
 <div id="outline-container-Some-small-extensions-to-the-standard-library" class="outline-2">
-<h2 id="Some-small-extensions-to-the-standard-library"><span class="section-number-2">2</span> Some small extensions to the standard library</h2>
+<h2 id="Some-small-extensions-to-the-standard-library"><span class="section-number-2">2.</span> Some small extensions to the standard library</h2>
 <div class="outline-text-2" id="text-Some-small-extensions-to-the-standard-library">
 <p>
 These I found useful at least at some stage of development
@@ -307,23 +102,23 @@ They may already be implemented in the standard library,
 just not where I looked; I'd have to double check.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">nothing&#8802;just : <span style="color: #00cd68;">{</span>A : Set<span style="color: #00cd68;">}</span> &#8594; <span style="color: #00cd68;">(</span>a : A<span style="color: #00cd68;">)</span> &#8594; &#172; <span style="color: #00cd68;">(</span>nothing &#8801; just a<span style="color: #00cd68;">)</span>
-nothing&#8802;just a <span style="color: #00cd68;">()</span>
+<pre class="src src-agda2">nothing&#8802;just : <span style="color: #ffffff;">{</span>A : Set<span style="color: #ffffff;">}</span> &#8594; <span style="color: #ffffff;">(</span>a : A<span style="color: #ffffff;">)</span> &#8594; &#172; <span style="color: #ffffff;">(</span>nothing &#8801; just a<span style="color: #ffffff;">)</span>
+nothing&#8802;just a <span style="color: #ffffff;">()</span>
 
-Is-nothing? : <span style="color: #00cd68;">{</span>A : Set<span style="color: #00cd68;">}</span> &#8594; <span style="color: #00cd68;">(</span>x : Maybe A<span style="color: #00cd68;">)</span> &#8594; Dec <span style="color: #00cd68;">(</span>Is-nothing x<span style="color: #00cd68;">)</span>
+Is-nothing? : <span style="color: #ffffff;">{</span>A : Set<span style="color: #ffffff;">}</span> &#8594; <span style="color: #ffffff;">(</span>x : Maybe A<span style="color: #ffffff;">)</span> &#8594; Dec <span style="color: #ffffff;">(</span>Is-nothing x<span style="color: #ffffff;">)</span>
 Is-nothing? nothing = yes All.nothing
-Is-nothing? <span style="color: #00cd68;">(</span>just _<span style="color: #00cd68;">)</span> = no &#955; <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>All.just <span style="color: #6ae4b9;">()</span><span style="color: #b6a0ff;">)</span> <span style="color: #00cd68;">}</span>
+Is-nothing? <span style="color: #ffffff;">(</span>just _<span style="color: #ffffff;">)</span> = no &#955; <span style="color: #ffffff;">{</span> <span style="color: #ff66ff;">(</span>All.just <span style="color: #00eff0;">()</span><span style="color: #ff66ff;">)</span> <span style="color: #ffffff;">}</span>
 
-Is-just? : <span style="color: #00cd68;">{</span>A : Set<span style="color: #00cd68;">}</span> &#8594; <span style="color: #00cd68;">(</span>x : Maybe A<span style="color: #00cd68;">)</span> &#8594; Dec <span style="color: #00cd68;">(</span>Is-just x<span style="color: #00cd68;">)</span>
-Is-just? nothing = no &#955; <span style="color: #00cd68;">()</span>
-Is-just? <span style="color: #00cd68;">(</span>just _<span style="color: #00cd68;">)</span> = yes <span style="color: #00cd68;">(</span>Any.just tt<span style="color: #00cd68;">)</span>
+Is-just? : <span style="color: #ffffff;">{</span>A : Set<span style="color: #ffffff;">}</span> &#8594; <span style="color: #ffffff;">(</span>x : Maybe A<span style="color: #ffffff;">)</span> &#8594; Dec <span style="color: #ffffff;">(</span>Is-just x<span style="color: #ffffff;">)</span>
+Is-just? nothing = no &#955; <span style="color: #ffffff;">()</span>
+Is-just? <span style="color: #ffffff;">(</span>just _<span style="color: #ffffff;">)</span> = yes <span style="color: #ffffff;">(</span>Any.just tt<span style="color: #ffffff;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-The-one-point-compactification-of-ℕ" class="outline-2">
-<h2 id="The-one-point-compactification-of-ℕ"><span class="section-number-2">3</span> The one-point compactification of ℕ</h2>
+<h2 id="The-one-point-compactification-of-ℕ"><span class="section-number-2">3.</span> The one-point compactification of ℕ</h2>
 <div class="outline-text-2" id="text-The-one-point-compactification-of-ℕ">
 <p>
 First, let us use the name <code>ℕ*</code>, rather than <code>ℕ∞</code>.
@@ -353,7 +148,7 @@ We need to define bisimilarity of elements of <code>ℕ*</code> in order
 to be able to compare them.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">record _&#8776;_ <span style="color: #00cd68;">(</span>m n : &#8469;*<span style="color: #00cd68;">)</span> : Set where
+<pre class="src src-agda2">record _&#8776;_ <span style="color: #ffffff;">(</span>m n : &#8469;*<span style="color: #ffffff;">)</span> : Set where
   coinductive
   field
     c-&#8776; : &#8469;*.c m &#8801; &#8469;*.c n
@@ -365,18 +160,18 @@ open _&#8776;_
 Symmetry and transitivity follow easily.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">&#8776;-sym : <span style="color: #00cd68;">{</span>m n : &#8469;*<span style="color: #00cd68;">}</span> &#8594; m &#8776; n &#8594; n &#8776; m
-c-&#8776; <span style="color: #00cd68;">(</span>&#8776;-sym m&#8776;n<span style="color: #00cd68;">)</span> = sym <span style="color: #00cd68;">(</span>c-&#8776; m&#8776;n<span style="color: #00cd68;">)</span>
+<pre class="src src-agda2">&#8776;-sym : <span style="color: #ffffff;">{</span>m n : &#8469;*<span style="color: #ffffff;">}</span> &#8594; m &#8776; n &#8594; n &#8776; m
+c-&#8776; <span style="color: #ffffff;">(</span>&#8776;-sym m&#8776;n<span style="color: #ffffff;">)</span> = sym <span style="color: #ffffff;">(</span>c-&#8776; m&#8776;n<span style="color: #ffffff;">)</span>
 
-&#8776;-trans : <span style="color: #00cd68;">{</span>m n o : &#8469;*<span style="color: #00cd68;">}</span> &#8594; m &#8776; n &#8594; n &#8776; o &#8594; m &#8776; o
-c-&#8776; <span style="color: #00cd68;">(</span>&#8776;-trans m&#8776;n n&#8776;o<span style="color: #00cd68;">)</span> = trans <span style="color: #00cd68;">(</span>c-&#8776; m&#8776;n<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>c-&#8776; n&#8776;o<span style="color: #00cd68;">)</span>
+&#8776;-trans : <span style="color: #ffffff;">{</span>m n o : &#8469;*<span style="color: #ffffff;">}</span> &#8594; m &#8776; n &#8594; n &#8776; o &#8594; m &#8776; o
+c-&#8776; <span style="color: #ffffff;">(</span>&#8776;-trans m&#8776;n n&#8776;o<span style="color: #ffffff;">)</span> = trans <span style="color: #ffffff;">(</span>c-&#8776; m&#8776;n<span style="color: #ffffff;">)</span> <span style="color: #ffffff;">(</span>c-&#8776; n&#8776;o<span style="color: #ffffff;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-Naming-some-elements-of-~ℕ*~" class="outline-2">
-<h2 id="Naming-some-elements-of-~ℕ*~"><span class="section-number-2">4</span> Naming some elements of ℕ*</h2>
+<h2 id="Naming-some-elements-of-~ℕ*~"><span class="section-number-2">4.</span> Naming some elements of ℕ*</h2>
 <div class="outline-text-2" id="text-Naming-some-elements-of-~ℕ*~">
 <p>
 It's convenient to refer to the elements of <code>ℕ*</code> by these more familiar names.
@@ -386,7 +181,7 @@ It's convenient to refer to the elements of <code>ℕ*</code> by these more fami
 c 0* = nothing
 
 suc* : &#8469;* &#8594; &#8469;*
-c <span style="color: #00cd68;">(</span>suc* n<span style="color: #00cd68;">)</span> = just n
+c <span style="color: #ffffff;">(</span>suc* n<span style="color: #ffffff;">)</span> = just n
 
 &#8734; : &#8469;*
 c &#8734; = just &#8734;
@@ -398,46 +193,46 @@ Now we provide a series of proofs that these names refer
 to the numbers we have in mind; namely, we want to prove that
 </p>
 <ul class="org-ul">
-<li>zero is not a successor<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup></li>
+<li>zero is not a successor<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup></li>
 <li>successors is an injecive function,</li>
 <li>infinity is a fix-point of successor, and</li>
 <li>infinity is the only fix-point of successor.</li>
 </ul>
 
 <div class="org-src-container">
-<pre class="src src-agda2">&#172;<span style="color: #00cd68;">[</span>0*&#8776;suc*-n<span style="color: #00cd68;">]</span> : <span style="color: #00cd68;">(</span>n : &#8469;*<span style="color: #00cd68;">)</span> &#8594; &#172; 0* &#8776; suc* n
-&#172;<span style="color: #00cd68;">[</span>0*&#8776;suc*-n<span style="color: #00cd68;">]</span> n 0*&#8776;suc*-n = nothing&#8802;just n <span style="color: #00cd68;">(</span>c-&#8776; 0*&#8776;suc*-n<span style="color: #00cd68;">)</span>
+<pre class="src src-agda2">&#172;<span style="color: #ffffff;">[</span>0*&#8776;suc*-n<span style="color: #ffffff;">]</span> : <span style="color: #ffffff;">(</span>n : &#8469;*<span style="color: #ffffff;">)</span> &#8594; &#172; 0* &#8776; suc* n
+&#172;<span style="color: #ffffff;">[</span>0*&#8776;suc*-n<span style="color: #ffffff;">]</span> n 0*&#8776;suc*-n = nothing&#8802;just n <span style="color: #ffffff;">(</span>c-&#8776; 0*&#8776;suc*-n<span style="color: #ffffff;">)</span>
 
-&#172;<span style="color: #00cd68;">[</span>0*&#8776;&#8734;<span style="color: #00cd68;">]</span> : &#172; <span style="color: #00cd68;">(</span>0* &#8776; &#8734;<span style="color: #00cd68;">)</span>
-&#172;<span style="color: #00cd68;">[</span>0*&#8776;&#8734;<span style="color: #00cd68;">]</span> 0*&#8776;&#8734; = nothing&#8802;just &#8734; <span style="color: #00cd68;">(</span>c-&#8776; 0*&#8776;&#8734;<span style="color: #00cd68;">)</span>
+&#172;<span style="color: #ffffff;">[</span>0*&#8776;&#8734;<span style="color: #ffffff;">]</span> : &#172; <span style="color: #ffffff;">(</span>0* &#8776; &#8734;<span style="color: #ffffff;">)</span>
+&#172;<span style="color: #ffffff;">[</span>0*&#8776;&#8734;<span style="color: #ffffff;">]</span> 0*&#8776;&#8734; = nothing&#8802;just &#8734; <span style="color: #ffffff;">(</span>c-&#8776; 0*&#8776;&#8734;<span style="color: #ffffff;">)</span>
 </pre>
 </div>
 
 <div class="org-src-container">
 <pre class="src src-agda2">suc*-&#8734;&#8776;&#8734; : suc* &#8734; &#8776; &#8734;
-c-&#8776; <span style="color: #00cd68;">(</span>suc*-&#8734;&#8776;&#8734;<span style="color: #00cd68;">)</span> = refl
+c-&#8776; <span style="color: #ffffff;">(</span>suc*-&#8734;&#8776;&#8734;<span style="color: #ffffff;">)</span> = refl
 </pre>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-agda2">suc*-injective : <span style="color: #00cd68;">{</span>m n : &#8469;*<span style="color: #00cd68;">}</span>
-      &#8594; suc* m &#8776; suc* n &#8594; m &#8776; n
-c-&#8776; <span style="color: #00cd68;">(</span>suc*-injective m&#8776;n<span style="color: #00cd68;">)</span> = cong c <span style="color: #00cd68;">(</span>just-injective <span style="color: #b6a0ff;">(</span>c-&#8776; m&#8776;n<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+<pre class="src src-agda2">suc*-injective : <span style="color: #ffffff;">{</span>m n : &#8469;*<span style="color: #ffffff;">}</span>
+    <span style="color: #533253325332;"> </span> &#8594; suc* m &#8776; suc* n &#8594; m &#8776; n
+c-&#8776; <span style="color: #ffffff;">(</span>suc*-injective m&#8776;n<span style="color: #ffffff;">)</span> = cong c <span style="color: #ffffff;">(</span>just-injective <span style="color: #ff66ff;">(</span>c-&#8776; m&#8776;n<span style="color: #ff66ff;">)</span><span style="color: #ffffff;">)</span>
 </pre>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-agda2">&#172;<span style="color: #00cd68;">[</span>n&#8776;&#8734;<span style="color: #00cd68;">]</span>&#8658;&#172;<span style="color: #00cd68;">[</span>suc*-n&#8776;&#8734;<span style="color: #00cd68;">]</span> : <span style="color: #00cd68;">(</span>n : &#8469;*<span style="color: #00cd68;">)</span> &#8594; &#172; <span style="color: #00cd68;">(</span>n &#8776; &#8734;<span style="color: #00cd68;">)</span> &#8594; &#172; <span style="color: #00cd68;">(</span>suc* n &#8776; &#8734;<span style="color: #00cd68;">)</span>
-&#172;<span style="color: #00cd68;">[</span>n&#8776;&#8734;<span style="color: #00cd68;">]</span>&#8658;&#172;<span style="color: #00cd68;">[</span>suc*-n&#8776;&#8734;<span style="color: #00cd68;">]</span> n &#172;<span style="color: #00cd68;">[</span>n&#8776;&#8734;<span style="color: #00cd68;">]</span> suc*-n&#8776;&#8734; =
-  &#172;<span style="color: #00cd68;">[</span>n&#8776;&#8734;<span style="color: #00cd68;">]</span> <span style="color: #00cd68;">(</span>suc*-injective <span style="color: #b6a0ff;">(</span>&#8776;-trans suc*-n&#8776;&#8734;
-                                  <span style="color: #6ae4b9;">(</span>&#8776;-sym suc*-&#8734;&#8776;&#8734;<span style="color: #6ae4b9;">)</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+<pre class="src src-agda2">&#172;<span style="color: #ffffff;">[</span>n&#8776;&#8734;<span style="color: #ffffff;">]</span>&#8658;&#172;<span style="color: #ffffff;">[</span>suc*-n&#8776;&#8734;<span style="color: #ffffff;">]</span> : <span style="color: #ffffff;">(</span>n : &#8469;*<span style="color: #ffffff;">)</span> &#8594; &#172; <span style="color: #ffffff;">(</span>n &#8776; &#8734;<span style="color: #ffffff;">)</span> &#8594; &#172; <span style="color: #ffffff;">(</span>suc* n &#8776; &#8734;<span style="color: #ffffff;">)</span>
+&#172;<span style="color: #ffffff;">[</span>n&#8776;&#8734;<span style="color: #ffffff;">]</span>&#8658;&#172;<span style="color: #ffffff;">[</span>suc*-n&#8776;&#8734;<span style="color: #ffffff;">]</span> n &#172;<span style="color: #ffffff;">[</span>n&#8776;&#8734;<span style="color: #ffffff;">]</span> suc*-n&#8776;&#8734; =
+  &#172;<span style="color: #ffffff;">[</span>n&#8776;&#8734;<span style="color: #ffffff;">]</span> <span style="color: #ffffff;">(</span>suc*-injective <span style="color: #ff66ff;">(</span>&#8776;-trans suc*-n&#8776;&#8734;
+    <span style="color: #533253325332;"> </span>   <span style="color: #533253325332;"> </span>   <span style="color: #44843b0e29c3;"> </span>   <span style="color: #44843b0e29c3;"> </span>   <span style="color: #2a6a396c4cff;"> </span>   <span style="color: #2a6a396c4cff;"> </span>   <span style="color: #52df381e43dd;"> </span>   <span style="color: #52df381e43dd;"> </span> <span style="color: #00eff0;">(</span>&#8776;-sym suc*-&#8734;&#8776;&#8734;<span style="color: #00eff0;">)</span><span style="color: #ff66ff;">)</span><span style="color: #ffffff;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-The-embedding-of-~ℕ~-into-~ℕ*~" class="outline-2">
-<h2 id="The-embedding-of-~ℕ~-into-~ℕ*~"><span class="section-number-2">5</span> The embedding of ℕ into ℕ*</h2>
+<h2 id="The-embedding-of-~ℕ~-into-~ℕ*~"><span class="section-number-2">5.</span> The embedding of ℕ into ℕ*</h2>
 <div class="outline-text-2" id="text-The-embedding-of-~ℕ~-into-~ℕ*~">
 <p>
 Now the embedding of a natural number <code>n</code> into <code>ℕ</code> produces
@@ -448,7 +243,7 @@ directly instead.
 <div class="org-src-container">
 <pre class="src src-agda2">embed : &#8469; &#8594; &#8469;*
 embed zero = 0*
-embed <span style="color: #00cd68;">(</span>suc n<span style="color: #00cd68;">)</span> = suc* <span style="color: #00cd68;">(</span>embed n<span style="color: #00cd68;">)</span>
+embed <span style="color: #ffffff;">(</span>suc n<span style="color: #ffffff;">)</span> = suc* <span style="color: #ffffff;">(</span>embed n<span style="color: #ffffff;">)</span>
 </pre>
 </div>
 
@@ -456,16 +251,16 @@ embed <span style="color: #00cd68;">(</span>suc n<span style="color: #00cd68;">)
 There is no way that we can obtain the fix-point infinity by embedding.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">&#172;<span style="color: #00cd68;">[</span>embed-n&#8776;&#8734;<span style="color: #00cd68;">]</span> : <span style="color: #00cd68;">(</span>n : &#8469;<span style="color: #00cd68;">)</span> &#8594; &#172; <span style="color: #00cd68;">(</span>embed n &#8776; &#8734;<span style="color: #00cd68;">)</span>
-&#172;<span style="color: #00cd68;">[</span>embed-n&#8776;&#8734;<span style="color: #00cd68;">]</span> zero = &#172;<span style="color: #00cd68;">[</span>0*&#8776;&#8734;<span style="color: #00cd68;">]</span>
-&#172;<span style="color: #00cd68;">[</span>embed-n&#8776;&#8734;<span style="color: #00cd68;">]</span> <span style="color: #00cd68;">(</span>suc n<span style="color: #00cd68;">)</span> = &#172;<span style="color: #00cd68;">[</span>n&#8776;&#8734;<span style="color: #00cd68;">]</span>&#8658;&#172;<span style="color: #00cd68;">[</span>suc*-n&#8776;&#8734;<span style="color: #00cd68;">]</span> <span style="color: #00cd68;">(</span>embed n<span style="color: #00cd68;">)</span> <span style="color: #00cd68;">(</span>&#172;<span style="color: #b6a0ff;">[</span>embed-n&#8776;&#8734;<span style="color: #b6a0ff;">]</span> n<span style="color: #00cd68;">)</span>
+<pre class="src src-agda2">&#172;<span style="color: #ffffff;">[</span>embed-n&#8776;&#8734;<span style="color: #ffffff;">]</span> : <span style="color: #ffffff;">(</span>n : &#8469;<span style="color: #ffffff;">)</span> &#8594; &#172; <span style="color: #ffffff;">(</span>embed n &#8776; &#8734;<span style="color: #ffffff;">)</span>
+&#172;<span style="color: #ffffff;">[</span>embed-n&#8776;&#8734;<span style="color: #ffffff;">]</span> zero = &#172;<span style="color: #ffffff;">[</span>0*&#8776;&#8734;<span style="color: #ffffff;">]</span>
+&#172;<span style="color: #ffffff;">[</span>embed-n&#8776;&#8734;<span style="color: #ffffff;">]</span> <span style="color: #ffffff;">(</span>suc n<span style="color: #ffffff;">)</span> = &#172;<span style="color: #ffffff;">[</span>n&#8776;&#8734;<span style="color: #ffffff;">]</span>&#8658;&#172;<span style="color: #ffffff;">[</span>suc*-n&#8776;&#8734;<span style="color: #ffffff;">]</span> <span style="color: #ffffff;">(</span>embed n<span style="color: #ffffff;">)</span> <span style="color: #ffffff;">(</span>&#172;<span style="color: #ff66ff;">[</span>embed-n&#8776;&#8734;<span style="color: #ff66ff;">]</span> n<span style="color: #ffffff;">)</span>
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-Decidable-case-checks-on-~ℕ*~" class="outline-2">
-<h2 id="Decidable-case-checks-on-~ℕ*~"><span class="section-number-2">6</span> Decidable case checks on ℕ*</h2>
+<h2 id="Decidable-case-checks-on-~ℕ*~"><span class="section-number-2">6.</span> Decidable case checks on ℕ*</h2>
 <div class="outline-text-2" id="text-Decidable-case-checks-on-~ℕ*~">
 <p>
 It may be useful for us to be able to distinguish values of <code>ℕ*</code>,
@@ -478,7 +273,7 @@ allow us to work around that limitation.
 Is-zero* = _&#8776; 0*
 
 Is-suc* : &#8469;* &#8594; Set
-Is-suc* n = &#931;<span style="color: #00cd68;">[</span> m &#8712; &#8469;* <span style="color: #00cd68;">]</span> n &#8776; suc* m
+Is-suc* n = &#931;<span style="color: #ffffff;">[</span> m &#8712; &#8469;* <span style="color: #ffffff;">]</span> n &#8776; suc* m
 </pre>
 </div>
 
@@ -498,11 +293,11 @@ for these. In the <code>no</code> cases, we must somewhat carefully
 constuct the contradictory value.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">Is-zero*? : <span style="color: #00cd68;">(</span>n : &#8469;*<span style="color: #00cd68;">)</span> &#8594; Dec <span style="color: #00cd68;">(</span>Is-zero* n<span style="color: #00cd68;">)</span>
+<pre class="src src-agda2">Is-zero*? : <span style="color: #ffffff;">(</span>n : &#8469;*<span style="color: #ffffff;">)</span> &#8594; Dec <span style="color: #ffffff;">(</span>Is-zero* n<span style="color: #ffffff;">)</span>
 Is-zero*? n with c n | inspect c n
-... | nothing | <span style="color: #00cd68;">[</span> c-n&#8801;nothing <span style="color: #00cd68;">]</span> = yes <span style="color: #00cd68;">(</span>record <span style="color: #b6a0ff;">{</span> c-&#8776; = c-n&#8801;nothing <span style="color: #b6a0ff;">}</span><span style="color: #00cd68;">)</span>
-... | just predn | <span style="color: #00cd68;">[</span> c-n&#8801;just-predn <span style="color: #00cd68;">]</span>  =
-  no &#955; n&#8776;0* &#8594; &#172;<span style="color: #00cd68;">[</span>0*&#8776;suc*-n<span style="color: #00cd68;">]</span> predn <span style="color: #00cd68;">(</span>&#8776;-sym <span style="color: #b6a0ff;">(</span>&#8776;-trans <span style="color: #6ae4b9;">(</span>record <span style="color: #f0ce43;">{</span> c-&#8776; = sym c-n&#8801;just-predn <span style="color: #f0ce43;">}</span><span style="color: #6ae4b9;">)</span> n&#8776;0*<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
+... | nothing | <span style="color: #ffffff;">[</span> c-n&#8801;nothing <span style="color: #ffffff;">]</span> = yes <span style="color: #ffffff;">(</span>record <span style="color: #ff66ff;">{</span> c-&#8776; = c-n&#8801;nothing <span style="color: #ff66ff;">}</span><span style="color: #ffffff;">)</span>
+... | just predn | <span style="color: #ffffff;">[</span> c-n&#8801;just-predn <span style="color: #ffffff;">]</span>  =
+  no &#955; n&#8776;0* &#8594; &#172;<span style="color: #ffffff;">[</span>0*&#8776;suc*-n<span style="color: #ffffff;">]</span> predn <span style="color: #ffffff;">(</span>&#8776;-sym <span style="color: #ff66ff;">(</span>&#8776;-trans <span style="color: #00eff0;">(</span>record <span style="color: #ff6b55;">{</span> c-&#8776; = sym c-n&#8801;just-predn <span style="color: #ff6b55;">}</span><span style="color: #00eff0;">)</span> n&#8776;0*<span style="color: #ff66ff;">)</span><span style="color: #ffffff;">)</span>
 </pre>
 </div>
 
@@ -511,20 +306,20 @@ Is-zero*? n with c n | inspect c n
 uses <code>Is-zero*?</code>, in order to translate the proofs.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">pred* : <span style="color: #00cd68;">(</span>n : &#8469;*<span style="color: #00cd68;">)</span> &#8594; &#172; <span style="color: #00cd68;">(</span>Is-zero* n<span style="color: #00cd68;">)</span> &#8594; &#8469;*
+<pre class="src src-agda2">pred* : <span style="color: #ffffff;">(</span>n : &#8469;*<span style="color: #ffffff;">)</span> &#8594; &#172; <span style="color: #ffffff;">(</span>Is-zero* n<span style="color: #ffffff;">)</span> &#8594; &#8469;*
 pred* n &#172;Is-zero*-n with c n | inspect c n
-&#8230; | nothing | <span style="color: #00cd68;">[</span> c-n&#8801;nothing <span style="color: #00cd68;">]</span> = &#8869;-elim <span style="color: #00cd68;">(</span>&#172;Is-zero*-n <span style="color: #b6a0ff;">(</span>record <span style="color: #6ae4b9;">{</span> c-&#8776; = c-n&#8801;nothing <span style="color: #6ae4b9;">}</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
-&#8230; | just predn | <span style="color: #00cd68;">[</span> _ <span style="color: #00cd68;">]</span> = predn
+&#8230; | nothing | <span style="color: #ffffff;">[</span> c-n&#8801;nothing <span style="color: #ffffff;">]</span> = &#8869;-elim <span style="color: #ffffff;">(</span>&#172;Is-zero*-n <span style="color: #ff66ff;">(</span>record <span style="color: #00eff0;">{</span> c-&#8776; = c-n&#8801;nothing <span style="color: #00eff0;">}</span><span style="color: #ff66ff;">)</span><span style="color: #ffffff;">)</span>
+&#8230; | just predn | <span style="color: #ffffff;">[</span> _ <span style="color: #ffffff;">]</span> = predn
 
-suc*-pred* : <span style="color: #00cd68;">(</span>n : &#8469;*<span style="color: #00cd68;">)</span> &#8594; <span style="color: #00cd68;">(</span>&#172;Is-zero*-n : &#172; <span style="color: #b6a0ff;">(</span>Is-zero* n<span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
-           &#8594; suc* <span style="color: #00cd68;">(</span>pred* n &#172;Is-zero*-n<span style="color: #00cd68;">)</span> &#8776; n
+suc*-pred* : <span style="color: #ffffff;">(</span>n : &#8469;*<span style="color: #ffffff;">)</span> &#8594; <span style="color: #ffffff;">(</span>&#172;Is-zero*-n : &#172; <span style="color: #ff66ff;">(</span>Is-zero* n<span style="color: #ff66ff;">)</span><span style="color: #ffffff;">)</span>
+    <span style="color: #533253325332;"> </span>   <span style="color: #533253325332;"> </span>  &#8594; suc* <span style="color: #ffffff;">(</span>pred* n &#172;Is-zero*-n<span style="color: #ffffff;">)</span> &#8776; n
 suc*-pred* n &#172;Is-zero*-n with c n | inspect c n
-&#8230; | nothing | <span style="color: #00cd68;">[</span> c-n&#8801;nothing <span style="color: #00cd68;">]</span> = &#8869;-elim <span style="color: #00cd68;">(</span>&#172;Is-zero*-n <span style="color: #b6a0ff;">(</span>record <span style="color: #6ae4b9;">{</span> c-&#8776; = c-n&#8801;nothing <span style="color: #6ae4b9;">}</span><span style="color: #b6a0ff;">)</span><span style="color: #00cd68;">)</span>
-&#8230; | just predn | <span style="color: #00cd68;">[</span> c-n&#8801;just-predn <span style="color: #00cd68;">]</span> = &#8776;-sym <span style="color: #00cd68;">(</span>record <span style="color: #b6a0ff;">{</span> c-&#8776; = c-n&#8801;just-predn <span style="color: #b6a0ff;">}</span><span style="color: #00cd68;">)</span>
+&#8230; | nothing | <span style="color: #ffffff;">[</span> c-n&#8801;nothing <span style="color: #ffffff;">]</span> = &#8869;-elim <span style="color: #ffffff;">(</span>&#172;Is-zero*-n <span style="color: #ff66ff;">(</span>record <span style="color: #00eff0;">{</span> c-&#8776; = c-n&#8801;nothing <span style="color: #00eff0;">}</span><span style="color: #ff66ff;">)</span><span style="color: #ffffff;">)</span>
+&#8230; | just predn | <span style="color: #ffffff;">[</span> c-n&#8801;just-predn <span style="color: #ffffff;">]</span> = &#8776;-sym <span style="color: #ffffff;">(</span>record <span style="color: #ff66ff;">{</span> c-&#8776; = c-n&#8801;just-predn <span style="color: #ff66ff;">}</span><span style="color: #ffffff;">)</span>
 
-&#172;<span style="color: #00cd68;">[</span>Is-zero*-n<span style="color: #00cd68;">]</span>&#8658;Is-suc*-n : <span style="color: #00cd68;">(</span>n : &#8469;*<span style="color: #00cd68;">)</span> &#8594; &#172; <span style="color: #00cd68;">(</span>Is-zero* n<span style="color: #00cd68;">)</span> &#8594; Is-suc* n
-&#172;<span style="color: #00cd68;">[</span>Is-zero*-n<span style="color: #00cd68;">]</span>&#8658;Is-suc*-n n &#172;Is-zero*-n = pred* n &#172;Is-zero*-n
-                                       , &#8776;-sym <span style="color: #00cd68;">(</span>suc*-pred* n &#172;Is-zero*-n<span style="color: #00cd68;">)</span>
+&#172;<span style="color: #ffffff;">[</span>Is-zero*-n<span style="color: #ffffff;">]</span>&#8658;Is-suc*-n : <span style="color: #ffffff;">(</span>n : &#8469;*<span style="color: #ffffff;">)</span> &#8594; &#172; <span style="color: #ffffff;">(</span>Is-zero* n<span style="color: #ffffff;">)</span> &#8594; Is-suc* n
+&#172;<span style="color: #ffffff;">[</span>Is-zero*-n<span style="color: #ffffff;">]</span>&#8658;Is-suc*-n n &#172;Is-zero*-n = pred* n &#172;Is-zero*-n
+    <span style="color: #533253325332;"> </span>   <span style="color: #533253325332;"> </span>   <span style="color: #44843b0e29c3;"> </span>   <span style="color: #44843b0e29c3;"> </span>   <span style="color: #2a6a396c4cff;"> </span>   <span style="color: #2a6a396c4cff;"> </span>   <span style="color: #52df381e43dd;"> </span>   <span style="color: #52df381e43dd;"> </span>   <span style="color: #2c5f41e833e0;"> </span>  , &#8776;-sym <span style="color: #ffffff;">(</span>suc*-pred* n &#172;Is-zero*-n<span style="color: #ffffff;">)</span>
 </pre>
 </div>
 
@@ -533,20 +328,20 @@ It seems natural to decide if a <code>ℕ*</code> is a successor
 by first deciding if it is zero.
 </p>
 <div class="org-src-container">
-<pre class="src src-agda2">Is-suc*? : <span style="color: #00cd68;">(</span>m : &#8469;*<span style="color: #00cd68;">)</span> &#8594; Dec <span style="color: #00cd68;">(</span>Is-suc* m<span style="color: #00cd68;">)</span>
+<pre class="src src-agda2">Is-suc*? : <span style="color: #ffffff;">(</span>m : &#8469;*<span style="color: #ffffff;">)</span> &#8594; Dec <span style="color: #ffffff;">(</span>Is-suc* m<span style="color: #ffffff;">)</span>
 Is-suc*? m = case Is-zero*? m of
-  &#955; <span style="color: #00cd68;">{</span> <span style="color: #b6a0ff;">(</span>yes Is-zero*-m<span style="color: #b6a0ff;">)</span>
-        &#8594; no &#955; <span style="color: #b6a0ff;">{</span> <span style="color: #6ae4b9;">(</span>n , m&#8776;suc*-n<span style="color: #6ae4b9;">)</span> &#8594; &#172;<span style="color: #6ae4b9;">[</span>0*&#8776;suc*-n<span style="color: #6ae4b9;">]</span> n <span style="color: #6ae4b9;">(</span>&#8776;-trans <span style="color: #f0ce43;">(</span>&#8776;-sym Is-zero*-m<span style="color: #f0ce43;">)</span>
-                                                          m&#8776;suc*-n<span style="color: #6ae4b9;">)</span> <span style="color: #b6a0ff;">}</span>
-    ; <span style="color: #b6a0ff;">(</span>no &#172;Is-zero*-m<span style="color: #b6a0ff;">)</span> &#8594; yes <span style="color: #b6a0ff;">(</span>&#172;<span style="color: #6ae4b9;">[</span>Is-zero*-n<span style="color: #6ae4b9;">]</span>&#8658;Is-suc*-n m &#172;Is-zero*-m<span style="color: #b6a0ff;">)</span>
-    <span style="color: #00cd68;">}</span>
+  &#955; <span style="color: #ffffff;">{</span> <span style="color: #ff66ff;">(</span>yes Is-zero*-m<span style="color: #ff66ff;">)</span>
+    <span style="color: #533253325332;"> </span>   &#8594; no &#955; <span style="color: #ff66ff;">{</span> <span style="color: #00eff0;">(</span>n , m&#8776;suc*-n<span style="color: #00eff0;">)</span> &#8594; &#172;<span style="color: #00eff0;">[</span>0*&#8776;suc*-n<span style="color: #00eff0;">]</span> n <span style="color: #00eff0;">(</span>&#8776;-trans <span style="color: #ff6b55;">(</span>&#8776;-sym Is-zero*-m<span style="color: #ff6b55;">)</span>
+    <span style="color: #533253325332;"> </span>   <span style="color: #533253325332;"> </span>   <span style="color: #44843b0e29c3;"> </span>   <span style="color: #44843b0e29c3;"> </span>   <span style="color: #2a6a396c4cff;"> </span>   <span style="color: #2a6a396c4cff;"> </span>   <span style="color: #52df381e43dd;"> </span>   <span style="color: #52df381e43dd;"> </span>   <span style="color: #2c5f41e833e0;"> </span>   <span style="color: #2c5f41e833e0;"> </span>   <span style="color: #5332309d29c3;"> </span>   <span style="color: #5332309d29c3;"> </span>   <span style="color: #323e41414915;"> </span>   <span style="color: #323e41414915;"> </span> m&#8776;suc*-n<span style="color: #00eff0;">)</span> <span style="color: #ff66ff;">}</span>
+    ; <span style="color: #ff66ff;">(</span>no &#172;Is-zero*-m<span style="color: #ff66ff;">)</span> &#8594; yes <span style="color: #ff66ff;">(</span>&#172;<span style="color: #00eff0;">[</span>Is-zero*-n<span style="color: #00eff0;">]</span>&#8658;Is-suc*-n m &#172;Is-zero*-m<span style="color: #ff66ff;">)</span>
+    <span style="color: #ffffff;">}</span>
 </pre>
 </div>
 </div>
 </div>
 
 <div id="outline-container-Decidability-of-arbitrary-predicates-on-~ℕ*~" class="outline-2">
-<h2 id="Decidability-of-arbitrary-predicates-on-~ℕ*~"><span class="section-number-2">7</span> Decidability of arbitrary predicates on ℕ*</h2>
+<h2 id="Decidability-of-arbitrary-predicates-on-~ℕ*~"><span class="section-number-2">7.</span> Decidability of arbitrary predicates on ℕ*</h2>
 <div class="outline-text-2" id="text-Decidability-of-arbitrary-predicates-on-~ℕ*~">
 <p>
 :TODO: 😀
@@ -577,7 +372,7 @@ It needs refactoring, so I don't want to show it yet.
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">From this, we could prove the corollary
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">From this, we could prove the corollary
 that zero is not infinity, but this would require a use of transitivity,
 so we provide a direct proof.</p></div></div>
 
@@ -588,8 +383,8 @@ so we provide a direct proof.</p></div></div>
 <p class="author">Author: <a href="https://armkeh.github.io">Mark Armstrong</a> <img src="./../images/markarmstrong.jpg" alt="markarmstrong.jpg" /></p>
      <p class="author">Contact: <a href="mailto:markparmstrong@gmail.com">markparmstrong@gmail.com</a></p>
      <p class="date">Original date: August 25, 2020</p>
-     <p class="date">Last updated: 2021-01-27 Wed 02:14</p>
-     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.0.90 (<a href="https://orgmode.org">Org</a> mode 9.4.4)</p>
+     <p class="date">Last updated: 2024-10-20 Sun 23:33</p>
+     <p class="creator">Created using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.4 (<a href="https://orgmode.org">Org</a> mode 9.6.15)</p>
      <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
