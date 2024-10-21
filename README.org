@@ -1,14 +1,28 @@
-#+Title: My ~github.io~ website
+#+Title: My ~github.io~ homepage
 #+Author: Mark Armstrong
-#+Description: 
+#+Description: My GitHub homepage
 
 * Introduction
 
 This repository sets up my ~github.io~ site.
 
-No real setup is required; by simply naming the
+No significant setup is required; by simply naming the
 repository ~github-user-name.github.io~, and uploading an ~index.html~,
 I have an easy to use website, maintained by committing to this repo.
+
+* Maintaining Git subtrees
+
+The git subtree
+for [[https://github.com/fniessen/org-html-themes][org-html-themes]]
+was added via the following shell command.
+#+begin_src sh :results none
+git subtree add --prefix org-html-themes https://github.com/fniessen/org-html-themes master --squash
+#+end_src
+
+It can be updated via these commands.
+#+begin_src sh :results none
+git subtree pull --prefix org-html-themes https://github.com/fniessen/org-html-themes master --squash
+#+end_src
 
 * The ~gitignore~ file                            :noexport:
 
