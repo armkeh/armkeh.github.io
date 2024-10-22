@@ -41,18 +41,6 @@ LinkedIn badge script.
 #+attr_latex: :width 200px
 [[./images/markarmstrong.jpg]]
 
-# * COMMENT Social badges                         :ignore:
-
-# #+begin_export html
-# <div class="badge-base LI-profile-badge"
-#      data-locale="en_US" data-size="small" data-theme="dark" data-type="HORIZONTAL"
-#      data-vanity="mark-armstrong-0499575a" data-version="v1">
-#   <a class="badge-base__link LI-simple-link"
-#      href="https://ca.linkedin.com/in/mark-armstrong-0499575a?trk=profile-badge">
-#   </a>
-# </div>
-# #+end_export
-
 * About me
 :PROPERTIES:
 :CUSTOM_ID: About-me
@@ -240,6 +228,25 @@ A few webpages I've made together with my kids.
 :END:
 
 - [[file:./kids/Callie/Venture2020/day2-egg-drop.html][Egg drop challenge]]
+
+* Bottom of page seperator                      :ignore:
+
+#+begin_export html
+
+<hr>
+#+end_export
+
+* Social badges                                 :ignore:
+
+#+begin_export html
+<div class="badge-base LI-profile-badge"
+     data-locale="en_US" data-size="small" data-theme="dark" data-type="HORIZONTAL"
+     data-vanity="mark-armstrong-0499575a" data-version="v1">
+  <a class="badge-base__link LI-simple-link"
+     href="https://ca.linkedin.com/in/mark-armstrong-0499575a?trk=profile-badge">
+  </a>
+</div>
+#+end_export
 
 * Credits                                                            :ignore:
 :PROPERTIES:
