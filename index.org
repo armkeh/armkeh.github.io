@@ -31,7 +31,7 @@ the pages must be on the same domain for this to work
 LinkedIn badge script.
 #+HTML_head: <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
 
-* Personal photo                                                     :ignore:
+* Personal photo                                :ignore:
 :PROPERTIES:
 :CUSTOM_ID: Personal-photo
 :END:
@@ -232,7 +232,6 @@ A few webpages I've made together with my kids.
 * Bottom of page seperator                      :ignore:
 
 #+begin_export html
-
 <hr>
 #+end_export
 
@@ -248,7 +247,7 @@ A few webpages I've made together with my kids.
 </div>
 #+end_export
 
-* Credits                                                            :ignore:
+* Credits                                       :ignore:
 :PROPERTIES:
 :CUSTOM_ID: Credits
 :END:
