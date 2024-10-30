@@ -232,7 +232,7 @@ A few webpages I've made together with my kids.
 * Bottom of page seperator                      :ignore:
 
 #+begin_export html
-<hr>
+<hr />
 #+end_export
 
 * Social badges                                 :ignore:
