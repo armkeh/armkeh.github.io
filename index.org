@@ -235,7 +235,7 @@ A few webpages I've made together with my kids.
 <hr />
 #+end_export
 
-* Social badges                                 :ignore:
+* COMMENT Social badges                         :ignore:
 
 #+begin_export html
 <div class="badge-base LI-profile-badge"
