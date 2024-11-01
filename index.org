@@ -192,7 +192,7 @@ rather than on the natural numbers.
   2019 McMaster CAS department poster competition.
   - Which won third place.
 
-* COMMENT Resume
+* Resume
 :PROPERTIES:
 :CUSTOM_ID: Resume
 :END:
