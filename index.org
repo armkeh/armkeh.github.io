@@ -74,8 +74,14 @@ I dabble in game development.
 :CUSTOM_ID: Blog
 :END:
 
-So far this is a series of disconnected posts, mostly about
-Agda and Org mode.
+# ** 2024
+
+# - [[./blog/A sample of Dependency Injection in Typescript][A sample of Dependency Injection in Typescript]]
+
+** 2022 and earlier
+:PROPERTIES:
+:CUSTOM_ID: org-anchor-2022-and-earlier^1
+:END:
 
 - [[file:./blog/DecidabilityInACompactificationOfNat.html][Decidability in the One-Point Compactification of ℕ]]
 - [[file:./blog/WellFoundedRecursion.html][Well-founded recursion (in Agda)]]
