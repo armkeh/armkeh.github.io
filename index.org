@@ -1,5 +1,5 @@
 #+Title: Mark Armstrong - Home Page
-#+Subtitle: Software engineer
+#+Subtitle: Software Engineer, M.Sc. Computer Science
 #+Author: Mark Armstrong
 #+Description: My github.io home page.
 #+Setupfile: ./org-html-themes/org/theme-bigblow-local.setup
