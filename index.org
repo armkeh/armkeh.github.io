@@ -60,7 +60,25 @@ with a focus on functional programming and the theory of programming languages.
 I am an avid Emacs user
 (see my init [[https://github.com/armkeh/setup/tree/master/emacs][here]]).
 
-* Game development
+* Portfolio
+:PROPERTIES:
+:CUSTOM_ID: org-anchor-Portfolio^1
+:END:
+
+** Open source projects/contributions
+:PROPERTIES:
+:CUSTOM_ID: org-anchor-Open-source-projects/contributions^1
+:END:
+
+|----------------------------------------+---------------------------------------------------------------------------------------------------|
+| Project                                | Contributions                                                                                     |
+|----------------------------------------+---------------------------------------------------------------------------------------------------|
+| Ansible [[https://github.com/ansible-collections/community.general][community.general]] collection   | PR [[https://github.com/ansible-collections/community.general/pull/9494][#9494]]: Keycloak modules retry request on authentication error, support refresh token parameter |
+|----------------------------------------+---------------------------------------------------------------------------------------------------|
+| Emacs package [[https://github.com/armkeh/consistent-window-splits/][consistent-window-splits]] | Creator, sole contributor                                                                         |
+|----------------------------------------+---------------------------------------------------------------------------------------------------|
+
+** Game development
 :PROPERTIES:
 :CUSTOM_ID: Game-dev
 :END:
@@ -68,6 +86,20 @@ I am an avid Emacs user
 I dabble in game development.
 
 - Sample [[https://armkeh.github.io/breakout-excaliburjs/][Breakout]] game developed in [[https://excaliburjs.com/][Excalibur.js]], coded in Typescript and playable online.
+
+** Other Projects
+:PROPERTIES:
+:CUSTOM_ID: Projects
+:END:
+
+- My [[https://github.com/armkeh/setup][dot files]], primarily for Emacs,
+  but also for ~bash~, ~zsh~ and ~isync/mbsync~.
+- A [[https://github.com/armkeh/resume][resume template]] in Org mode, which exports neatly to
+  PDF, HTML and markdown.
+- A /literate/ library
+  of [[https://github.com/armkeh/unicode-sty][unicode symbol definitions]]
+  to allow use of unicode characters with LaTeX, LuaLaTeX
+  or XeLaTeX.
 
 * Blog
 :PROPERTIES:
@@ -90,20 +122,6 @@ I dabble in game development.
   - The [[file:./blog/InferenceRulesInOrg.pdf][generated PDF]], and
   - the [[file:./blog/InferenceRulesInOrg.org][Org source]].
 - [[file:./blog/EqualityOfFunctions.html][Equality of functions in Agda]]
-
-* Other Projects
-:PROPERTIES:
-:CUSTOM_ID: Projects
-:END:
-
-- My [[https://github.com/armkeh/setup][dot files]], primarily for Emacs,
-  but also for ~bash~, ~zsh~ and ~isync/mbsync~.
-- A [[https://github.com/armkeh/resume][resume template]] in Org mode, which exports neatly to
-  PDF, HTML and markdown.
-- A /literate/ library
-  of [[https://github.com/armkeh/unicode-sty][unicode symbol definitions]]
-  to allow use of unicode characters with LaTeX, LuaLaTeX
-  or XeLaTeX.
 
 * COMMENT Reading
 :PROPERTIES:
