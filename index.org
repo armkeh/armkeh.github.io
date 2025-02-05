@@ -62,44 +62,41 @@ I am an avid Emacs user
 
 * Portfolio
 :PROPERTIES:
-:CUSTOM_ID: org-anchor-Portfolio^1
+:CUSTOM_ID: Portfolio
 :END:
 
 ** Open source projects/contributions
 :PROPERTIES:
-:CUSTOM_ID: org-anchor-Open-source-projects/contributions^1
+:CUSTOM_ID: Portfolio-open-source
 :END:
 
-|----------------------------------------+---------------------------------------------------------------------------------------------------|
-| Project                                | Contributions                                                                                     |
-|----------------------------------------+---------------------------------------------------------------------------------------------------|
-| Ansible [[https://github.com/ansible-collections/community.general][community.general]] collection   | PR [[https://github.com/ansible-collections/community.general/pull/9494][#9494]]: Keycloak modules retry request on authentication error, support refresh token parameter |
-|----------------------------------------+---------------------------------------------------------------------------------------------------|
-| Emacs package [[https://github.com/armkeh/consistent-window-splits/][consistent-window-splits]] | Creator, sole contributor                                                                         |
-|----------------------------------------+---------------------------------------------------------------------------------------------------|
+|------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------|
+| Project                                  | Contributions                                                                                     | Skills                                              |
+|------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------|
+| [[https://github.com/armkeh/consistent-window-splits/][consistent-window-splits]] (Emacs package) | Creator, sole contributor                                                                         | Emacs Lisp                                          |
+|------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------|
+| Ansible [[https://github.com/ansible-collections/community.general][community.general]] collection     | PR [[https://github.com/ansible-collections/community.general/pull/9494][#9494]]: Keycloak modules retry request on authentication error, support refresh token parameter | Python, Ansible, Keycloak                           |
+|------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------|
+| [[https://github.com/alhassy/org-agda-mode][org-agda-mode]] (Emacs package)            | Co-creator, contributor                                                                           | Emacs Lisp                                          |
+|------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------|
+| [[https://github.com/armkeh/unicode-sty][unicode-sty]] (LaTeX package)              | Co-creator, contributor                                                                           | LaTeX, GitHub pages ([[https://armkeh.github.io/unicode-sty/][armkeh.github.io/unicode-sty/]]) |
+|------------------------------------------+---------------------------------------------------------------------------------------------------+-----------------------------------------------------|
 
-** Game development
+** Personal projects
 :PROPERTIES:
-:CUSTOM_ID: Game-dev
+:CUSTOM_ID: Portfolio-personal
 :END:
 
-I dabble in game development.
+|---------------------------------------------------------+-------------------------------------------------|
+| Project                                                 | Skills                                          |
+|---------------------------------------------------------+-------------------------------------------------|
+| Sample [[https://armkeh.github.io/breakout-excaliburjs/][Breakout]] game (playable [[https://armkeh.github.io/breakout-excaliburjs/][online]])                  | Typescript, GitHub actions, [[https://excaliburjs.com/][Excalibur.js]] engine |
+|---------------------------------------------------------+-------------------------------------------------|
+| Personal [[https://github.com/armkeh/setup][dot files]]                                      | Emacs Lisp, bash/zsh, nix/nixos                 |
+|---------------------------------------------------------+-------------------------------------------------|
+| Org mode [[https://github.com/armkeh/resume][Resume template]] (in PDF/HTML/markdown formats) | LaTeX, HTML, CSS, Emacs Lisp, Emacs Org mode    |
+|---------------------------------------------------------+-------------------------------------------------|
 
-- Sample [[https://armkeh.github.io/breakout-excaliburjs/][Breakout]] game developed in [[https://excaliburjs.com/][Excalibur.js]], coded in Typescript and playable online.
-
-** Other Projects
-:PROPERTIES:
-:CUSTOM_ID: Projects
-:END:
-
-- My [[https://github.com/armkeh/setup][dot files]], primarily for Emacs,
-  but also for ~bash~, ~zsh~ and ~isync/mbsync~.
-- A [[https://github.com/armkeh/resume][resume template]] in Org mode, which exports neatly to
-  PDF, HTML and markdown.
-- A /literate/ library
-  of [[https://github.com/armkeh/unicode-sty][unicode symbol definitions]]
-  to allow use of unicode characters with LaTeX, LuaLaTeX
-  or XeLaTeX.
 
 * Blog
 :PROPERTIES:
