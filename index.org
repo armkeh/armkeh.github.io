@@ -97,7 +97,6 @@ I am an avid Emacs user
 | Org mode [[https://github.com/armkeh/resume][Resume template]] (in PDF/HTML/markdown formats) | LaTeX, HTML, CSS, Emacs Lisp, Emacs Org mode    |
 |---------------------------------------------------------+-------------------------------------------------|
 
-
 * Blog
 :PROPERTIES:
 :CUSTOM_ID: Blog
