@@ -46,19 +46,16 @@ LinkedIn badge script.
 :CUSTOM_ID: About-me
 :END:
 
-I am a software engineer most recently working at [[https://www.indexexchange.com/][Index Exchange]], where I
-- worked on the core application API team,
-- developing backend APIs in Go
-  - incorporating technologies including Ansible and Redis,
-- and practicing DevOps engineering using Docker, Kubernetes,
-  Helm and GitLab pipelines and ArgoCD.
+I am a software engineer working at [[https://www.kubra.com/][Kubra]] in Mississauga, Ontario,
+developing backend APIs in Kotlin as a member of the Customer Experience team.
 
 Formerly I was a PhD candidate, sessional lecturer and teaching assistant
 at McMaster University,
 with a focus on functional programming and the theory of programming languages.
 
-I am an avid Emacs user
-(see my init [[https://github.com/armkeh/setup/tree/master/emacs][here]]).
+I am an avid Emacs user; see my extensivly, literately documented Emacs configuration [[https://github.com/armkeh/setup/tree/master/emacs][on Github]].
+
+I am experienced in Kotlin, Go, Python and Typescript; refer to my [[Portfolio][portfolio]] and [[Resume][resume]] on this site.
 
 * Portfolio
 :PROPERTIES:
